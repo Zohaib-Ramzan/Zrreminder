@@ -65,28 +65,10 @@ const Home = () => {
         />
       </Modal>
       <Text style={styles.txtStyle}>Zohaib's Personal Categories</Text>
-      <View style={styles.cardsContainer}>
-        <Card text="Default" imageUrl={require('../assets/images/logo.png')} />
-        <View style={styles.secondCardContainer}>
-          <TouchableOpacity onPress={() => setCloseCategoryModal(true)}>
-            <Card
-              backgroundColor="#2c2c34"
-              onPress={() => setCloseCategoryModal(true)}
-            />
-            <View style={styles.iconContainer}>
-              <Icon
-                name="add-circle"
-                size={responsiveHeight(10)}
-                color="#d6d6d6"
-              />
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
       {selectedCardDataArray.length > 0 && (
         <View>
           <FlatList 
-            style={{ height: responsiveHeight(50)  }}
+            style={{ height: responsiveHeight(68)  }}
             numColumns={2}
             data={selectedCardDataArray}
             keyExtractor={(item, index) => index.toString()}
