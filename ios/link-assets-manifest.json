@@ -1,0 +1,61 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/AlegreyaSans-Black.ttf",
+      "sha1": "e2c92d8f696db25c7c104d59fe4153da526a7976"
+    },
+    {
+      "path": "src/assets/fonts/AlegreyaSans-BlackItalic.ttf",
+      "sha1": "0da215e2b0351b8a318fa29cfe7f995b9024c96c"
+    },
+    {
+      "path": "src/assets/fonts/AlegreyaSans-Bold.ttf",
+      "sha1": "f88734a28bac669376d66662dac4fa81cb59705e"
+    },
+    {
+      "path": "src/assets/fonts/AlegreyaSans-BoldItalic.ttf",
+      "sha1": "83b23ab82bae93fbd475e238e6b9aa4dfe0e235d"
+    },
+    {
+      "path": "src/assets/fonts/AlegreyaSans-ExtraBold.ttf",
+      "sha1": "3984c68344841f8d02136f5f26417cb7967fa2b2"
+    },
+    {
+      "path": "src/assets/fonts/AlegreyaSans-ExtraBoldItalic.ttf",
+      "sha1": "ea18994d0007910546bbd46fa77024b31be17fae"
+    },
+    {
+      "path": "src/assets/fonts/AlegreyaSans-Italic.ttf",
+      "sha1": "ec81402943779a4157007d9b5f3822828f17be48"
+    },
+    {
+      "path": "src/assets/fonts/AlegreyaSans-Light.ttf",
+      "sha1": "109e0c62b47a946d7df5ff13824fd876810d7485"
+    },
+    {
+      "path": "src/assets/fonts/AlegreyaSans-LightItalic.ttf",
+      "sha1": "d9c3ee532418f121dea82e12c1ec50b060e37b61"
+    },
+    {
+      "path": "src/assets/fonts/AlegreyaSans-Medium.ttf",
+      "sha1": "f132806ccb2fd0844eb8ba43c9f5f684697e285f"
+    },
+    {
+      "path": "src/assets/fonts/AlegreyaSans-MediumItalic.ttf",
+      "sha1": "05f6736b7c23f301b2503e11b057ec54847b0653"
+    },
+    {
+      "path": "src/assets/fonts/AlegreyaSans-Regular.ttf",
+      "sha1": "f7948392bdd91cb15db72254357f32d25b8566c0"
+    },
+    {
+      "path": "src/assets/fonts/AlegreyaSans-Thin.ttf",
+      "sha1": "d1cfd3600b13d727a88d13984130bcf8c9df3b73"
+    },
+    {
+      "path": "src/assets/fonts/AlegreyaSans-ThinItalic.ttf",
+      "sha1": "ee3dbc11980a0b798ec9a669fcdaec8a6606895e"
+    }
+  ]
+}
