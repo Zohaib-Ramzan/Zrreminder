@@ -64,11 +64,13 @@ const Home = () => {
           closeAddCategoryModal={closeModal}
         />
       </Modal>
+      <View style={styles.hometxtView}>
       <Text style={styles.txtStyle}>Zohaib's Personal Categories</Text>
+      </View>
       {selectedCardDataArray.length > 0 && (
         <View>
           <FlatList 
-            style={{ height: responsiveHeight(68)  }}
+            style={{ height: responsiveHeight(68) , bottom: responsiveHeight(3) }}
             numColumns={2}
             data={selectedCardDataArray}
             keyExtractor={(item, index) => index.toString()}
@@ -103,10 +105,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#1a1a1c',
   },
   txtStyle: {
-    fontSize: responsiveFontSize(4),
-    color: '#afafb0',
+    fontSize: responsiveFontSize(5),
+    color: '#FBFFFF',
     marginLeft: responsiveWidth(2),
     marginBottom: responsiveWidth(8),
+    fontFamily: "AlegreyaSans-Medium"
   },
   cardsContainer: {
     flexDirection: 'row',
@@ -124,4 +127,9 @@ const styles = StyleSheet.create({
     top: responsiveHeight(4),
     left: responsiveWidth(12),
   },
+  hometxtView: {
+    marginTop: responsiveHeight(2),
+    marginLeft: responsiveWidth(2)
+    
+  }
 });
