@@ -38,7 +38,7 @@ const BottomNav = () => {
         options={{headerShown:false}}
         />
         <Tab.Screen
-        name='Settings'
+        name='Settings' 
         component={Settings}
         options={{headerShown:false}}
         />
