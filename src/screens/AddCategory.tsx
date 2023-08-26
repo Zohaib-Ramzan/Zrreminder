@@ -58,7 +58,6 @@ const AddCategory = ({closeAddCategoryModal,crossButton}: any) => {
       selectedCardData.backgroundColor = currentColor;
       closeAddCategoryModal(selectedCardData);
       crossButton();
-      {console.log(selectedCardData.title)}
     } else {
       // Handle case where no card is selected.
       Alert.alert("Please Select Card!")

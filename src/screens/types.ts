@@ -5,5 +5,6 @@ export interface CardData {
     backgroundColor: string;
     imgUrl?: ImageSourcePropType;
     onPress?: any;
-    title?: string
+    title?: string;
+    isLongPressed?: any;
   }

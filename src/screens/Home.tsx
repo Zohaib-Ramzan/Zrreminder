@@ -7,9 +7,11 @@ import {
   View,
   Modal,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   FlatList,
+  BackHandler
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import {
@@ -21,13 +23,15 @@ import Card from '../components/Card';
 import BottomNav from '../routes/BottomNav';
 import AddCategory from './AddCategory';
 import {CardData} from './types';
+import DeleteCard from './DeleteCard';
 
 const Home = () => {
   const [closeCategoryModal, setCloseCategoryModal] = useState(false);
   const [selectedCardData, setSelectedCardData] = useState<CardData | null>(
     null,
   );
-
+  const [longPressModal , setLongPressModal] = useState(false);
+   const [isLongPress , setIsLongPress] = useState<boolean>(false)
   const plusCircleImg = () => {
     return require("../assets/images/plus-circle.png");
   }
@@ -38,15 +42,39 @@ const Home = () => {
     {
       backgroundColor: '#2c2c34',
       onPress: () => setCloseCategoryModal(true),
-      imgUrl: plusCircleImg()
+      imgUrl: plusCircleImg(),
+      isLongPressed: false
+      
     }
   ]);
-  {console.log(selectedCardDataArray)}
 
   // const closeAddCategoryModal = (selectedCardDataArray: any) => {
   //   setSelectedCardDataArray(selectedCardDataArray);
   //   setCloseCategoryModal(false);
   // };
+  const longPressDelete = () => {
+    <Modal visible={longPressModal} transparent>
+      <DeleteCard />
+    </Modal>
+  }
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      setIsLongPress(false); // Set isLongPress to false when back button is pressed
+      return true; // Prevent default behavior (closing the app)
+    });
+
+    return () => {
+      backHandler.remove(); // Remove the event listener when the component is unmounted
+    };
+  }, [isLongPress]);
+
+
+
+  const toggleModal = () => {
+    setLongPressModal(!longPressModal)
+    setIsLongPress(!isLongPress)
+    }
 
   const crossButton = () => {
     return setCloseCategoryModal(false);
@@ -58,7 +86,7 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
-      <Modal transparent visible={closeCategoryModal}>
+      <Modal transparent visible={closeCategoryModal} >
         <AddCategory
           crossButton={crossButton}
           closeAddCategoryModal={closeModal}
@@ -76,18 +104,33 @@ const Home = () => {
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item, index}) => {
               return (
+                <TouchableWithoutFeedback onPress={toggleModal}
+                >
                 <Card
-                  backgroundColor={item.imgUrl === plusCircleImg() ? "#2c2c34" : item.backgroundColor}
+                  backgroundColor={item.imgUrl === plusCircleImg() ? "#2c2c34" : isLongPress == true ? "#23232a" : item.backgroundColor}
                   onPress={item.onPress}
+                  onLongPress={() => {
+                    if (item.imgUrl !== plusCircleImg()) {
+                      // Toggle the longPressModal only for non-default cards
+                      toggleModal();
+                      
+                    }
+                  }}
                   text={item.title}
+                  cardTextColor={isLongPress ? "#B1B3B3" : "#202020"}
                   imageUrl={item.imgUrl}
                   ImgHeight={responsiveHeight(15)}
                   ImgWidth={item.imgUrl === plusCircleImg() ? responsiveWidth(13) : responsiveWidth(40)}
                   cardStyles={{
                     marginLeft: responsiveWidth(5),
                     marginTop: responsiveHeight(4),
-                  }}>
+                    opacity : isLongPress ? 1 : null,
+                  }}
+                  isLongPressed={item.imgUrl !== plusCircleImg() ? isLongPress : false}
+                  
+                  >
                   </Card>
+                  </TouchableWithoutFeedback>
               );
             }}
           />
@@ -131,5 +174,6 @@ const styles = StyleSheet.create({
     marginTop: responsiveHeight(2),
     marginLeft: responsiveWidth(2)
     
-  }
+  },
+  
 });

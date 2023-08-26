@@ -5,6 +5,7 @@ import {
   Pressable,
   Image,
   ImageSourcePropType,
+  TouchableOpacity,
 } from 'react-native';
 import React, {PropsWithChildren} from 'react';
 
@@ -13,6 +14,7 @@ import {
   responsiveFontSize,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type CardProps = PropsWithChildren<{
   text?: string;
@@ -25,6 +27,9 @@ type CardProps = PropsWithChildren<{
   ImgWidth?: any;
   tintColor?: any;
   cardStyles?: any;
+  onLongPress?: () => void;
+  isLongPressed?: boolean;
+  cardTextColor?: string;
 }>;
 
 const Card = ({
@@ -37,12 +42,18 @@ const Card = ({
   ImgHeight,
   ImgWidth,
   tintColor,
-  cardStyles
+  cardStyles,
+  onLongPress,
+  isLongPressed,
+  cardTextColor,
 }: CardProps) => {
+
   return (
     <Pressable
       onPress={onPress}
-      style={[cardStyles,
+      onLongPress={onLongPress}
+      style={[
+        cardStyles,
         styles.cardContainer,
         {
           backgroundColor: backgroundColor || '#d6d6d6',
@@ -58,12 +69,22 @@ const Card = ({
             {
               height: ImgHeight || responsiveHeight(38),
               width: ImgWidth || responsiveWidth(38),
-              tintColor: tintColor 
+              tintColor: tintColor,
             },
           ]}
         />
       )}
-      <Text style={styles.cardText}>{text}</Text>
+      <Text style={[styles.cardText,{color:cardTextColor}]}>{text}</Text>
+      {isLongPressed && (
+        <View style={styles.iconsContainer}>
+        <TouchableOpacity>
+          <Icon name={'delete'} size={responsiveHeight(5)} color={'#aa5945'} />
+        </TouchableOpacity>
+        <TouchableOpacity style={{marginLeft: responsiveWidth(5)}}>
+          <Icon name={'edit'} size={responsiveHeight(5)} color={'#9dbead'} />
+        </TouchableOpacity>
+      </View>
+      )}
     </Pressable>
   );
 };
@@ -82,9 +103,13 @@ const styles = StyleSheet.create({
     opacity: 0.4,
   },
   cardText: {
-    color: '#202020',
     fontSize: responsiveFontSize(2.8),
     position: 'absolute',
-    fontFamily: "AlegreyaSans-ExtraBoldItalic"
+    fontFamily: 'AlegreyaSans-ExtraBoldItalic',
+  },
+  iconsContainer: {
+    position: 'absolute',
+    flexDirection: 'row',
+    bottom: responsiveHeight(1),
   },
 });
