@@ -74,7 +74,7 @@ const Card = ({
           ]}
         />
       )}
-      <Text style={[styles.cardText,{color:cardTextColor}]}>{text}</Text>
+       <Text numberOfLines={1} ellipsizeMode='tail' style={[styles.cardText,{color:cardTextColor,maxWidth:'80%'}]}>{text}</Text>
       {isLongPressed && (
         <View style={styles.iconsContainer}>
         <TouchableOpacity>

@@ -48,33 +48,28 @@ const Home = () => {
     }
   ]);
 
+  // const closeAddCategoryModal = (selectedCardDataArray: any) => {
+  //   setSelectedCardDataArray(selectedCardDataArray);
+  //   setCloseCategoryModal(false);
+  // };
+  const longPressDelete = () => {
+    <Modal visible={longPressModal} transparent>
+      <DeleteCard />
+    </Modal>
+  }
+
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      // Reset the isLongPressed property of all cards to false
-      const updatedCardDataArray = selectedCardDataArray.map(cardData => ({
-        ...cardData,
-        isLongPressed: false,
-      }));
-      
-      setSelectedCardDataArray(updatedCardDataArray);
-      
+      setIsLongPress(false); // Set isLongPress to false when back button is pressed
       return true; // Prevent default behavior (closing the app)
     });
-  
+
     return () => {
       backHandler.remove(); // Remove the event listener when the component is unmounted
     };
-  }, [selectedCardDataArray]);
+  }, [isLongPress]);
 
-  const handleCardLongPress = (index: number) => {
-    if (selectedCardDataArray[index].imgUrl !== plusCircleImg()) {
-      setSelectedCardDataArray(prevDataArray => {
-        const updatedArray = [...prevDataArray];
-        updatedArray[index].isLongPressed = !updatedArray[index].isLongPressed;
-        return updatedArray;
-      });
-    }
-  };
+
 
   const toggleModal = () => {
     setLongPressModal(!longPressModal)
@@ -112,20 +107,27 @@ const Home = () => {
                 <TouchableWithoutFeedback onPress={toggleModal}
                 >
                 <Card
-                  backgroundColor={item.imgUrl === plusCircleImg() ? "#2c2c34" : item.isLongPressed == true ? "#23232a" : item.backgroundColor}
+                  backgroundColor={item.imgUrl === plusCircleImg() ? "#2c2c34" : isLongPress == true ? "#23232a" : item.backgroundColor}
                   onPress={item.onPress}
-                  onLongPress={() => handleCardLongPress(index)}
+                  onLongPress={() => {
+                    if (item.imgUrl !== plusCircleImg()) {
+                      // Toggle the longPressModal only for non-default cards
+                     toggleModal();
+                      
+                    }
+                  }}
                   text={item.title}
-                  cardTextColor={item.isLongPressed ? "#B1B3B3" : "#202020"}
+                  cardTextColor={isLongPress ? "#B1B3B3" : "#202020"}
                   imageUrl={item.imgUrl}
                   ImgHeight={responsiveHeight(15)}
                   ImgWidth={item.imgUrl === plusCircleImg() ? responsiveWidth(13) : responsiveWidth(40)}
                   cardStyles={{
                     marginLeft: responsiveWidth(5),
                     marginTop: responsiveHeight(4),
-                    opacity : item.isLongPressed ? 1 : null,
+                    opacity : isLongPress ? 1 : null,
                   }}
-                  isLongPressed={item.isLongPressed}
+                  isLongPressed={item.imgUrl !== plusCircleImg() ? isLongPress : false}
+                  
                   >
                   </Card>
                   </TouchableWithoutFeedback>

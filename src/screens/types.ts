@@ -6,5 +6,5 @@ export interface CardData {
     imgUrl?: ImageSourcePropType;
     onPress?: any;
     title?: string;
-    isLongPressed?: any;
+    isLongPressed: boolean
   }
