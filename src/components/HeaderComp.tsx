@@ -14,7 +14,7 @@ const HeaderComp = ({onPress}: HeaderProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>
-        <Pressable onPress={onPress}>
+        <Pressable onPress={onPress} style={styles.pressableArea}>
           <Icon name="arrow-back" size={25} color="#d6d6d6" />
         </Pressable>
       </View>
@@ -35,4 +35,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     left:responsiveWidth(2)
   },
+  pressableArea:{
+    height:responsiveHeight(5),
+    width:responsiveWidth(8),
+  }
 });

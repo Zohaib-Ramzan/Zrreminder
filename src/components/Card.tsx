@@ -30,6 +30,9 @@ type CardProps = PropsWithChildren<{
   onLongPress?: () => void;
   isLongPressed?: boolean;
   cardTextColor?: string;
+  onPressDelete?: () => void;
+  onPressEdit?: () => void;
+  itemCat?: any;
 }>;
 
 const Card = ({
@@ -46,6 +49,9 @@ const Card = ({
   onLongPress,
   isLongPressed,
   cardTextColor,
+  onPressDelete,
+  onPressEdit,
+  itemCat = text,
 }: CardProps) => {
 
   return (
@@ -75,12 +81,15 @@ const Card = ({
         />
       )}
        <Text numberOfLines={1} ellipsizeMode='tail' style={[styles.cardText,{color:cardTextColor,maxWidth:'80%'}]}>{text}</Text>
+       
+       
       {isLongPressed && (
+        console.log(itemCat),
         <View style={styles.iconsContainer}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={onPressDelete}>
           <Icon name={'delete'} size={responsiveHeight(5)} color={'#aa5945'} />
         </TouchableOpacity>
-        <TouchableOpacity style={{marginLeft: responsiveWidth(5)}}>
+        <TouchableOpacity style={{marginLeft: responsiveWidth(5)}} onPress={onPressEdit}>
           <Icon name={'edit'} size={responsiveHeight(5)} color={'#9dbead'} />
         </TouchableOpacity>
       </View>

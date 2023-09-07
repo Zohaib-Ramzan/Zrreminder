@@ -10,6 +10,9 @@ type TextInputProps = PropsWithChildren<{
   textColor?: string;
   value?: string;
   onChangeText?: any
+  styleField?: any
+  width?: any
+  multiline?: boolean
 }>;
 
 const TextInputComp = ({
@@ -19,7 +22,10 @@ const TextInputComp = ({
   backgroundColor,
   textColor,
   value,
-  onChangeText
+  onChangeText,
+  styleField,
+  width,
+  multiline
 }: TextInputProps) => {
   return (
     <TextInput
@@ -27,10 +33,11 @@ const TextInputComp = ({
       placeholderTextColor={placeholderTextColor}
       secureTextEntry={secureTextEntry}
       value={value}
+      multiline={multiline}
       onChangeText={onChangeText}
-      style={[
+      style={[styleField,
         styles.textinputStyle,
-        {backgroundColor: backgroundColor, color: textColor},
+        {backgroundColor: backgroundColor, color: textColor, width: width || responsiveWidth(85),}
       ]}
     />
   );
@@ -41,9 +48,8 @@ export default TextInputComp;
 const styles = StyleSheet.create({
   textinputStyle: {
     borderWidth: responsiveWidth(0.1),
-    width: responsiveWidth(85),
     borderRadius: 10,
-    marginTop: responsiveHeight(3),
+    marginTop:responsiveHeight(3),
     backgroundColor: '#464657',
     fontWeight: 'bold',
     color: '#fff',
