@@ -12,6 +12,9 @@ import Splash from '../screens/Splash';
 import Home from '../screens/Home';
 import BottomNav from './BottomNav';
 import ListPage from '../screens/ListPage';
+import ItemDetails from '../screens/ItemDetails';
+import AddItem from '../screens/AddItem';
+
 
 
 export type RootStackParamList = {
@@ -22,7 +25,9 @@ export type RootStackParamList = {
   Home: any;
   Main: any;
   Settings: any;
-  ListPage: any
+  ListPage: any;
+  ItemDetails: any;
+  AddItem: any;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -62,6 +67,16 @@ const AppNavigator = () => {
         <Stack.Screen
           name="ListPage"
           component={ListPage}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="AddItem"
+          component={AddItem}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ItemDetails"
+          component={ItemDetails}
           options={{headerShown: false}}
         />
         <Stack.Screen

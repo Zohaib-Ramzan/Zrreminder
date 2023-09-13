@@ -9,6 +9,9 @@ import {
   Image,
   FlatList,
   Alert,
+  Pressable,
+  Modal,
+  ImageSourcePropType,
 } from 'react-native';
 import {
   responsiveFontSize,
@@ -21,6 +24,16 @@ import ColorPicker from 'react-native-wheel-color-picker';
 import TextInputComp from '../components/TextInputComp';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontIcon from 'react-native-vector-icons/FontAwesome';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import AddReminderPage from './AddReminderPage';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import ItemDetails from './ItemDetails';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../routes/AppNavigator';
+
+type AddItemProps = NativeStackScreenProps<RootStackParamList, 'AddItem'>
+
 const ImageData = [
   require('../assets/images/logo.png'),
   require('../assets/images/skin-care.png'),
@@ -30,14 +43,11 @@ const ImageData = [
   require('../assets/images/detergent.png'),
 ];
 
-const AddItem = ({
-  closeEditCategoryModal,
-  crossButton,
-  initialData,
-  updateCardData,
-  initialIndex,
-}: any) => {
-  const [title, setTitle] = useState(initialData?.title || '');
+const AddItem = ({crossButton}: any) => {
+
+  const navigation = useNavigation<AddItemProps>();
+
+  const [title, setTitle] = useState('');
   const [currentColor, setCurrentColor] = useState('#464657');
   const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(
     null,
@@ -45,58 +55,115 @@ const AddItem = ({
   const [selectedCardData, setSelectedCardData] = useState<any>(null);
 
   const [mainDataIndex, setMainDataIndex] = useState(null);
-  
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [selectedDate, setSelectedDate] = useState('Add Start Date');
+  const [isStartingDateSelected, setIsStartingDateSelected] = useState(false);
+  const [expireDate, setExpireDate] = useState('Add Expire Date');
+  const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
+  const [selectedReminderOption, setSelectedReminderOption] = useState('');
+  const [imageSelect, setImageSelect] = useState<any>(null);
+  const [isImageSelected, setIsImageSelected] = useState(false);
+  const [reminderText, setReminderText] = useState("Add Reminder")
+  const [noteText, setNoteText] = useState("")
+  const [fieldsSelected, setFieldsSelected] = useState(false)
 
-  useEffect(() => {
-    setMainDataIndex(initialIndex);
-    console.log('selectedXardIndex' + initialIndex);
-  }, [initialIndex]);
+  const imagePicker = () => {
+    let options = {
+      mediaType: 'photo',
+      storageOptions: {
+        path: 'image',
+      },
+    };
+
+    launchImageLibrary(options, response => {
+      if (!response.didCancel) {
+        // Check if the user didn't cancel the image picker
+        setImageSelect(response.assets[0].uri);
+        console.log(response.assets[0].uri);
+        setIsImageSelected(true);
+      } else {
+        Alert.alert('Image not Selected!');
+      }
+    });
+  };
+
+  const openReminderModal = () => {
+    setIsReminderModalOpen(true);
+  };
+
+  const closeReminderModal = () => {
+    setIsReminderModalOpen(false);
+  };
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date: any) => {
+    console.warn('A date has been picked: ', date);
+    const dt = new Date(date);
+    const x = dt.toISOString().split('T');
+    const newDt = x[0].split('-');
+    if (isStartingDateSelected == true) {
+      setSelectedDate(newDt[2] + '/' + newDt[1] + '/' + newDt[0]);
+    } else {
+      setExpireDate(newDt[2] + '/' + newDt[1] + '/' + newDt[0]);
+    }
+    setIsStartingDateSelected(false);
+    hideDatePicker();
+  };
 
   // useEffect(() => {
   //   setSelectedCardIndex(initialIndex); // Update selectedCardIndex when the component receives a new initialIndex
   // }, [initialIndex]);
 
-  useEffect(() => {
-    if (initialData) {
-      setTitle(initialData.title);
-      setCurrentColor(initialData.backgroundColor);
-      setSelectedCardIndex(initialData.imgUrl - 1); // Assuming "index" is a property in initialData
-      setSelectedCardData(initialData); // Set the whole initialData object
-    }
-  }, [initialData]);
+  const allfieldsSelected = () => {
+    if (title !== "" && imageSelect !== "" && selectedDate !=="" && expireDate !== "") {
+      setFieldsSelected(true)
+    } else 
+    setFieldsSelected(false)
+  }
 
-  const onColorChange = (selectedColor: string) => {
-    setCurrentColor(selectedColor);
+  const onPressDateSelected = (value: boolean) => {
+    showDatePicker();
+    setIsStartingDateSelected(value);
   };
 
-  const onCardSelect = (index: number) => {
-    setSelectedCardIndex(index);
-  };
+  const gotoItemDetailsPage = (dataToUpdate: any) => {
+    crossButton()
+    navigation.navigate("ItemDetails",{
+      updatedData: dataToUpdate
+    });
+  }
 
   const onDonePress = () => {
-    if (selectedCardData !== null && selectedCardIndex !== null) {
+    if (title !== "" && imageSelect !== null ) {
+      console.log(title+ " "+ imageSelect+" "+selectedDate+" "+expireDate+" "+reminderText+" "+noteText)
       const updatedData = {
         ...selectedCardData,
-        title,
-        imgUrl: ImageData[selectedCardIndex],
-        backgroundColor: currentColor,
-        isLongPressed: false, // Reset long press status
+        title: title,
+        imgUrl: imageSelect,
+        startDate: selectedDate,
+        endDate: expireDate,
+        reminderTxt: reminderText, 
+        noteTxt: noteText,
+        
       };
-      updateCardData(mainDataIndex, updatedData);
-      console.log('Selet Ind:' + selectedCardIndex);
-      closeEditCategoryModal(); // Close the edit modal
+      gotoItemDetailsPage(updatedData)
     } else {
-      Alert.alert('Please Select Card!');
+      Alert.alert('Please Select All Fields!');
+      // gotoItemDetailsPage()
     }
-  };
-  const cardProps = (imgUrl: any) => {
-    return {imgUrl};
   };
 
   return (
     <TouchableWithoutFeedback>
-        <View style={styles.containerView}>
-          <View style={styles.container}>
+      <View style={styles.containerView}>
+        <View style={styles.container}>
           <ScrollView contentContainerStyle={{flexGrow: 1}}>
             <View style={styles.iconContainer}>
               <TouchableOpacity
@@ -127,43 +194,131 @@ const AddItem = ({
                 height={responsiveHeight(20)}
                 width={responsiveWidth(36)}
                 backgroundColor="#1a1a1c"
+                imageUrl={imageSelect && {uri: imageSelect}}
+                ImgHeight={responsiveHeight(20)}
+                ImgWidth={responsiveWidth(36)}
               />
-              <TouchableOpacity style={styles.plusCircleContainer}>
+              <TouchableOpacity
+                style={[
+                  styles.plusCircleContainer,
+                  {
+                    right:
+                      isImageSelected === true ? responsiveWidth(15) : null,
+                    bottom:
+                      isImageSelected === true ? responsiveHeight(1) : null,
+                  },
+                ]}
+                onPress={imagePicker}>
+                {isImageSelected && (
+                  <View
+                    style={{
+                      backgroundColor: '#2c2c34',
+                      height: responsiveHeight(6),
+                      width: responsiveWidth(11),
+                      borderRadius: 8,
+                      position: 'absolute',
+                      top: responsiveHeight(5),
+                      right: responsiveWidth(12),
+                    }}></View>
+                )}
                 <Image
                   source={require('../assets/images/plus-circle.png')}
-                  style={styles.imgContainer}
+                  style={[
+                    styles.imgContainer,
+                    {
+                      height:
+                        isImageSelected === true
+                          ? responsiveHeight(4)
+                          : responsiveHeight(7),
+                    },
+                  ]}
                 />
               </TouchableOpacity>
             </View>
             <View>
               <Text style={styles.subText}>Set Date</Text>
             </View>
-            <View style={styles.dateTextInputContainer}>
-              <View>
-                <TextInputComp placeholder='&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add Start Date' placeholderTextColor='#464657' backgroundColor='#1a1a1c' width={responsiveWidth(40)} styleField={{height:responsiveHeight(7),fontSize: responsiveFontSize(1.5),paddingRight: responsiveWidth(5)}} />
-                <View style={{position: "absolute",bottom: responsiveHeight(1.5), marginLeft: responsiveWidth(2)}}>
-                <Icon name="calendar-month" size={25} color="#464657" />
+            <View style={styles.dateBoxContainer}>
+              <Pressable
+                style={styles.calendarBox}
+                onPress={() => onPressDateSelected(true)}>
+                <Text style={styles.caledarBoxTxtStyle}>{selectedDate}</Text>
+                <View
+                  style={{
+                    position: 'absolute',
+                    bottom: responsiveHeight(1.5),
+                    marginLeft: responsiveWidth(2),
+                  }}>
+                  <Icon name="calendar-month" size={25} color="#464657" />
                 </View>
-              </View>
-              <View style={{marginLeft:responsiveWidth(4)}}>
-              <TextInputComp placeholder='&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add Expire Date' placeholderTextColor='#464657' backgroundColor='#1a1a1c' width={responsiveWidth(40)} styleField={{height:responsiveHeight(7),fontSize: responsiveFontSize(1.5),paddingRight: responsiveWidth(5)}} />
-                <View style={{position: "absolute",bottom: responsiveHeight(1.5),marginLeft: responsiveWidth(2) }}>
-                <Icon name="calendar-month" size={25} color="#464657" />
-                </View>
+              </Pressable>
+              <View style={{marginLeft: responsiveWidth(4)}}>
+                <Pressable
+                  style={styles.calendarBox}
+                  onPress={() => onPressDateSelected(false)}>
+                  <Text style={styles.caledarBoxTxtStyle}>{expireDate}</Text>
+                  <View
+                    style={{
+                      position: 'absolute',
+                      bottom: responsiveHeight(1.5),
+                      marginLeft: responsiveWidth(2),
+                    }}>
+                    <Icon name="calendar-month" size={25} color="#464657" />
+                  </View>
+                </Pressable>
               </View>
             </View>
-            <View>
+            <Modal transparent visible={isReminderModalOpen}>
+              <View style={{flex: 1}}>
+                <AddReminderPage
+                  crossButton={closeReminderModal}
+                  onValueSelected={(value: string) => {
+                    console.log(value)
+                    setReminderText(value)
+                  }}
+                />
+              </View>
+            </Modal>
+            <View style={{marginBottom: responsiveHeight(1)}}>
               <Text style={styles.subText}>Select Reminder</Text>
             </View>
-            <View style={{alignItems: "center",height:responsiveHeight(8)}}>
-                <TextInputComp placeholder='&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add Remainder' placeholderTextColor='#464657' backgroundColor='#1a1a1c' width={responsiveWidth(40)} styleField={{height:responsiveHeight(7),fontSize: responsiveFontSize(1.5),paddingRight: responsiveWidth(5)}} />
-                <View style={{position: "absolute",bottom: responsiveHeight(0),left:responsiveWidth(28) }}>
-                <FontIcon name="bell" size={20} color="#464657" />
+            <View style={{alignItems: 'center', height: responsiveHeight(5)}}>
+              <Pressable style={[styles.calendarBox,{width: reminderText.length > 12 ? responsiveWidth(55) : responsiveWidth(40)}]} onPress={openReminderModal}>
+                <Text style={styles.caledarBoxTxtStyle}>{reminderText}</Text>
+                <View
+                  style={{
+                    position: 'absolute',
+                    bottom: responsiveHeight(1.5),
+                    marginLeft: responsiveWidth(2),
+                  }}>
+                  <FontIcon name="bell" size={20} color="#464657" />
                 </View>
-              </View>
-              <View style={{alignItems: "center",marginTop:responsiveHeight(2)}}>
-                <TextInputComp textColor='#fff' multiline={true} placeholder='&nbsp;&nbsp;Add Note' placeholderTextColor='#464657' backgroundColor='#1a1a1c' width={responsiveWidth(65)} styleField={{height:responsiveHeight(12),fontSize: responsiveFontSize(1.5),paddingRight: responsiveWidth(5)}} />
-              </View>
+              </Pressable>
+            </View>
+            <View
+              style={{alignItems: 'center', marginTop: responsiveHeight(2)}}>
+              <TextInputComp
+                textColor="#fff"
+                multiline={true}
+                placeholder="&nbsp;&nbsp;Add Note"
+                placeholderTextColor="#464657"
+                backgroundColor="#1a1a1c"
+                width={responsiveWidth(65)}
+                value={noteText}
+                onChangeText={setNoteText}
+                styleField={{
+                  height: responsiveHeight(12),
+                  fontSize: responsiveFontSize(1.5),
+                  paddingRight: responsiveWidth(5),
+                }}
+              />
+            </View>
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible}
+              mode="date"
+              onConfirm={handleConfirm}
+              onCancel={hideDatePicker}
+            />
             <View style={styles.buttonContainer}>
               <ButtonComp
                 text="Done"
@@ -171,9 +326,9 @@ const AddItem = ({
                 onPress={() => onDonePress()}
               />
             </View>
-      </ScrollView>
-          </View>
+          </ScrollView>
         </View>
+      </View>
     </TouchableWithoutFeedback>
   );
 };
@@ -246,14 +401,31 @@ const styles = StyleSheet.create({
   additemContainer: {},
   plusCircleContainer: {
     position: 'absolute',
+    // right: responsiveWidth(15),
+    // bottom: responsiveHeight(1)
   },
   imgContainer: {
     marginTop: responsiveHeight(6),
     resizeMode: 'contain',
     height: responsiveHeight(7),
   },
-  dateTextInputContainer: {
-    flexDirection: "row",
-    marginLeft: responsiveWidth(5)
-  }
+  dateBoxContainer: {
+    marginTop: responsiveHeight(1),
+    flexDirection: 'row',
+    marginLeft: responsiveWidth(5),
+  },
+  calendarBox: {
+    width: responsiveWidth(40),
+    height: responsiveHeight(7),
+    backgroundColor: '#1a1a1c',
+    borderRadius: 10,
+  },
+  caledarBoxTxtStyle: {
+    color: '#464657',
+    fontSize: 12,
+    textAlign: 'center',
+    paddingTop: responsiveHeight(2),
+    marginLeft: responsiveWidth(4),
+    fontWeight: 'bold',
+  },
 });

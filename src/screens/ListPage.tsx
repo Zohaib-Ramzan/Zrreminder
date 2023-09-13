@@ -21,9 +21,9 @@ import AddItem from './AddItem';
 
 
 type ListPageProps = NativeStackScreenProps<RootStackParamList, 'ListPage'>;
-const ListPage = ({navigation}: ListPageProps) => {
-  const [modalVisible, setModalVisible] = useState(false)
+const ListPage = ({navigation,route}: ListPageProps) => {
 
+  const [modalVisible, setModalVisible] = useState(false)
   const crossButton = () => {
     setModalVisible(false)
   }

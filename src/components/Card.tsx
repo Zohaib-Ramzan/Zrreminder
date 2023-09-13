@@ -32,6 +32,7 @@ type CardProps = PropsWithChildren<{
   cardTextColor?: string;
   onPressDelete?: () => void;
   onPressEdit?: () => void;
+  opacity?: number
   itemCat?: any;
 }>;
 
@@ -51,6 +52,7 @@ const Card = ({
   cardTextColor,
   onPressDelete,
   onPressEdit,
+  opacity,
   itemCat = text,
 }: CardProps) => {
 
@@ -76,6 +78,7 @@ const Card = ({
               height: ImgHeight || responsiveHeight(38),
               width: ImgWidth || responsiveWidth(38),
               tintColor: tintColor,
+              opacity: opacity || 0.4,
             },
           ]}
         />
