@@ -43,10 +43,9 @@ const ImageData = [
   require('../assets/images/detergent.png'),
 ];
 
-const AddItem = ({crossButton}: any) => {
+const AddItem = ({crossButton,updatedData,isEditPress}: any) => {
 
   const navigation = useNavigation<AddItemProps>();
-
   const [title, setTitle] = useState('');
   const [currentColor, setCurrentColor] = useState('#464657');
   const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(
@@ -78,14 +77,26 @@ const AddItem = ({crossButton}: any) => {
     launchImageLibrary(options, response => {
       if (!response.didCancel) {
         // Check if the user didn't cancel the image picker
-        setImageSelect(response.assets[0].uri);
-        console.log(response.assets[0].uri);
+        const selectedImageUri = response.assets[0].uri;
+        setImageSelect(selectedImageUri);
         setIsImageSelected(true);
       } else {
         Alert.alert('Image not Selected!');
       }
     });
   };
+
+  useEffect(() => {
+    if (isEditPress) {
+      // Create a copy of updatedData and update its imgUrl property// Now this should log the updated value
+      setImageSelect(updatedData.imgUrl)
+      setTitle(updatedData.title)
+      setSelectedDate(updatedData.startDate)
+      setExpireDate(updatedData.endDate)
+      setReminderText(updatedData.reminderTxt)
+      setNoteText(updatedData.noteTxt)
+    }
+  }, [isEditPress]);
 
   const openReminderModal = () => {
     setIsReminderModalOpen(true);
@@ -104,7 +115,7 @@ const AddItem = ({crossButton}: any) => {
   };
 
   const handleConfirm = (date: any) => {
-    console.warn('A date has been picked: ', date);
+    // console.warn('A date has been picked: ', date);
     const dt = new Date(date);
     const x = dt.toISOString().split('T');
     const newDt = x[0].split('-');
@@ -120,13 +131,6 @@ const AddItem = ({crossButton}: any) => {
   // useEffect(() => {
   //   setSelectedCardIndex(initialIndex); // Update selectedCardIndex when the component receives a new initialIndex
   // }, [initialIndex]);
-
-  const allfieldsSelected = () => {
-    if (title !== "" && imageSelect !== "" && selectedDate !=="" && expireDate !== "") {
-      setFieldsSelected(true)
-    } else 
-    setFieldsSelected(false)
-  }
 
   const onPressDateSelected = (value: boolean) => {
     showDatePicker();
@@ -153,6 +157,7 @@ const AddItem = ({crossButton}: any) => {
         noteTxt: noteText,
         
       };
+      crossButton();
       gotoItemDetailsPage(updatedData)
     } else {
       Alert.alert('Please Select All Fields!');
@@ -175,7 +180,7 @@ const AddItem = ({crossButton}: any) => {
                 />
               </TouchableOpacity>
             </View>
-            <Text style={styles.titleTxt}>Add Item</Text>
+            <Text style={styles.titleTxt}>{isEditPress == true ? "Edit Item" : "Add Item" }</Text>
             <View style={styles.textInputContainer}>
               <TouchableOpacity style={{marginBottom: responsiveHeight(0.1)}}>
                 <TextInputComp
@@ -188,13 +193,13 @@ const AddItem = ({crossButton}: any) => {
                 />
               </TouchableOpacity>
             </View>
-            <Text style={styles.subText}>Add Image</Text>
+            <Text style={styles.subText}>{isEditPress == true ? "Edit Item" : "Add Item"}</Text>
             <View style={styles.cardContainer}>
               <Card
                 height={responsiveHeight(20)}
                 width={responsiveWidth(36)}
                 backgroundColor="#1a1a1c"
-                imageUrl={imageSelect && {uri: imageSelect}}
+                imageUrl={imageSelect && {uri: imageSelect} }
                 ImgHeight={responsiveHeight(20)}
                 ImgWidth={responsiveWidth(36)}
               />
@@ -283,7 +288,7 @@ const AddItem = ({crossButton}: any) => {
               <Text style={styles.subText}>Select Reminder</Text>
             </View>
             <View style={{alignItems: 'center', height: responsiveHeight(5)}}>
-              <Pressable style={[styles.calendarBox,{width: reminderText.length > 12 ? responsiveWidth(55) : responsiveWidth(40)}]} onPress={openReminderModal}>
+              <Pressable style={[styles.calendarBox,{width: isEditPress == true || reminderText.length > 12 ? responsiveWidth(55) : responsiveWidth(40)}]} onPress={openReminderModal}>
                 <Text style={styles.caledarBoxTxtStyle}>{reminderText}</Text>
                 <View
                   style={{
@@ -321,7 +326,7 @@ const AddItem = ({crossButton}: any) => {
             />
             <View style={styles.buttonContainer}>
               <ButtonComp
-                text="Done"
+                text={isEditPress == true ? "Update" : "Done" }
                 BtnWidth={responsiveWidth(18)}
                 onPress={() => onDonePress()}
               />

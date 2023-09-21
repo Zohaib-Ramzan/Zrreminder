@@ -13,14 +13,14 @@ import AddItem from './AddItem';
 
 const ItemDetails = ({navigation,route}: any) => {
     const { updatedData } = route.params;
-
     const crossButton = () => {
         setIsVisible(false)
       }
 
-    const onPressEdit = () => {
-       setIsVisible(true)
-    }
+      const onPressEdit = () => {
+        setIsVisible(false);
+        navigation.navigate("ListPage", { isEditPressed: true , updatedData: updatedData });
+      }
     
     const onPressDelete = () => {
         navigation.navigate("ListPage")

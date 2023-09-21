@@ -5,13 +5,14 @@ import {
   View,
   Pressable,
   ScrollView,
-  Modal
+  Modal,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import HeaderComp from '../components/HeaderComp';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../routes/AppNavigator';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   responsiveHeight,
   responsiveScreenWidth,
@@ -21,23 +22,47 @@ import AddItem from './AddItem';
 
 
 type ListPageProps = NativeStackScreenProps<RootStackParamList, 'ListPage'>;
-const ListPage = ({navigation,route}: ListPageProps) => {
-
-  const [modalVisible, setModalVisible] = useState(false)
+const ListPage = ({navigation, route}: ListPageProps) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [isEditPress , setIsEditPress] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [updatedData, setUpdatedData] = useState(null);
   const crossButton = () => {
-    setModalVisible(false)
-  }
+    setModalVisible(false);
+    setIsEditPress(false);
+  };
+
+  useEffect(() => {
+    if (route.params?.isEditPressed) {
+      setModalVisible(true);
+      setIsEditPress(true);
+      setUpdatedData(route.params?.updatedData);
+    } else {
+      // Reset the state when not in edit mode
+      setModalVisible(false);
+      setIsEditPress(false);
+      setUpdatedData(null);
+    }
+  }, [route.params]);
 
   return (
-    <SafeAreaView  style={styles.containerView}>
-      <ScrollView contentContainerStyle={{flex:1}}>
+    <SafeAreaView style={styles.containerView}>
+      <ScrollView contentContainerStyle={{flex: 1}}>
         <HeaderComp onPress={() => navigation.goBack()} />
         <View style={styles.container}>
           <Modal visible={modalVisible} transparent>
-            <AddItem crossButton={crossButton}/>
+            <AddItem crossButton={crossButton} isEditPress={isEditPress} updatedData={updatedData} />
           </Modal>
+          {/* {isEditPressed && (
+            <Modal visible={editModalVisible} transparent>
+              <AddItem crossButton={crossButton} />
+            </Modal>
+          )} */}
+
           <Text style={styles.txtStyle}>List Page</Text>
-          <Pressable style={styles.imgContainer} onPress={() => setModalVisible(true)}>
+          <Pressable
+            style={styles.imgContainer}
+            onPress={() => setModalVisible(true)}>
             <Image
               source={require('../assets/images/plus-circle.png')}
               style={styles.imgStyle}
