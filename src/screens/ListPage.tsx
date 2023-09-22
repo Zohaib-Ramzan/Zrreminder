@@ -6,26 +6,30 @@ import {
   Pressable,
   ScrollView,
   Modal,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import HeaderComp from '../components/HeaderComp';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../routes/AppNavigator';
-import { useFocusEffect } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 import {
+  responsiveFontSize,
   responsiveHeight,
   responsiveScreenWidth,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import AddItem from './AddItem';
-
+import Card from '../components/Card';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import ReminderCard from '../components/ReminderCard';
 
 type ListPageProps = NativeStackScreenProps<RootStackParamList, 'ListPage'>;
 const ListPage = ({navigation, route}: ListPageProps) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [isEditPress , setIsEditPress] = useState(false)
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isEditPress, setIsEditPress] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [updatedData, setUpdatedData] = useState(null);
   const crossButton = () => {
     setModalVisible(false);
@@ -51,14 +55,18 @@ const ListPage = ({navigation, route}: ListPageProps) => {
         <HeaderComp onPress={() => navigation.goBack()} />
         <View style={styles.container}>
           <Modal visible={modalVisible} transparent>
-            <AddItem crossButton={crossButton} isEditPress={isEditPress} updatedData={updatedData} />
+            <AddItem
+              crossButton={crossButton}
+              isEditPress={isEditPress}
+              updatedData={updatedData}
+            />
           </Modal>
           {/* {isEditPressed && (
             <Modal visible={editModalVisible} transparent>
               <AddItem crossButton={crossButton} />
             </Modal>
           )} */}
-
+         <ReminderCard />
           <Text style={styles.txtStyle}>List Page</Text>
           <Pressable
             style={styles.imgContainer}
@@ -97,5 +105,37 @@ const styles = StyleSheet.create({
   imgContainer: {
     position: 'absolute',
     bottom: responsiveHeight(2),
+  },
+  reminderCard: {
+    height: responsiveHeight(30),
+    width: responsiveWidth(70),
+    backgroundColor: '#8ac185',
+    borderRadius: 10,
+  },
+  reminderCardTitle: {
+    fontSize: responsiveFontSize(2.8),
+    fontFamily: 'AlegreyaSans-ExtraBoldItalic',
+    color: '#344932',
+    textAlign: 'center',
+  },
+  reminderCardTitleContainer: {
+    marginTop: responsiveHeight(2),
+  },
+  calenderContainer: {
+    flex: 1,
+    alignItems: 'flex-end',
+    marginBottom: responsiveHeight(8),
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+  },
+  calenderTxt: {
+    fontSize: responsiveFontSize(1.5),
+    textAlign: 'center',
+  },
+  productImgContainer: {
+    height: responsiveHeight(18),
+    width: responsiveWidth(34),
+    backgroundColor: '#fff',
+    borderRadius: 10,
   },
 });
