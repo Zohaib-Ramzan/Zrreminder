@@ -26,6 +26,17 @@ const ItemDetails = ({navigation,route}: any) => {
         navigation.navigate("ListPage")
     }
 
+    // const setReminderCardVisible = () => {
+    //   setIsRemindderVisible(true)
+    //   navigation.goBack()
+    // }
+
+    const goBackListPage = () => {
+      navigation.navigate("ListPage",{
+        isReminderCardVisible: true , newUpdatedData: updatedData
+      })
+    }
+
     const { title, imgUrl, startDate, endDate, reminderTxt, noteTxt } = updatedData;
     const [isVisible, setIsVisible] = useState<boolean>(false)
   return (
@@ -33,7 +44,7 @@ const ItemDetails = ({navigation,route}: any) => {
         <Modal transparent visible={isVisible}>
             <AddItem crossButton={crossButton} />
         </Modal>
-      <HeaderComp onPress={() => navigation.goBack()} />
+      <HeaderComp onPress={goBackListPage} />
       <View>
         <Text style={styles.txtStyle}>Item Details</Text>
       </View>

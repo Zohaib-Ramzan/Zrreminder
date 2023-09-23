@@ -107,9 +107,9 @@ const Home = ({navigation}: HomeProps) => {
     setCloseCategoryModal(true);
   
   };
-
-  const gotoListPage = () => {
-   return navigation.navigate("ListPage");
+console.log("s c i "+selectedCardDataArray[0].title)
+  const gotoListPage = (ind: number) => {
+    return navigation.navigate("ListPage",{selectedCardTitle:selectedCardDataArray[ind].title});
   }
 
   const updateCardData = (selectedCardIndex: number, updatedData: CardData) => {
@@ -169,7 +169,13 @@ const Home = ({navigation}: HomeProps) => {
             data={selectedCardDataArray}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item, index}) => {
-              const onPress = item.imgUrl === plusCircleImg() ? item.onPress : gotoListPage;
+              const onPress = () => {
+                if (item.imgUrl === plusCircleImg()) {
+                  item.onPress(); // Execute the plusCircleImg() onPress function
+                } else {
+                  gotoListPage(index); // Pass the index to gotoListPage function
+                }
+              };
               return (
                 <TouchableWithoutFeedback onPress={toggleModal}>
                   <Card

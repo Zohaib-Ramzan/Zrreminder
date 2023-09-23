@@ -31,6 +31,8 @@ const ListPage = ({navigation, route}: ListPageProps) => {
   const [isEditPress, setIsEditPress] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [updatedData, setUpdatedData] = useState(null);
+  const [isReminderCardVisible,setIsReminderCardVisible] = useState(false)
+  const [itemCat, setItemCat] = useState(route.params?.selectedCardTitle)
   const crossButton = () => {
     setModalVisible(false);
     setIsEditPress(false);
@@ -48,11 +50,15 @@ const ListPage = ({navigation, route}: ListPageProps) => {
       setUpdatedData(null);
     }
   }, [route.params]);
-
+  // console.log("upd data "+route.params?.newUpdatedData)
+  // console.log("isReminderCardVisible "+route.params?.selectedCardTitle)
   return (
     <SafeAreaView style={styles.containerView}>
       <ScrollView contentContainerStyle={{flex: 1}}>
         <HeaderComp onPress={() => navigation.goBack()} />
+        <View>
+        <Text style={{color: "#fff",fontSize:responsiveFontSize(3),fontWeight:"bold"}}>List:{'\n'}{itemCat}</Text>
+        </View>
         <View style={styles.container}>
           <Modal visible={modalVisible} transparent>
             <AddItem
@@ -66,7 +72,9 @@ const ListPage = ({navigation, route}: ListPageProps) => {
               <AddItem crossButton={crossButton} />
             </Modal>
           )} */}
-         <ReminderCard />
+          { route.params?.isReminderCardVisible &&
+         <ReminderCard updatedData={route.params?.newUpdatedData} />
+        }
           <Text style={styles.txtStyle}>List Page</Text>
           <Pressable
             style={styles.imgContainer}
