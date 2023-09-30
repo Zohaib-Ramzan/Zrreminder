@@ -28,11 +28,19 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import AddReminderPage from './AddReminderPage';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ItemDetails from './ItemDetails';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../routes/AppNavigator';
+import { RouteProp , NavigationProp } from '@react-navigation/native';
 
 type AddItemProps = NativeStackScreenProps<RootStackParamList, 'AddItem'>
+
+type RouteParam = {
+  AddItem: {
+    selectedCardTitle: string;
+    // Add other properties if needed
+  };
+}
 
 const ImageData = [
   require('../assets/images/logo.png'),
@@ -45,6 +53,7 @@ const ImageData = [
 
 const AddItem = ({crossButton,updatedData,isEditPress}: any) => {
 
+  const route = useRoute<RouteProp<RouteParam, 'AddItem'>>();
   const navigation = useNavigation<AddItemProps>();
   const [title, setTitle] = useState('');
   const [currentColor, setCurrentColor] = useState('#464657');
@@ -155,6 +164,7 @@ const AddItem = ({crossButton,updatedData,isEditPress}: any) => {
         endDate: expireDate,
         reminderTxt: reminderText, 
         noteTxt: noteText,
+        selectedCardCategory: route.params?.selectedCardTitle
         
       };
       crossButton();

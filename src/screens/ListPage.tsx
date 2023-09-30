@@ -7,6 +7,7 @@ import {
   ScrollView,
   Modal,
   TouchableOpacity,
+  FlatList,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import HeaderComp from '../components/HeaderComp';
@@ -25,19 +26,47 @@ import Card from '../components/Card';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ReminderCard from '../components/ReminderCard';
 
+type dataArrayType = {
+  title: string;
+  imgUrl: string;
+  startDate: string;
+  endDate: string;
+  reminderTxt: string;
+  noteTxt: string;
+  selectedCardCategory: string
+};
+ 
+
 type ListPageProps = NativeStackScreenProps<RootStackParamList, 'ListPage'>;
 const ListPage = ({navigation, route}: ListPageProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isEditPress, setIsEditPress] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [updatedData, setUpdatedData] = useState(null);
-  const [isReminderCardVisible,setIsReminderCardVisible] = useState(false)
   const [itemCat, setItemCat] = useState(route.params?.selectedCardTitle)
+  const [dataArray, setDataArray] = useState<Array<dataArrayType>>([]);
   const crossButton = () => {
     setModalVisible(false);
     setIsEditPress(false);
   };
 
+  useEffect(() => {
+    if (route.params?.newUpdatedData) {
+      setDataArray((prevDataArray) => [
+        ...prevDataArray,
+        {
+          title: route.params?.newUpdatedData.title,
+          imgUrl: route.params?.newUpdatedData.imgUrl,
+          startDate: route.params?.newUpdatedData.startDate,
+          endDate: route.params?.newUpdatedData.endDate,
+          reminderTxt: route.params?.newUpdatedData.reminderTxt,
+          noteTxt: route.params?.newUpdatedData.noteTxt,
+          selectedCardCategory: route.params?.newUpdatedData.selectedCardCategory
+        },
+      ]);
+    }
+  }, [route.params?.newUpdatedData]);
+  
   useEffect(() => {
     if (route.params?.isEditPressed) {
       setModalVisible(true);
@@ -54,12 +83,13 @@ const ListPage = ({navigation, route}: ListPageProps) => {
   // console.log("isReminderCardVisible "+route.params?.selectedCardTitle)
   return (
     <SafeAreaView style={styles.containerView}>
-      <ScrollView contentContainerStyle={{flex: 1}}>
+      <View style={{flex: 1}}>
         <HeaderComp onPress={() => navigation.goBack()} />
         <View>
         <Text style={{color: "#fff",fontSize:responsiveFontSize(3),fontWeight:"bold"}}>List:{'\n'}{itemCat}</Text>
         </View>
         <View style={styles.container}>
+
           <Modal visible={modalVisible} transparent>
             <AddItem
               crossButton={crossButton}
@@ -67,25 +97,42 @@ const ListPage = ({navigation, route}: ListPageProps) => {
               updatedData={updatedData}
             />
           </Modal>
-          {/* {isEditPressed && (
-            <Modal visible={editModalVisible} transparent>
-              <AddItem crossButton={crossButton} />
-            </Modal>
-          )} */}
-          { route.params?.isReminderCardVisible &&
-         <ReminderCard updatedData={route.params?.newUpdatedData} />
-        }
-          <Text style={styles.txtStyle}>List Page</Text>
-          <Pressable
+
+          <FlatList 
+          data={dataArray}
+          keyExtractor={(item, index) => index.toString()}
+          contentContainerStyle={styles.flatListContent}
+          renderItem={({item,index}) => {
+            return (
+              <View style={{marginBottom: responsiveHeight(5)}}>
+              {route.params?.isReminderCardVisible && itemCat == item.selectedCardCategory && <ReminderCard updatedData={item} /> }
+              </View>
+            )
+          }}
+          ListFooterComponent={() => (
+            <Pressable style={styles.imgContainer} onPress={() => setModalVisible(true)}>
+              <Image
+                source={require('../assets/images/plus-circle.png')}
+                style={styles.imgStyle}
+              />
+            </Pressable>
+          )}
+          />
+          {/* <Pressable
             style={styles.imgContainer}
             onPress={() => setModalVisible(true)}>
             <Image
               source={require('../assets/images/plus-circle.png')}
               style={styles.imgStyle}
             />
-          </Pressable>
+          </Pressable> */}
+          {/* { route.params?.isReminderCardVisible &&
+         <ReminderCard updatedData={route.params?.newUpdatedData} />
+        
+        } */}
+          
         </View>
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
@@ -111,7 +158,9 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   imgContainer: {
-    position: 'absolute',
+    // position: 'absolute',
+    marginTop: responsiveHeight(10),
+    alignItems: "center",
     bottom: responsiveHeight(2),
   },
   reminderCard: {
@@ -145,5 +194,9 @@ const styles = StyleSheet.create({
     width: responsiveWidth(34),
     backgroundColor: '#fff',
     borderRadius: 10,
+  },
+  flatListContent: {
+    width: responsiveScreenWidth(100), // Set to 100% of screen width
+    paddingHorizontal: responsiveWidth(5), // Optional padding
   },
 });
