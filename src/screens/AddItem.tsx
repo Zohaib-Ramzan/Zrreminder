@@ -73,7 +73,10 @@ const AddItem = ({crossButton,updatedData,isEditPress}: any) => {
   const [isImageSelected, setIsImageSelected] = useState(false);
   const [reminderText, setReminderText] = useState("Add Reminder")
   const [noteText, setNoteText] = useState("")
-  const [fieldsSelected, setFieldsSelected] = useState(false)
+  const [selectedCardCategory, setSelectedCardCategory] = useState(route.params?.selectedCardTitle)
+
+console.log(route.params?.selectedCardTitle);
+
 
   const imagePicker = () => {
     let options = {
@@ -155,7 +158,7 @@ const AddItem = ({crossButton,updatedData,isEditPress}: any) => {
 
   const onDonePress = () => {
     if (title !== "" && imageSelect !== null ) {
-      console.log(title+ " "+ imageSelect+" "+selectedDate+" "+expireDate+" "+reminderText+" "+noteText)
+      console.log(title+ " "+ imageSelect+" "+selectedDate+" "+expireDate+" "+reminderText+" "+noteText+" "+selectedCardCategory)
       const updatedData = {
         ...selectedCardData,
         title: title,
@@ -164,7 +167,7 @@ const AddItem = ({crossButton,updatedData,isEditPress}: any) => {
         endDate: expireDate,
         reminderTxt: reminderText, 
         noteTxt: noteText,
-        selectedCardCategory: route.params?.selectedCardTitle
+        selectedCardCategory: selectedCardCategory
         
       };
       crossButton();

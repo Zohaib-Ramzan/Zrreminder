@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "781342438289",
+    "project_id": "zrreminder",
+    "storage_bucket": "zrreminder.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:781342438289:android:8955d1fae5d0c828e02030",
+        "android_client_info": {
+          "package_name": "com.zrreminder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjrwnTCd5_3Nv9BBfo4clMa-EtIxvHKAY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

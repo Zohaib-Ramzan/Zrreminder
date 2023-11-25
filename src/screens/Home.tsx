@@ -14,6 +14,7 @@ import {
 import React, {useState, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore'
 
 
 import {
@@ -28,6 +29,16 @@ import EditCategory from './EditCategory';
 import ListPage from './ListPage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../routes/AppNavigator';
+
+
+const ImageData = [
+  require('../assets/images/logo.png'),
+  require('../assets/images/skin-care.png'),
+  require('../assets/images/bottles.png'),
+  require('../assets/images/cereals.png'),
+  require('../assets/images/medicine.png'),
+  require('../assets/images/detergent.png'),
+];
 
 type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -46,29 +57,70 @@ const Home = ({navigation}: HomeProps) => {
   const plusCircleImg = () => {
     return require('../assets/images/plus-circle.png');
   };
-
-  const [selectedCardDataArray, setSelectedCardDataArray] = useState<
-    CardData[]
-  >([
+  const [fetchedCardData, setFetchedCardData] = useState<CardData[]>([
     {
       backgroundColor: '#2c2c34',
       onPress: () => setCloseCategoryModal(true),
       imgUrl: plusCircleImg(),
       isLongPressed: false,
+      cardIndex: plusCircleImg()
     },
   ]);
+
+
+  useEffect(() => {
+    const fetchCardsFromDB = async () => {
+      try {
+        const querySnapshot = await firestore().collection("cardCollection").get();
+        const data = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as CardData[];
+
+        // Add the plus card to the fetched data
+      const updatedData = [
+        ...data,
+        {
+          backgroundColor: '#2c2c34',
+          onPress: () => setCloseCategoryModal(true),
+          imgUrl: plusCircleImg(),
+          isLongPressed: false,
+          cardIndex: plusCircleImg()
+        },
+      ];
+
+        setFetchedCardData(updatedData);
+        // console.log(fetchedCardData)
+      } catch (error) {
+        console.error("Error fetching cards:", error);
+      }
+    };
+
+    fetchCardsFromDB();
+  }, []);
+
+  // const [selectedCardDataArray, setSelectedCardDataArray] = useState<
+  //   CardData[]
+  // >([
+  //   {
+  //     backgroundColor: '#2c2c34',
+  //     onPress: () => setCloseCategoryModal(true),
+  //     imgUrl: plusCircleImg(),
+  //     isLongPressed: false,
+  //   },
+  // ]);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       () => {
         // Reset the isLongPressed property of all cards to false
-        const updatedCardDataArray = selectedCardDataArray.map(cardData => ({
+        const updatedCardDataArray = fetchedCardData.map(cardData => ({
           ...cardData,
           isLongPressed: false,
         }));
 
-        setSelectedCardDataArray(updatedCardDataArray);
+        setFetchedCardData(updatedCardDataArray);
 
         return true; // Prevent default behavior (closing the app)
       },
@@ -77,11 +129,11 @@ const Home = ({navigation}: HomeProps) => {
     return () => {
       backHandler.remove(); // Remove the event listener when the component is unmounted
     };
-  }, [selectedCardDataArray]);
+  }, [fetchedCardData]);
 
   const handleCardLongPress = (index: number) => {
-    if (selectedCardDataArray[index].imgUrl !== plusCircleImg()) {
-      setSelectedCardDataArray(prevDataArray => {
+    if (fetchedCardData[index].imgUrl !== plusCircleImg()) {
+      setFetchedCardData(prevDataArray => {
         const updatedArray = [...prevDataArray];
         updatedArray[index].isLongPressed = !updatedArray[index].isLongPressed;
         return updatedArray;
@@ -89,11 +141,22 @@ const Home = ({navigation}: HomeProps) => {
     }
   };
 
-  const deleteCard = (index: number) => {
+  const deleteCard = async (index: number) => {
     // Delete Card
-    const updatedCardDataArray = [...selectedCardDataArray];
-    updatedCardDataArray.splice(index, 1);
-    setSelectedCardDataArray(updatedCardDataArray);
+    try {
+
+      const cardToDelete = fetchedCardData[index];
+      const docId = cardToDelete.id;
+      // delete selectedcard from Firestore
+      await firestore().collection("cardCollection").doc(docId).delete();
+      // update the cardslist on homescreen
+      const updatedCardDataList = [...fetchedCardData];
+      updatedCardDataList.splice(index, 1);
+      setFetchedCardData(updatedCardDataList);
+    }
+    catch (error) {
+      console.error("Error Deleting Card:",error)
+    }
   };
 
   const saveAddCategoryModal = () => {
@@ -107,14 +170,14 @@ const Home = ({navigation}: HomeProps) => {
     setCloseCategoryModal(true);
   
   };
-console.log("s c i "+selectedCardDataArray[0].title)
+// console.log("s c i "+selectedCardDataArray[0].title)
   const gotoListPage = (ind: number) => {
-    return navigation.navigate("ListPage",{selectedCardTitle:selectedCardDataArray[ind].title});
+    return navigation.navigate("ListPage",{selectedCardTitle:fetchedCardData[ind].title});
   }
 
   const updateCardData = (selectedCardIndex: number, updatedData: CardData) => {
-    setSelectedCardDataArray(selectedCardDataArray => {
-      const updatedCardDataArray = [...selectedCardDataArray];
+    setFetchedCardData(selectedCardDataArray => {
+      const updatedCardDataArray = [...fetchedCardData];
       updatedCardDataArray[selectedCardIndex] = updatedData;
       console.log(updatedCardDataArray[selectedCardIndex].imgUrl+" index")
       return updatedCardDataArray;
@@ -134,7 +197,7 @@ console.log("s c i "+selectedCardDataArray[0].title)
   };
 
   const closeModal = (selectedData: CardData) => {
-    setSelectedCardDataArray(prevDataArray => [selectedData, ...prevDataArray]);
+    setFetchedCardData(prevDataArray => [selectedData, ...prevDataArray]);
   };
 
   return (
@@ -161,12 +224,12 @@ console.log("s c i "+selectedCardDataArray[0].title)
       <View style={styles.hometxtView}>
         <Text style={styles.txtStyle}>Zohaib's Personal Categories</Text>
       </View>
-      {selectedCardDataArray.length > 0 && (
+      {fetchedCardData.length > 0 && (
         <View>
           <FlatList
             style={{height: responsiveHeight(68), bottom: responsiveHeight(3)}}
             numColumns={2}
-            data={selectedCardDataArray}
+            data={fetchedCardData}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item, index}) => {
               const onPress = () => {
@@ -190,7 +253,7 @@ console.log("s c i "+selectedCardDataArray[0].title)
                     onLongPress={() => handleCardLongPress(index)}
                     text={item.title}
                     cardTextColor={item.isLongPressed ? '#B1B3B3' : '#202020'}
-                    imageUrl={item.imgUrl}
+                    imageUrl={ImageData[item.cardIndex] ? ImageData[item.cardIndex] : item.imgUrl}
                     ImgHeight={responsiveHeight(15)}
                     ImgWidth={
                       item.imgUrl === plusCircleImg()

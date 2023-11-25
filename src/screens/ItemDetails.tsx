@@ -36,7 +36,7 @@ const ItemDetails = ({navigation,route}: any) => {
         isReminderCardVisible: true , newUpdatedData: updatedData
       })
     }
-    const { title, imgUrl, startDate, endDate, reminderTxt, noteTxt  } = updatedData;
+    const { title, imgUrl, startDate, endDate, reminderTxt, noteTxt , selectedCardCategory  } = updatedData;
     const [isVisible, setIsVisible] = useState<boolean>(false)
   return (
     <View style={styles.container}>

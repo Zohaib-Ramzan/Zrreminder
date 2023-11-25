@@ -33,7 +33,7 @@ type dataArrayType = {
   endDate: string;
   reminderTxt: string;
   noteTxt: string;
-  selectedCardCategory: string
+  selectedCardCategory?: string
 };
  
 
@@ -61,11 +61,12 @@ const ListPage = ({navigation, route}: ListPageProps) => {
           endDate: route.params?.newUpdatedData.endDate,
           reminderTxt: route.params?.newUpdatedData.reminderTxt,
           noteTxt: route.params?.newUpdatedData.noteTxt,
-          selectedCardCategory: route.params?.newUpdatedData.selectedCardCategory
+          selectedCardCategory: route.params?.newUpdatedData.selectedCardCategory,
         },
       ]);
     }
   }, [route.params?.newUpdatedData]);
+
   
   useEffect(() => {
     if (route.params?.isEditPressed) {
@@ -103,9 +104,11 @@ const ListPage = ({navigation, route}: ListPageProps) => {
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={styles.flatListContent}
           renderItem={({item,index}) => {
+            const selectedCardItm = item.selectedCardCategory
             return (
               <View style={{marginBottom: responsiveHeight(5)}}>
-              {route.params?.isReminderCardVisible && itemCat == item.selectedCardCategory && <ReminderCard updatedData={item} /> }
+              {route.params?.isReminderCardVisible  &&  <ReminderCard updatedData={item} /> }
+              {console.log(" item Cat = " + selectedCardItm)}
               </View>
             )
           }}

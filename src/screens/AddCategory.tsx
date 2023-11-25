@@ -22,6 +22,7 @@ import ButtonComp from '../components/ButtonComp';
 import ModalCard from '../components/ModalCard';
 import Card from '../components/Card';
 import ColorPicker from 'react-native-wheel-color-picker';
+import firestore from '@react-native-firebase/firestore';
 
 const ImageData = [
   require('../assets/images/logo.png'),
@@ -42,6 +43,7 @@ const AddCategory = ({
 }: any) => {
   const [addTitle, setAddTitle] = useState<string>('');
   const [currentColor, setCurrentColor] = useState('#464657');
+  const [selectedImagePath, setSelectedImagePath] = useState<string>('');
   const [selectedCardIndex, setSelectedCardIndex] = useState<any>(null);
   const [selectedCardData, setSelectedCardData] = useState<any>(null);
   const [categoryTitle,setCategoryTitle] = useState<string>("Add Category");
@@ -75,15 +77,30 @@ const AddCategory = ({
   const onCardSelect = (index: number, imgUrl: any) => {
     setSelectedCardIndex(index);
     setSelectedCardData(cardProps(imgUrl));
+    setSelectedImagePath(ImageData[index]); // Set the selected image path
+  // console.log("Image string is: " + ImageData[index]);
   };
 
-  const onDonePress = () => {
+  const createCardDB = () => {
+    const userDocument = firestore()
+    .collection('cardCollection')
+    .add({title: addTitle, backgroundColor: currentColor,cardIndex: selectedCardIndex})
+  .then(() => {
+    console.log('User added!');
+  });
+  }
+
+  const onDonePress = async () => {
     if (initialData == null) {
       if (selectedCardData !== null) {
         // You can navigate to the other screen here and pass the selectedCardData
         // and other relevant props to the target screen.
         selectedCardData.title = addTitle;
         selectedCardData.backgroundColor = currentColor;
+        // Create a new collection in Firestore with the given title
+       
+        createCardDB();
+
         closeAddCategoryModal(selectedCardData);
         crossButton();
       } else {
@@ -96,11 +113,12 @@ const AddCategory = ({
           ...selectedCardData,
           title: addTitle,
           imgUrl: ImageData[selectedCardIndex],
+
           backgroundColor: currentColor,
           isLongPressed: false, // Reset long press status
         };
         updateCardData(mainDataIndex, updatedData);
-        console.log('Selet Ind:' + selectedCardIndex);
+        // console.log('Selet Ind:' + selectedCardIndex);
         saveAddCategoryModal(); // Close the edit modal
       } else {
         Alert.alert('Please Select Card!');
@@ -163,6 +181,7 @@ const AddCategory = ({
                             tintColor={'#fff'}
                             onPress={() => onCardSelect(index, item)}
                           />
+                          
                         </TouchableOpacity>
                       </View>
                     );
