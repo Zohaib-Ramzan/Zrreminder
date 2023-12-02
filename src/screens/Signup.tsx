@@ -9,7 +9,7 @@ import {
   ScrollView,
   SafeAreaView
 } from 'react-native';
-import React from 'react';
+import React , {useState} from 'react';
 import TextInputComp from '../components/TextInputComp';
 import ButtonComp from '../components/ButtonComp';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -19,10 +19,34 @@ import {
   responsiveFontSize,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
+import auth from "@react-native-firebase/auth"
+import firestore from "@react-native-firebase/firestore";
 
 type SignupProps = NativeStackScreenProps<RootStackParamList, 'Signup'>;
 
 const Signup = ({navigation}: SignupProps) => {
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+  const [name,setName] = useState("")
+  const [message,setMessage] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const handleSignup = async () => {
+    try {
+      const isUserCreated = await auth().createUserWithEmailAndPassword(email,password);
+      console.log(isUserCreated)
+      console.warn("Successfully Signup!")
+
+      const userCredential = await firestore().collection('cardCollection').doc(isUserCreated.user.uid).set({name: name,email:email,id:isUserCreated.user.uid})
+      navigation.navigate("Login",{
+        name: name
+      })
+    } catch (error) {
+      console.log(error)
+      console.warn(error)
+    }
+  }
+
   return (
     <SafeAreaView>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -40,6 +64,8 @@ const Signup = ({navigation}: SignupProps) => {
                 placeholder={'Name'}
                 placeholderTextColor={'#b3b3b7'}
                 backgroundColor={'#464657'}
+                value={name}
+                onChangeText={(value: string) => setName(value)}
                 secureTextEntry={false}
                 textColor="#fff"
               />
@@ -47,6 +73,8 @@ const Signup = ({navigation}: SignupProps) => {
                 placeholder={'Email'}
                 placeholderTextColor={'#b3b3b7'}
                 backgroundColor={'#464657'}
+                value={email}
+                onChangeText={(value: string) => setEmail(value)}
                 textColor="#fff"
               />
 
@@ -54,6 +82,8 @@ const Signup = ({navigation}: SignupProps) => {
                 placeholder={'Password'}
                 placeholderTextColor={'#b3b3b7'}
                 backgroundColor={'#464657'}
+                value={password}
+                onChangeText={(value: string) => setPassword(value)}
                 secureTextEntry={true}
                 textColor="#fff"
               />
@@ -62,11 +92,17 @@ const Signup = ({navigation}: SignupProps) => {
                 placeholder={'Confirm Password'}
                 placeholderTextColor={'#b3b3b7'}
                 backgroundColor={'#464657'}
+                value={confirmPassword}
+                onChangeText={(value: string) => setConfirmPassword(value)}
                 secureTextEntry={true}
                 textColor="#fff"
               />
 
-              <ButtonComp text="Sign up" onPress={() => navigation.navigate("Login")} />
+              {password !== confirmPassword && 
+              <Text style={{color: "red"}}>Password does not match</Text>
+              }
+
+              <ButtonComp text="Sign up" onPress={() => handleSignup()} />
 
               <Text
                 style={{

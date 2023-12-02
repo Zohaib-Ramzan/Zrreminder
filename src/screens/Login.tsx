@@ -7,9 +7,10 @@ import {
   Keyboard,
   Pressable,
   ScrollView,
-  SafeAreaView
+  SafeAreaView,
+  Alert
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import TextInputComp from '../components/TextInputComp';
 import ButtonComp from '../components/ButtonComp';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -19,10 +20,53 @@ import {
   responsiveFontSize,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore'
 type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
-const Login = ({navigation}: LoginProps) => {
+const Login = ({navigation,route}: LoginProps) => {
+
+  // const {name} = route.params || {};
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+  const [name,setName] = useState("");
+
+  const handleLogin = async () => {
+    // ... (existing code)
+    if (email.length > 0 && password.length > 0) {
+    try {
+      const isUserValid = await auth().signInWithEmailAndPassword(email, password);
+      console.log(isUserValid);
+  
+      const getName = await firestore().collection('cardCollection').doc(isUserValid.user.uid).get().then((doc) => {
+        if (doc.exists) {
+          // Document exists, access its data
+          const data = doc.data();
+          setName(data?.name);
+          console.log('Document data:', data);
+  
+          // Move navigation logic here to ensure 'name' is set before navigating
+          navigation.navigate('Home', {
+            Email: isUserValid.user.email,
+            uid: isUserValid.user.uid,
+            Name: data?.name, // Pass the retrieved name to the 'Home' screen
+          });
+        } else {
+          // Document doesn't exist
+          console.log('No such document!');
+        }
+      });
+  
+    } catch (error) {
+      console.warn(error);
+    }
+  } else {
+    Alert.alert("Please fill details!")
+  }
+   
+  }
+   
+  
   return (
     <SafeAreaView>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -40,6 +84,8 @@ const Login = ({navigation}: LoginProps) => {
               placeholder={'Email'}
               placeholderTextColor={'#b3b3b7'}
               backgroundColor={'#464657'}
+              value={email}
+              onChangeText={(value: string) => setEmail(value)}
               secureTextEntry={false}
               textColor="#fff"
             />
@@ -47,13 +93,16 @@ const Login = ({navigation}: LoginProps) => {
               placeholder={'Password'}
               placeholderTextColor={'#b3b3b7'}
               backgroundColor={'#464657'}
+              value={password}
+              onChangeText={(value: string) => setPassword(value)}
               secureTextEntry={true}
               textColor="#fff"
             />
 
             <ButtonComp
               text="Sign in"
-              onPress={() => navigation.navigate('Main')}
+              // onPress={() => loginVerification()}
+              onPress={() => handleLogin()}
             />
 
             <Text

@@ -15,7 +15,7 @@ import React, {useState, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore'
-
+import { RouteProp , useRoute} from '@react-navigation/native';
 
 import {
   responsiveHeight,
@@ -28,8 +28,8 @@ import {CardData} from './types';
 import EditCategory from './EditCategory';
 import ListPage from './ListPage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../routes/AppNavigator';
-
 
 const ImageData = [
   require('../assets/images/logo.png'),
@@ -40,10 +40,15 @@ const ImageData = [
   require('../assets/images/detergent.png'),
 ];
 
+// Define the type for the navigation prop
 type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
+const Home = ({navigation,route}: HomeProps) => {
 
-const Home = ({navigation}: HomeProps) => {
+const { Email, uid, Name }  = route.params || {};
+console.log("Email is : " + Email + " Uid is " + uid)
+
+  // const [name,setName] = useState("")
   const [closeCategoryModal, setCloseCategoryModal] = useState(false);
   const [closeEditCategoryModal, setCloseEditCategoryModal] = useState(false);
   const [selectedCardData, setSelectedCardData] = useState<CardData | null>(
@@ -67,16 +72,15 @@ const Home = ({navigation}: HomeProps) => {
     },
   ]);
 
-
   useEffect(() => {
     const fetchCardsFromDB = async () => {
       try {
-        const querySnapshot = await firestore().collection("cardCollection").get();
+        const querySnapshot = await firestore().collection("cardCollection").orderBy('createdAt','desc').get();
         const data = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         })) as CardData[];
-
+        
         // Add the plus card to the fetched data
       const updatedData = [
         ...data,
@@ -222,7 +226,7 @@ const Home = ({navigation}: HomeProps) => {
         />
       </Modal> */}
       <View style={styles.hometxtView}>
-        <Text style={styles.txtStyle}>Zohaib's Personal Categories</Text>
+        <Text style={styles.txtStyle}>{Name}'s Personal Categories</Text>
       </View>
       {fetchedCardData.length > 0 && (
         <View>

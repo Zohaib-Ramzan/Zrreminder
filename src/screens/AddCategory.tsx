@@ -84,7 +84,7 @@ const AddCategory = ({
   const createCardDB = () => {
     const userDocument = firestore()
     .collection('cardCollection')
-    .add({title: addTitle, backgroundColor: currentColor,cardIndex: selectedCardIndex})
+    .add({title: addTitle, backgroundColor: currentColor,cardIndex: selectedCardIndex,createdAt:firestore.FieldValue.serverTimestamp(),})
   .then(() => {
     console.log('User added!');
   });
@@ -98,7 +98,6 @@ const AddCategory = ({
         selectedCardData.title = addTitle;
         selectedCardData.backgroundColor = currentColor;
         // Create a new collection in Firestore with the given title
-       
         createCardDB();
 
         closeAddCategoryModal(selectedCardData);
