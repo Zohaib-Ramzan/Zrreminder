@@ -24,11 +24,10 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
-const Login = ({navigation, route}: LoginProps) => {
+const Login = ({navigation}: LoginProps) => {
   // const {name} = route.params || {};
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
 
   const handleLogin = async () => {
     // ... (existing code)
@@ -48,7 +47,6 @@ const Login = ({navigation, route}: LoginProps) => {
             if (doc.exists) {
               // Document exists, access its data
               const data = doc.data();
-              setName(data?.name);
               console.log('Document data:', data);
 
               // Move navigation logic here to ensure 'name' is set before navigating
@@ -108,21 +106,8 @@ const Login = ({navigation, route}: LoginProps) => {
                 onPress={() => handleLogin()}
               />
 
-              <Text
-                style={{
-                  color: '#b3b3b7',
-                  marginTop: responsiveHeight(4),
-                  textAlign: 'center',
-                  fontWeight: '700',
-                }}>
-                - or sign up with -
-              </Text>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  marginTop: responsiveHeight(4),
-                  alignContent: 'center',
-                }}>
+              <Text style={styles.signupText}>- or sign up with -</Text>
+              <View style={styles.signupButtonsContainer}>
                 <View style={styles.signupGoogle}>
                   <ButtonComp
                     BtnWidth={responsiveWidth(15)}
@@ -130,12 +115,7 @@ const Login = ({navigation, route}: LoginProps) => {
                   />
                   <Image
                     source={require('../assets/images/google_logo.png')}
-                    style={{
-                      resizeMode: 'contain',
-                      height: responsiveHeight(8),
-                      width: responsiveWidth(9),
-                      position: 'absolute',
-                    }}
+                    style={styles.googleImageContainer}
                   />
                 </View>
                 <View style={styles.signupApple}>
@@ -145,37 +125,18 @@ const Login = ({navigation, route}: LoginProps) => {
                   />
                   <Image
                     source={require('../assets/images/apple_logo.png')}
-                    style={{
-                      resizeMode: 'contain',
-                      height: responsiveHeight(8),
-                      width: responsiveWidth(8),
-                      position: 'absolute',
-                    }}
+                    style={styles.appleImageContainer}
                   />
                 </View>
               </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  margin: responsiveHeight(6.5),
-                  alignSelf: 'center',
-                }}>
-                <Text style={{color: '#b3b3b7', fontWeight: '800'}}>
+              <View style={styles.signupNavigateContainer}>
+                <Text style={styles.signupNavigateText}>
                   Don't have an Account?
                 </Text>
                 <Pressable
                   onPress={() => navigation.navigate('Signup')}
-                  style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginLeft: responsiveWidth(1),
-                  }}>
-                  <Text
-                    style={{
-                      color: '#54545e',
-                      textDecorationLine: 'underline',
-                      fontWeight: '700',
-                    }}>
+                  style={styles.signupNavigateHyperlink}>
+                  <Text style={styles.signupNavigateHyperlinkText}>
                     Sign up
                   </Text>
                 </Pressable>
@@ -224,5 +185,44 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: responsiveWidth(2),
+  },
+  signupText: {
+    color: '#b3b3b7',
+    marginTop: responsiveHeight(4),
+    textAlign: 'center',
+    fontWeight: '700',
+  },
+  signupButtonsContainer: {
+    flexDirection: 'row',
+    marginTop: responsiveHeight(4),
+    alignContent: 'center',
+  },
+  googleImageContainer: {
+    resizeMode: 'contain',
+    height: responsiveHeight(8),
+    width: responsiveWidth(9),
+    position: 'absolute',
+  },
+  appleImageContainer: {
+    resizeMode: 'contain',
+    height: responsiveHeight(8),
+    width: responsiveWidth(8),
+    position: 'absolute',
+  },
+  signupNavigateContainer: {
+    flexDirection: 'row',
+    margin: responsiveHeight(6.5),
+    alignSelf: 'center',
+  },
+  signupNavigateText: {color: '#b3b3b7', fontWeight: '800'},
+  signupNavigateHyperlink: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: responsiveWidth(1),
+  },
+  signupNavigateHyperlinkText: {
+    color: '#54545e',
+    textDecorationLine: 'underline',
+    fontWeight: '700',
   },
 });
