@@ -6,9 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  Modal,
   FlatList,
-  Pressable,
   Alert,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
@@ -19,7 +17,6 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import ButtonComp from '../components/ButtonComp';
-import ModalCard from '../components/ModalCard';
 import Card from '../components/Card';
 import ColorPicker from 'react-native-wheel-color-picker';
 import firestore from '@react-native-firebase/firestore';
@@ -46,8 +43,8 @@ const AddCategory = ({
   const [selectedImagePath, setSelectedImagePath] = useState<string>('');
   const [selectedCardIndex, setSelectedCardIndex] = useState<any>(null);
   const [selectedCardData, setSelectedCardData] = useState<any>(null);
-  const [categoryTitle,setCategoryTitle] = useState<string>("Add Category");
-  const [buttonTxt,setButtonTxt] = useState<string>("Done");
+  const [categoryTitle, setCategoryTitle] = useState<string>('Add Category');
+  const [buttonTxt, setButtonTxt] = useState<string>('Done');
   const [mainDataIndex, setMainDataIndex] = useState(null);
 
   useEffect(() => {
@@ -65,8 +62,12 @@ const AddCategory = ({
       setCurrentColor(initialData.backgroundColor);
       setSelectedCardIndex(initialData.imgUrl - 1); // Assuming "index" is a property in initialData
       setSelectedCardData(initialData); // Set the whole initialData object
-      {initialData == null ? setCategoryTitle("Add Category") : setCategoryTitle("Edit Category")}
-      {initialData == null ? setButtonTxt("Done") : setButtonTxt("Update")}
+
+      // Update category title and button text based on initialData
+      initialData === null
+        ? setCategoryTitle('Add Category')
+        : setCategoryTitle('Edit Category');
+      initialData === null ? setButtonTxt('Done') : setButtonTxt('Update');
     }
   }, [initialData]);
 
@@ -78,17 +79,22 @@ const AddCategory = ({
     setSelectedCardIndex(index);
     setSelectedCardData(cardProps(imgUrl));
     setSelectedImagePath(ImageData[index]); // Set the selected image path
-  // console.log("Image string is: " + ImageData[index]);
+    // console.log("Image string is: " + ImageData[index]);
   };
 
   const createCardDB = () => {
     const userDocument = firestore()
-    .collection('cardCollection')
-    .add({title: addTitle, backgroundColor: currentColor,cardIndex: selectedCardIndex,createdAt:firestore.FieldValue.serverTimestamp(),})
-  .then(() => {
-    console.log('User added!');
-  });
-  }
+      .collection('cardCollection')
+      .add({
+        title: addTitle,
+        backgroundColor: currentColor,
+        cardIndex: selectedCardIndex,
+        createdAt: firestore.FieldValue.serverTimestamp(),
+      })
+      .then(() => {
+        console.log('User added!');
+      });
+  };
 
   const onDonePress = async () => {
     if (initialData == null) {
@@ -130,7 +136,7 @@ const AddCategory = ({
 
   return (
     <TouchableWithoutFeedback>
-      <ScrollView contentContainerStyle={{flexGrow: 1}}>
+      <ScrollView contentContainerStyle={styles.contentContainerView}>
         <View style={styles.containerView}>
           <View style={styles.container}>
             <View style={styles.iconContainer}>
@@ -180,7 +186,6 @@ const AddCategory = ({
                             tintColor={'#fff'}
                             onPress={() => onCardSelect(index, item)}
                           />
-                          
                         </TouchableOpacity>
                       </View>
                     );
@@ -270,4 +275,5 @@ const styles = StyleSheet.create({
     borderColor: 'yellow', // You can set any highlight color here
     borderRadius: 12,
   },
+  contentContainerView: {flexGrow: 1},
 });
