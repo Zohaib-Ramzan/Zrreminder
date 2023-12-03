@@ -7,11 +7,9 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  FlatList,
   Alert,
   Pressable,
   Modal,
-  ImageSourcePropType,
 } from 'react-native';
 import {
   responsiveFontSize,
@@ -20,63 +18,46 @@ import {
 } from 'react-native-responsive-dimensions';
 import ButtonComp from '../components/ButtonComp';
 import Card from '../components/Card';
-import ColorPicker from 'react-native-wheel-color-picker';
 import TextInputComp from '../components/TextInputComp';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontIcon from 'react-native-vector-icons/FontAwesome';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import AddReminderPage from './AddReminderPage';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import ItemDetails from './ItemDetails';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../routes/AppNavigator';
-import { RouteProp , NavigationProp } from '@react-navigation/native';
+import {launchImageLibrary} from 'react-native-image-picker';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../routes/AppNavigator';
+import {RouteProp} from '@react-navigation/native';
 
-type AddItemProps = NativeStackScreenProps<RootStackParamList, 'AddItem'>
+type AddItemProps = NativeStackScreenProps<RootStackParamList, 'AddItem'>;
 
 type RouteParam = {
   AddItem: {
     selectedCardTitle: string;
     // Add other properties if needed
   };
-}
+};
 
-const ImageData = [
-  require('../assets/images/logo.png'),
-  require('../assets/images/skin-care.png'),
-  require('../assets/images/bottles.png'),
-  require('../assets/images/cereals.png'),
-  require('../assets/images/medicine.png'),
-  require('../assets/images/detergent.png'),
-];
-
-const AddItem = ({crossButton,updatedData,isEditPress}: any) => {
-
+const AddItem = ({crossButton, updatedData, isEditPress}: any) => {
   const route = useRoute<RouteProp<RouteParam, 'AddItem'>>();
   const navigation = useNavigation<AddItemProps>();
   const [title, setTitle] = useState('');
-  const [currentColor, setCurrentColor] = useState('#464657');
-  const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(
-    null,
-  );
   const [selectedCardData, setSelectedCardData] = useState<any>(null);
 
-  const [mainDataIndex, setMainDataIndex] = useState(null);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [selectedDate, setSelectedDate] = useState('Add Start Date');
   const [isStartingDateSelected, setIsStartingDateSelected] = useState(false);
   const [expireDate, setExpireDate] = useState('Add Expire Date');
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
-  const [selectedReminderOption, setSelectedReminderOption] = useState('');
   const [imageSelect, setImageSelect] = useState<any>(null);
   const [isImageSelected, setIsImageSelected] = useState(false);
-  const [reminderText, setReminderText] = useState("Add Reminder")
-  const [noteText, setNoteText] = useState("")
-  const [selectedCardCategory, setSelectedCardCategory] = useState(route.params?.selectedCardTitle)
+  const [reminderText, setReminderText] = useState('Add Reminder');
+  const [noteText, setNoteText] = useState('');
+  const [selectedCardCategory, setSelectedCardCategory] = useState(
+    route.params?.selectedCardTitle,
+  );
 
-console.log(route.params?.selectedCardTitle);
-
+  console.log(route.params?.selectedCardTitle);
 
   const imagePicker = () => {
     let options = {
@@ -101,12 +82,12 @@ console.log(route.params?.selectedCardTitle);
   useEffect(() => {
     if (isEditPress) {
       // Create a copy of updatedData and update its imgUrl property// Now this should log the updated value
-      setImageSelect(updatedData.imgUrl)
-      setTitle(updatedData.title)
-      setSelectedDate(updatedData.startDate)
-      setExpireDate(updatedData.endDate)
-      setReminderText(updatedData.reminderTxt)
-      setNoteText(updatedData.noteTxt)
+      setImageSelect(updatedData.imgUrl);
+      setTitle(updatedData.title);
+      setSelectedDate(updatedData.startDate);
+      setExpireDate(updatedData.endDate);
+      setReminderText(updatedData.reminderTxt);
+      setNoteText(updatedData.noteTxt);
     }
   }, [isEditPress]);
 
@@ -131,7 +112,7 @@ console.log(route.params?.selectedCardTitle);
     const dt = new Date(date);
     const x = dt.toISOString().split('T');
     const newDt = x[0].split('-');
-    if (isStartingDateSelected == true) {
+    if (isStartingDateSelected === true) {
       setSelectedDate(newDt[2] + '/' + newDt[1] + '/' + newDt[0]);
     } else {
       setExpireDate(newDt[2] + '/' + newDt[1] + '/' + newDt[0]);
@@ -150,39 +131,59 @@ console.log(route.params?.selectedCardTitle);
   };
 
   const gotoItemDetailsPage = (dataToUpdate: any) => {
-    crossButton()
-    navigation.navigate("ItemDetails",{
-      updatedData: dataToUpdate
+    crossButton();
+    navigation.navigate('ItemDetails', {
+      updatedData: dataToUpdate,
     });
-  }
+  };
 
   const onDonePress = () => {
-    if (title !== "" && imageSelect !== null ) {
-      console.log(title+ " "+ imageSelect+" "+selectedDate+" "+expireDate+" "+reminderText+" "+noteText+" "+selectedCardCategory)
+    if (title !== '' && imageSelect !== null) {
+      console.log(
+        title +
+          ' ' +
+          imageSelect +
+          ' ' +
+          selectedDate +
+          ' ' +
+          expireDate +
+          ' ' +
+          reminderText +
+          ' ' +
+          noteText +
+          ' ' +
+          selectedCardCategory,
+      );
       const updatedData = {
         ...selectedCardData,
         title: title,
         imgUrl: imageSelect,
         startDate: selectedDate,
         endDate: expireDate,
-        reminderTxt: reminderText, 
+        reminderTxt: reminderText,
         noteTxt: noteText,
-        selectedCardCategory: selectedCardCategory
-        
+        selectedCardCategory: selectedCardCategory,
       };
       crossButton();
-      gotoItemDetailsPage(updatedData)
+      gotoItemDetailsPage(updatedData);
     } else {
       Alert.alert('Please Select All Fields!');
       // gotoItemDetailsPage()
     }
   };
 
+  const plusCircleStyles = isImageSelected
+    ? {
+        right: responsiveWidth(15),
+        bottom: responsiveHeight(1),
+      }
+    : {};
+
   return (
     <TouchableWithoutFeedback>
       <View style={styles.containerView}>
         <View style={styles.container}>
-          <ScrollView contentContainerStyle={{flexGrow: 1}}>
+          <ScrollView contentContainerStyle={styles.contentContainerView}>
             <View style={styles.iconContainer}>
               <TouchableOpacity
                 style={styles.iconView}
@@ -193,7 +194,9 @@ console.log(route.params?.selectedCardTitle);
                 />
               </TouchableOpacity>
             </View>
-            <Text style={styles.titleTxt}>{isEditPress == true ? "Edit Item" : "Add Item" }</Text>
+            <Text style={styles.titleTxt}>
+              {isEditPress === true ? 'Edit Item' : 'Add Item'}
+            </Text>
             <View style={styles.textInputContainer}>
               <TouchableOpacity style={{marginBottom: responsiveHeight(0.1)}}>
                 <TextInputComp
@@ -206,38 +209,23 @@ console.log(route.params?.selectedCardTitle);
                 />
               </TouchableOpacity>
             </View>
-            <Text style={styles.subText}>{isEditPress == true ? "Edit Item" : "Add Item"}</Text>
+            <Text style={styles.subText}>
+              {isEditPress === true ? 'Edit Item' : 'Add Item'}
+            </Text>
             <View style={styles.cardContainer}>
               <Card
                 height={responsiveHeight(20)}
                 width={responsiveWidth(36)}
                 backgroundColor="#1a1a1c"
-                imageUrl={imageSelect && {uri: imageSelect} }
+                imageUrl={imageSelect && {uri: imageSelect}}
                 ImgHeight={responsiveHeight(20)}
                 ImgWidth={responsiveWidth(36)}
               />
               <TouchableOpacity
-                style={[
-                  styles.plusCircleContainer,
-                  {
-                    right:
-                      isImageSelected === true ? responsiveWidth(15) : null,
-                    bottom:
-                      isImageSelected === true ? responsiveHeight(1) : null,
-                  },
-                ]}
+                style={[styles.plusCircleContainer, plusCircleStyles]}
                 onPress={imagePicker}>
                 {isImageSelected && (
-                  <View
-                    style={{
-                      backgroundColor: '#2c2c34',
-                      height: responsiveHeight(6),
-                      width: responsiveWidth(11),
-                      borderRadius: 8,
-                      position: 'absolute',
-                      top: responsiveHeight(5),
-                      right: responsiveWidth(12),
-                    }}></View>
+                  <View style={styles.imageBoxContainer}> </View>
                 )}
                 <Image
                   source={require('../assets/images/plus-circle.png')}
@@ -261,12 +249,7 @@ console.log(route.params?.selectedCardTitle);
                 style={styles.calendarBox}
                 onPress={() => onPressDateSelected(true)}>
                 <Text style={styles.caledarBoxTxtStyle}>{selectedDate}</Text>
-                <View
-                  style={{
-                    position: 'absolute',
-                    bottom: responsiveHeight(1.5),
-                    marginLeft: responsiveWidth(2),
-                  }}>
+                <View style={styles.calendarView}>
                   <Icon name="calendar-month" size={25} color="#464657" />
                 </View>
               </Pressable>
@@ -275,24 +258,19 @@ console.log(route.params?.selectedCardTitle);
                   style={styles.calendarBox}
                   onPress={() => onPressDateSelected(false)}>
                   <Text style={styles.caledarBoxTxtStyle}>{expireDate}</Text>
-                  <View
-                    style={{
-                      position: 'absolute',
-                      bottom: responsiveHeight(1.5),
-                      marginLeft: responsiveWidth(2),
-                    }}>
+                  <View style={styles.calendarView}>
                     <Icon name="calendar-month" size={25} color="#464657" />
                   </View>
                 </Pressable>
               </View>
             </View>
             <Modal transparent visible={isReminderModalOpen}>
-              <View style={{flex: 1}}>
+              <View style={styles.addReminderView}>
                 <AddReminderPage
                   crossButton={closeReminderModal}
                   onValueSelected={(value: string) => {
-                    console.log(value)
-                    setReminderText(value)
+                    console.log(value);
+                    setReminderText(value);
                   }}
                 />
               </View>
@@ -300,21 +278,25 @@ console.log(route.params?.selectedCardTitle);
             <View style={{marginBottom: responsiveHeight(1)}}>
               <Text style={styles.subText}>Select Reminder</Text>
             </View>
-            <View style={{alignItems: 'center', height: responsiveHeight(5)}}>
-              <Pressable style={[styles.calendarBox,{width: isEditPress == true || reminderText.length > 12 ? responsiveWidth(55) : responsiveWidth(40)}]} onPress={openReminderModal}>
+            <View style={styles.addReminderContainer}>
+              <Pressable
+                style={[
+                  styles.calendarBox,
+                  {
+                    width:
+                      isEditPress === true || reminderText.length > 12
+                        ? responsiveWidth(55)
+                        : responsiveWidth(40),
+                  },
+                ]}
+                onPress={openReminderModal}>
                 <Text style={styles.caledarBoxTxtStyle}>{reminderText}</Text>
-                <View
-                  style={{
-                    position: 'absolute',
-                    bottom: responsiveHeight(1.5),
-                    marginLeft: responsiveWidth(2),
-                  }}>
+                <View style={styles.calendarView}>
                   <FontIcon name="bell" size={20} color="#464657" />
                 </View>
               </Pressable>
             </View>
-            <View
-              style={{alignItems: 'center', marginTop: responsiveHeight(2)}}>
+            <View style={styles.addNoteView}>
               <TextInputComp
                 textColor="#fff"
                 multiline={true}
@@ -339,7 +321,7 @@ console.log(route.params?.selectedCardTitle);
             />
             <View style={styles.buttonContainer}>
               <ButtonComp
-                text={isEditPress == true ? "Update" : "Done" }
+                text={isEditPress === true ? 'Update' : 'Done'}
                 BtnWidth={responsiveWidth(18)}
                 onPress={() => onDonePress()}
               />
@@ -446,4 +428,22 @@ const styles = StyleSheet.create({
     marginLeft: responsiveWidth(4),
     fontWeight: 'bold',
   },
+  contentContainerView: {flexGrow: 1},
+  imageBoxContainer: {
+    backgroundColor: '#2c2c34',
+    height: responsiveHeight(6),
+    width: responsiveWidth(11),
+    borderRadius: 8,
+    position: 'absolute',
+    top: responsiveHeight(5),
+    right: responsiveWidth(12),
+  },
+  calendarView: {
+    position: 'absolute',
+    bottom: responsiveHeight(1.5),
+    marginLeft: responsiveWidth(2),
+  },
+  addReminderView: {flex: 1},
+  addReminderContainer: {alignItems: 'center', height: responsiveHeight(5)},
+  addNoteView: {alignItems: 'center', marginTop: responsiveHeight(2)},
 });
