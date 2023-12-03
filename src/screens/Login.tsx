@@ -8,9 +8,9 @@ import {
   Pressable,
   ScrollView,
   SafeAreaView,
-  Alert
+  Alert,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import TextInputComp from '../components/TextInputComp';
 import ButtonComp from '../components/ButtonComp';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -21,164 +21,167 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore'
+import firestore from '@react-native-firebase/firestore';
 type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
-const Login = ({navigation,route}: LoginProps) => {
-
+const Login = ({navigation, route}: LoginProps) => {
   // const {name} = route.params || {};
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
-  const [name,setName] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
 
   const handleLogin = async () => {
     // ... (existing code)
     if (email.length > 0 && password.length > 0) {
-    try {
-      const isUserValid = await auth().signInWithEmailAndPassword(email, password);
-      console.log(isUserValid);
-  
-      const getName = await firestore().collection('cardCollection').doc(isUserValid.user.uid).get().then((doc) => {
-        if (doc.exists) {
-          // Document exists, access its data
-          const data = doc.data();
-          setName(data?.name);
-          console.log('Document data:', data);
-  
-          // Move navigation logic here to ensure 'name' is set before navigating
-          navigation.navigate('Home', {
-            Email: isUserValid.user.email,
-            uid: isUserValid.user.uid,
-            Name: data?.name, // Pass the retrieved name to the 'Home' screen
+      try {
+        const isUserValid = await auth().signInWithEmailAndPassword(
+          email,
+          password,
+        );
+        console.log(isUserValid);
+
+        const getName = await firestore()
+          .collection('cardCollection')
+          .doc(isUserValid.user.uid)
+          .get()
+          .then(doc => {
+            if (doc.exists) {
+              // Document exists, access its data
+              const data = doc.data();
+              setName(data?.name);
+              console.log('Document data:', data);
+
+              // Move navigation logic here to ensure 'name' is set before navigating
+              navigation.navigate('Home', {
+                Email: isUserValid.user.email,
+                uid: isUserValid.user.uid,
+                Name: data?.name, // Pass the retrieved name to the 'Home' screen
+              });
+            } else {
+              // Document doesn't exist
+              console.log('No such document!');
+            }
           });
-        } else {
-          // Document doesn't exist
-          console.log('No such document!');
-        }
-      });
-  
-    } catch (error) {
-      console.warn(error);
+      } catch (error) {
+        console.warn(error);
+      }
+    } else {
+      Alert.alert('Please fill details!');
     }
-  } else {
-    Alert.alert("Please fill details!")
-  }
-   
-  }
-   
-  
+  };
+
   return (
     <SafeAreaView>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <ScrollView>
-        <View style={styles.container}>
-          <View style={styles.imgContainer}>
-            <Image
-              source={require('../assets/images/logo.png')}
-              style={styles.logoStyle}
-            />
-          </View>
-          <Text style={styles.txtColor}>Sign in</Text>
-          <View style={styles.textinputContainer}>
-            <TextInputComp
-              placeholder={'Email'}
-              placeholderTextColor={'#b3b3b7'}
-              backgroundColor={'#464657'}
-              value={email}
-              onChangeText={(value: string) => setEmail(value)}
-              secureTextEntry={false}
-              textColor="#fff"
-            />
-            <TextInputComp
-              placeholder={'Password'}
-              placeholderTextColor={'#b3b3b7'}
-              backgroundColor={'#464657'}
-              value={password}
-              onChangeText={(value: string) => setPassword(value)}
-              secureTextEntry={true}
-              textColor="#fff"
-            />
-
-            <ButtonComp
-              text="Sign in"
-              // onPress={() => loginVerification()}
-              onPress={() => handleLogin()}
-            />
-
-            <Text
-              style={{
-                color: '#b3b3b7',
-                marginTop: responsiveHeight(4),
-                textAlign: 'center',
-                fontWeight: '700',
-              }}>
-              - or sign up with -
-            </Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: responsiveHeight(4),
-                alignContent: 'center',
-              }}>
-              <View style={styles.signupGoogle}>
-                <ButtonComp
-                  BtnWidth={responsiveWidth(15)}
-                  Btnmargin={responsiveWidth(0.1)}
-                />
-                <Image
-                  source={require('../assets/images/google_logo.png')}
-                  style={{
-                    resizeMode: 'contain',
-                    height: responsiveHeight(8),
-                    width: responsiveWidth(9),
-                    position: 'absolute',
-                  }}
-                />
-              </View>
-              <View style={styles.signupApple}>
-                <ButtonComp
-                  BtnWidth={responsiveWidth(15)}
-                  Btnmargin={responsiveWidth(0.1)}
-                />
-                <Image
-                  source={require('../assets/images/apple_logo.png')}
-                  style={{
-                    resizeMode: 'contain',
-                    height: responsiveHeight(8),
-                    width: responsiveWidth(8),
-                    position: 'absolute',
-                  }}
-                />
-              </View>
+          <View style={styles.container}>
+            <View style={styles.imgContainer}>
+              <Image
+                source={require('../assets/images/logo.png')}
+                style={styles.logoStyle}
+              />
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                margin: responsiveHeight(6.5),
-                alignSelf: 'center',
-              }}>
-              <Text style={{color: '#b3b3b7', fontWeight: '800'}}>
-                Don't have an Account?
-              </Text>
-              <Pressable
-                onPress={() => navigation.navigate('Signup')}
+            <Text style={styles.txtColor}>Sign in</Text>
+            <View style={styles.textinputContainer}>
+              <TextInputComp
+                placeholder={'Email'}
+                placeholderTextColor={'#b3b3b7'}
+                backgroundColor={'#464657'}
+                value={email}
+                onChangeText={(value: string) => setEmail(value)}
+                secureTextEntry={false}
+                textColor="#fff"
+              />
+              <TextInputComp
+                placeholder={'Password'}
+                placeholderTextColor={'#b3b3b7'}
+                backgroundColor={'#464657'}
+                value={password}
+                onChangeText={(value: string) => setPassword(value)}
+                secureTextEntry={true}
+                textColor="#fff"
+              />
+
+              <ButtonComp
+                text="Sign in"
+                // onPress={() => loginVerification()}
+                onPress={() => handleLogin()}
+              />
+
+              <Text
                 style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginLeft: responsiveWidth(1),
+                  color: '#b3b3b7',
+                  marginTop: responsiveHeight(4),
+                  textAlign: 'center',
+                  fontWeight: '700',
                 }}>
-                <Text
-                  style={{
-                    color: '#54545e',
-                    textDecorationLine: 'underline',
-                    fontWeight: '700',
-                  }}>
-                  Sign up
+                - or sign up with -
+              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  marginTop: responsiveHeight(4),
+                  alignContent: 'center',
+                }}>
+                <View style={styles.signupGoogle}>
+                  <ButtonComp
+                    BtnWidth={responsiveWidth(15)}
+                    Btnmargin={responsiveWidth(0.1)}
+                  />
+                  <Image
+                    source={require('../assets/images/google_logo.png')}
+                    style={{
+                      resizeMode: 'contain',
+                      height: responsiveHeight(8),
+                      width: responsiveWidth(9),
+                      position: 'absolute',
+                    }}
+                  />
+                </View>
+                <View style={styles.signupApple}>
+                  <ButtonComp
+                    BtnWidth={responsiveWidth(15)}
+                    Btnmargin={responsiveWidth(0.1)}
+                  />
+                  <Image
+                    source={require('../assets/images/apple_logo.png')}
+                    style={{
+                      resizeMode: 'contain',
+                      height: responsiveHeight(8),
+                      width: responsiveWidth(8),
+                      position: 'absolute',
+                    }}
+                  />
+                </View>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  margin: responsiveHeight(6.5),
+                  alignSelf: 'center',
+                }}>
+                <Text style={{color: '#b3b3b7', fontWeight: '800'}}>
+                  Don't have an Account?
                 </Text>
-              </Pressable>
+                <Pressable
+                  onPress={() => navigation.navigate('Signup')}
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginLeft: responsiveWidth(1),
+                  }}>
+                  <Text
+                    style={{
+                      color: '#54545e',
+                      textDecorationLine: 'underline',
+                      fontWeight: '700',
+                    }}>
+                    Sign up
+                  </Text>
+                </Pressable>
+              </View>
             </View>
           </View>
-        </View>
         </ScrollView>
       </TouchableWithoutFeedback>
     </SafeAreaView>
