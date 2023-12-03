@@ -7,9 +7,9 @@ import {
   Keyboard,
   Pressable,
   ScrollView,
-  SafeAreaView
+  SafeAreaView,
 } from 'react-native';
-import React , {useState} from 'react';
+import React, {useState} from 'react';
 import TextInputComp from '../components/TextInputComp';
 import ButtonComp from '../components/ButtonComp';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -19,33 +19,38 @@ import {
   responsiveFontSize,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import auth from "@react-native-firebase/auth"
-import firestore from "@react-native-firebase/firestore";
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 type SignupProps = NativeStackScreenProps<RootStackParamList, 'Signup'>;
 
 const Signup = ({navigation}: SignupProps) => {
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
-  const [name,setName] = useState("")
-  const [message,setMessage] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleSignup = async () => {
     try {
-      const isUserCreated = await auth().createUserWithEmailAndPassword(email,password);
-      console.log(isUserCreated)
-      console.warn("Successfully Signup!")
+      const isUserCreated = await auth().createUserWithEmailAndPassword(
+        email,
+        password,
+      );
+      console.log(isUserCreated);
+      console.warn('Successfully Signup!');
 
-      const userCredential = await firestore().collection('cardCollection').doc(isUserCreated.user.uid).set({name: name,email:email,id:isUserCreated.user.uid})
-      navigation.navigate("Login",{
-        name: name
-      })
+      const userCredential = await firestore()
+        .collection('cardCollection')
+        .doc(isUserCreated.user.uid)
+        .set({name: name, email: email, id: isUserCreated.user.uid});
+      navigation.navigate('Login', {
+        name: name,
+      });
     } catch (error) {
-      console.log(error)
-      console.warn(error)
+      console.log(error);
+      console.warn(error);
     }
-  }
+  };
 
   return (
     <SafeAreaView>
@@ -98,82 +103,22 @@ const Signup = ({navigation}: SignupProps) => {
                 textColor="#fff"
               />
 
-              {password !== confirmPassword && 
-              <Text style={{color: "red"}}>Password does not match</Text>
-              }
+              {password !== confirmPassword && (
+                <Text style={styles.passwordMatchText}>
+                  Password does not match
+                </Text>
+              )}
 
               <ButtonComp text="Sign up" onPress={() => handleSignup()} />
 
-              <Text
-                style={{
-                  color: '#b3b3b7',
-                  marginTop: responsiveHeight(4),
-                  textAlign: 'center',
-                  fontWeight: '700',
-                }}>
-                - or sign up with -
-              </Text>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  marginTop: responsiveHeight(4),
-                  alignContent: 'center',
-                }}>
-                <View style={styles.signupGoogle}>
-                  <ButtonComp
-                    BtnWidth={responsiveWidth(15)}
-                    Btnmargin={responsiveWidth(0.1)}
-                  />
-                  <Image
-                    source={require('../assets/images/google_logo.png')}
-                    style={{
-                      resizeMode: 'contain',
-                      height: responsiveHeight(8),
-                      width: responsiveWidth(9),
-                      position: 'absolute',
-                    }}
-                  />
-                </View>
-                <View style={styles.signupApple}>
-                  <ButtonComp
-                    BtnWidth={responsiveWidth(15)}
-                    Btnmargin={responsiveWidth(0.1)}
-                  />
-                  <Image
-                    source={require('../assets/images/apple_logo.png')}
-                    style={{
-                      resizeMode: 'contain',
-                      height: responsiveHeight(8),
-                      width: responsiveWidth(8),
-                      position: 'absolute',
-                    }}
-                  />
-                </View>
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  margin: responsiveHeight(6.5),
-                  alignSelf: 'center',
-                }}>
-                <Text style={{color: '#b3b3b7', fontWeight: '800'}}>
+              <View style={styles.alreadyAccountContainer}>
+                <Text style={styles.alreadyAccountText}>
                   Already Have an Account?
                 </Text>
                 <Pressable
                   onPress={() => navigation.navigate('Login')}
-                  style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginLeft: responsiveWidth(1),
-                  }}>
-                  <Text
-                    style={{
-                      color: '#54545e',
-                      textDecorationLine: 'underline',
-                      fontWeight: '700',
-                    }}>
-                    Sign in
-                  </Text>
+                  style={styles.loginHyperlinkContainer}>
+                  <Text style={styles.loginHyperlinkText}>Sign in</Text>
                 </Pressable>
               </View>
             </View>
@@ -219,5 +164,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: responsiveWidth(2),
+  },
+  passwordMatchText: {color: 'red'},
+  alreadyAccountContainer: {
+    flexDirection: 'row',
+    margin: responsiveHeight(6.5),
+    alignSelf: 'center',
+  },
+  alreadyAccountText: {color: '#b3b3b7', fontWeight: '800'},
+  loginHyperlinkContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: responsiveWidth(1),
+  },
+  loginHyperlinkText: {
+    color: '#54545e',
+    textDecorationLine: 'underline',
+    fontWeight: '700',
   },
 });
