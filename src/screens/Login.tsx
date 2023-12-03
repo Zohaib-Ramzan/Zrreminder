@@ -50,7 +50,7 @@ const Login = ({navigation}: LoginProps) => {
               console.log('Document data:', data);
 
               // Move navigation logic here to ensure 'name' is set before navigating
-              navigation.navigate('Home', {
+              navigation.navigate('Main', {
                 Email: isUserValid.user.email,
                 uid: isUserValid.user.uid,
                 Name: data?.name, // Pass the retrieved name to the 'Home' screen
