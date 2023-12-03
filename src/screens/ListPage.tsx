@@ -98,7 +98,7 @@ const ListPage = ({navigation, route}: ListPageProps) => {
             data={dataArray}
             keyExtractor={(item, index) => index.toString()}
             contentContainerStyle={styles.flatListContent}
-            renderItem={({item, index}) => {
+            renderItem={({item}) => {
               const selectedCardItm = item.selectedCardCategory;
               return (
                 <View style={{marginBottom: responsiveHeight(5)}}>
@@ -109,7 +109,7 @@ const ListPage = ({navigation, route}: ListPageProps) => {
                 </View>
               );
             }}
-            ListFooterComponent={() => (
+            ListFooterComponent={
               <Pressable
                 style={styles.imgContainer}
                 onPress={() => setModalVisible(true)}>
@@ -118,7 +118,7 @@ const ListPage = ({navigation, route}: ListPageProps) => {
                   style={styles.imgStyle}
                 />
               </Pressable>
-            )}
+            }
           />
           {/* <Pressable
             style={styles.imgContainer}
