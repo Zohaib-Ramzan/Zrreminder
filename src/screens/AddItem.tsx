@@ -225,7 +225,7 @@ const AddItem = ({crossButton, updatedData, isEditPress}: any) => {
                 style={[styles.plusCircleContainer, plusCircleStyles]}
                 onPress={imagePicker}>
                 {isImageSelected && (
-                  <View style={styles.imageBoxContainer}> </View>
+                  <View style={styles.imageBoxContainer}>{''}</View>
                 )}
                 <Image
                   source={require('../assets/images/plus-circle.png')}
@@ -248,8 +248,8 @@ const AddItem = ({crossButton, updatedData, isEditPress}: any) => {
               <Pressable
                 style={styles.calendarBox}
                 onPress={() => onPressDateSelected(true)}>
-                <Text style={styles.caledarBoxTxtStyle}>{selectedDate}</Text>
-                <View style={styles.calendarView}>
+                <Text style={styles.calendarBoxTxtStyle}>{selectedDate}</Text>
+                <View style={styles.calendarContainerView}>
                   <Icon name="calendar-month" size={25} color="#464657" />
                 </View>
               </Pressable>
@@ -257,8 +257,8 @@ const AddItem = ({crossButton, updatedData, isEditPress}: any) => {
                 <Pressable
                   style={styles.calendarBox}
                   onPress={() => onPressDateSelected(false)}>
-                  <Text style={styles.caledarBoxTxtStyle}>{expireDate}</Text>
-                  <View style={styles.calendarView}>
+                  <Text style={styles.calendarBoxTxtStyle}>{expireDate}</Text>
+                  <View style={styles.calendarContainerView}>
                     <Icon name="calendar-month" size={25} color="#464657" />
                   </View>
                 </Pressable>
@@ -278,7 +278,7 @@ const AddItem = ({crossButton, updatedData, isEditPress}: any) => {
             <View style={{marginBottom: responsiveHeight(1)}}>
               <Text style={styles.subText}>Select Reminder</Text>
             </View>
-            <View style={styles.addReminderContainer}>
+            <View style={styles.selectReminderView}>
               <Pressable
                 style={[
                   styles.calendarBox,
@@ -290,8 +290,8 @@ const AddItem = ({crossButton, updatedData, isEditPress}: any) => {
                   },
                 ]}
                 onPress={openReminderModal}>
-                <Text style={styles.caledarBoxTxtStyle}>{reminderText}</Text>
-                <View style={styles.calendarView}>
+                <Text style={styles.calendarBoxTxtStyle}>{reminderText}</Text>
+                <View style={styles.calendarContainerView}>
                   <FontIcon name="bell" size={20} color="#464657" />
                 </View>
               </Pressable>
@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1a1a1c',
     borderRadius: 10,
   },
-  caledarBoxTxtStyle: {
+  calendarBoxTxtStyle: {
     color: '#464657',
     fontSize: 12,
     textAlign: 'center',
@@ -438,12 +438,12 @@ const styles = StyleSheet.create({
     top: responsiveHeight(5),
     right: responsiveWidth(12),
   },
-  calendarView: {
+  calendarContainerView: {
     position: 'absolute',
     bottom: responsiveHeight(1.5),
     marginLeft: responsiveWidth(2),
   },
   addReminderView: {flex: 1},
-  addReminderContainer: {alignItems: 'center', height: responsiveHeight(5)},
+  selectReminderView: {alignItems: 'center', height: responsiveHeight(5)},
   addNoteView: {alignItems: 'center', marginTop: responsiveHeight(2)},
 });
