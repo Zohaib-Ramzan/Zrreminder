@@ -1,21 +1,14 @@
 import {
-  Image,
-  Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
   Modal,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   FlatList,
   BackHandler,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
-import firestore from '@react-native-firebase/firestore'
-import { RouteProp , useRoute} from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
 
 import {
   responsiveHeight,
@@ -25,11 +18,8 @@ import {
 import Card from '../components/Card';
 import AddCategory from './AddCategory';
 import {CardData} from './types';
-import EditCategory from './EditCategory';
-import ListPage from './ListPage';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../routes/AppNavigator';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../routes/AppNavigator';
 
 const ImageData = [
   require('../assets/images/logo.png'),
@@ -43,10 +33,9 @@ const ImageData = [
 // Define the type for the navigation prop
 type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
-const Home = ({navigation,route}: HomeProps) => {
-
-const { Email, uid, Name }  = route.params || {};
-console.log("Email is : " + Email + " Uid is " + uid)
+const Home = ({navigation}: HomeProps) => {
+  // const {Email, uid, Name} = route.params || {};
+  // console.log("Email is : " + Email + " Uid is " + uid)
 
   // const [name,setName] = useState("")
   const [closeCategoryModal, setCloseCategoryModal] = useState(false);
@@ -68,35 +57,38 @@ console.log("Email is : " + Email + " Uid is " + uid)
       onPress: () => setCloseCategoryModal(true),
       imgUrl: plusCircleImg(),
       isLongPressed: false,
-      cardIndex: plusCircleImg()
+      cardIndex: plusCircleImg(),
     },
   ]);
 
   useEffect(() => {
     const fetchCardsFromDB = async () => {
       try {
-        const querySnapshot = await firestore().collection("cardCollection").orderBy('createdAt','desc').get();
-        const data = querySnapshot.docs.map((doc) => ({
+        const querySnapshot = await firestore()
+          .collection('cardCollection')
+          .orderBy('createdAt', 'desc')
+          .get();
+        const data = querySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data(),
         })) as CardData[];
-        
+
         // Add the plus card to the fetched data
-      const updatedData = [
-        ...data,
-        {
-          backgroundColor: '#2c2c34',
-          onPress: () => setCloseCategoryModal(true),
-          imgUrl: plusCircleImg(),
-          isLongPressed: false,
-          cardIndex: plusCircleImg()
-        },
-      ];
+        const updatedData = [
+          ...data,
+          {
+            backgroundColor: '#2c2c34',
+            onPress: () => setCloseCategoryModal(true),
+            imgUrl: plusCircleImg(),
+            isLongPressed: false,
+            cardIndex: plusCircleImg(),
+          },
+        ];
 
         setFetchedCardData(updatedData);
         // console.log(fetchedCardData)
       } catch (error) {
-        console.error("Error fetching cards:", error);
+        console.error('Error fetching cards:', error);
       }
     };
 
@@ -148,46 +140,44 @@ console.log("Email is : " + Email + " Uid is " + uid)
   const deleteCard = async (index: number) => {
     // Delete Card
     try {
-
       const cardToDelete = fetchedCardData[index];
       const docId = cardToDelete.id;
       // delete selectedcard from Firestore
-      await firestore().collection("cardCollection").doc(docId).delete();
+      await firestore().collection('cardCollection').doc(docId).delete();
       // update the cardslist on homescreen
       const updatedCardDataList = [...fetchedCardData];
       updatedCardDataList.splice(index, 1);
       setFetchedCardData(updatedCardDataList);
-    }
-    catch (error) {
-      console.error("Error Deleting Card:",error)
+    } catch (error) {
+      console.error('Error Deleting Card:', error);
     }
   };
 
   const saveAddCategoryModal = () => {
     return setCloseCategoryModal(false);
-  }
+  };
 
-  const editCard = (item: CardData, index:number) => {
+  const editCard = (item: CardData, index: number) => {
     // Edit Card
     setSelectedCardData(item); // This line sets the selectedCardData
     setSelectedCardIndex(index);
     setCloseCategoryModal(true);
-  
   };
-// console.log("s c i "+selectedCardDataArray[0].title)
+  // console.log("s c i "+selectedCardDataArray[0].title)
   const gotoListPage = (ind: number) => {
-    return navigation.navigate("ListPage",{selectedCardTitle:fetchedCardData[ind].title});
-  }
+    return navigation.navigate('ListPage', {
+      selectedCardTitle: fetchedCardData[ind].title,
+    });
+  };
 
   const updateCardData = (selectedCardIndex: number, updatedData: CardData) => {
     setFetchedCardData(selectedCardDataArray => {
       const updatedCardDataArray = [...fetchedCardData];
       updatedCardDataArray[selectedCardIndex] = updatedData;
-      console.log(updatedCardDataArray[selectedCardIndex].imgUrl+" index")
+      console.log(updatedCardDataArray[selectedCardIndex].imgUrl + ' index');
       return updatedCardDataArray;
     });
   };
-
 
   const toggleModal = () => {
     setLongPressModal(!longPressModal);
@@ -226,7 +216,7 @@ console.log("Email is : " + Email + " Uid is " + uid)
         />
       </Modal> */}
       <View style={styles.hometxtView}>
-        <Text style={styles.txtStyle}>{Name}'s Personal Categories</Text>
+        <Text style={styles.txtStyle}>User's Personal Categories</Text>
       </View>
       {fetchedCardData.length > 0 && (
         <View>
@@ -249,7 +239,7 @@ console.log("Email is : " + Email + " Uid is " + uid)
                     backgroundColor={
                       item.imgUrl === plusCircleImg()
                         ? '#2c2c34'
-                        : item.isLongPressed == true
+                        : item.isLongPressed === true
                         ? '#23232a'
                         : item.backgroundColor
                     }
@@ -257,21 +247,26 @@ console.log("Email is : " + Email + " Uid is " + uid)
                     onLongPress={() => handleCardLongPress(index)}
                     text={item.title}
                     cardTextColor={item.isLongPressed ? '#B1B3B3' : '#202020'}
-                    imageUrl={ImageData[item.cardIndex] ? ImageData[item.cardIndex] : item.imgUrl}
+                    imageUrl={
+                      ImageData[item.cardIndex]
+                        ? ImageData[item.cardIndex]
+                        : item.imgUrl
+                    }
                     ImgHeight={responsiveHeight(15)}
                     ImgWidth={
                       item.imgUrl === plusCircleImg()
                         ? responsiveWidth(13)
                         : responsiveWidth(40)
                     }
-                    cardStyles={{
-                      marginLeft: responsiveWidth(5),
-                      marginTop: responsiveHeight(4),
-                      opacity: item.isLongPressed ? 1 : null,
-                    }}
+                    cardStyles={[
+                      styles.cardStyles,
+                      {opacity: item.isLongPressed ? 1 : null},
+                    ]}
                     isLongPressed={item.isLongPressed}
                     onPressDelete={() => deleteCard(index)}
-                    onPressEdit={() => editCard(item, index)}></Card>
+                    onPressEdit={() => editCard(item, index)}>
+                    {/* Children components if required */}
+                  </Card>
                 </TouchableWithoutFeedback>
               );
             }}
@@ -315,5 +310,9 @@ const styles = StyleSheet.create({
   hometxtView: {
     marginTop: responsiveHeight(2),
     marginLeft: responsiveWidth(2),
+  },
+  cardStyles: {
+    marginLeft: responsiveWidth(5),
+    marginTop: responsiveHeight(4),
   },
 });
