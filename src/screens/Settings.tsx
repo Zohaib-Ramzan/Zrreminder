@@ -121,7 +121,7 @@ const Settings = ({}: SettingsProps) => {
               <Text style={styles.buttonTextView}>Edit Name</Text>
             </Pressable>
             <Pressable
-              style={[styles.buttonView, {marginBottom: responsiveHeight(3)}]}>
+              style={[styles.buttonView, {marginBottom: responsiveHeight(2)}]}>
               <Text style={styles.buttonTextView}>About</Text>
             </Pressable>
             <Pressable style={styles.minibuttonView}>
@@ -129,18 +129,14 @@ const Settings = ({}: SettingsProps) => {
                 Delete All Items
               </Text>
             </Pressable>
-            <Pressable
-              style={[
-                styles.minibuttonView,
-                {marginBottom: responsiveHeight(5)},
-              ]}>
+            <Pressable style={styles.minibuttonView}>
               <Text style={[styles.buttonTextView, styles.redTextColor]}>
                 Delete Account
               </Text>
             </Pressable>
-          </View>
-          <View style={styles.logoutButton}>
-            <ButtonComp text="Log Out" BtnHeight={responsiveHeight(13)} />
+            <View style={styles.logoutButton}>
+              <ButtonComp text="Log Out" BtnHeight={responsiveHeight(10.5)} />
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -157,24 +153,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#1a1a1c',
-    paddingVertical: responsiveHeight(1),
+    // paddingVertical: responsiveHeight(1),
   },
   txtStyle: {
     fontSize: responsiveFontSize(4),
     color: '#fff',
-    paddingVertical: responsiveHeight(4),
-    paddingHorizontal: responsiveWidth(4),
+    paddingVertical: responsiveHeight(2),
+    paddingHorizontal: responsiveWidth(4.5),
   },
   buttonView: {
     width: responsiveWidth(80),
-    height: responsiveHeight(10),
+    height: responsiveHeight(8),
     backgroundColor: '#2c2c34',
     borderRadius: 10,
     justifyContent: 'center',
     marginTop: responsiveHeight(2),
   },
   buttonContainer: {
-    top: responsiveHeight(5),
+    top: responsiveHeight(0),
     alignItems: 'center',
   },
   buttonTextView: {
@@ -185,7 +181,7 @@ const styles = StyleSheet.create({
   },
   minibuttonView: {
     width: responsiveWidth(60),
-    height: responsiveHeight(10),
+    height: responsiveHeight(7.5),
     backgroundColor: '#2c2c34',
     borderRadius: 10,
     justifyContent: 'center',
@@ -194,7 +190,7 @@ const styles = StyleSheet.create({
   logoutButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: responsiveHeight(4),
+    // marginTop: responsiveHeight(1),
   },
   containerView: {flex: 1},
   redTextColor: {
