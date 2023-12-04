@@ -1,12 +1,5 @@
-import {
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import React, { useState } from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import React from 'react';
 import Card from '../components/Card';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {
@@ -14,20 +7,19 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 
-
 const DeleteCard = () => {
   return (
-      <View style={styles.cardContainer}>
-        <Card backgroundColor="#fff" />
-        <View style={styles.iconsContainer}>
-          <TouchableOpacity>
-            <Icon name={'delete'} size={30} color={'#aa5945'} />
-          </TouchableOpacity>
-          <TouchableOpacity style={{marginLeft: responsiveWidth(5)}}>
-            <Icon name={'edit'} size={30} color={'#9dbead'} />
-          </TouchableOpacity>
-        </View>
+    <View style={styles.cardContainer}>
+      <Card backgroundColor="#fff" />
+      <View style={styles.iconsContainer}>
+        <TouchableOpacity>
+          <Icon name={'delete'} size={30} color={'#aa5945'} />
+        </TouchableOpacity>
+        <TouchableOpacity style={{marginLeft: responsiveWidth(5)}}>
+          <Icon name={'edit'} size={30} color={'#9dbead'} />
+        </TouchableOpacity>
       </View>
+    </View>
   );
 };
 
