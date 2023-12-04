@@ -6,9 +6,8 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  Modal,
 } from 'react-native';
-import React, { useState } from 'react';
+import React from 'react';
 import TextInputComp from '../components/TextInputComp';
 import {
   responsiveFontSize,
@@ -16,25 +15,22 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import ButtonComp from '../components/ButtonComp';
-import ModalCard from '../components/ModalCard';
 
-const ChangePassword = ({GoBackPasswordChange,closePasswordModal}: any) => {
-    const [confirmVisible , setConfirmVisible] = useState(false);
-   
-    // it will close the ChangePassword Modal  and open Password Change Modal
-    const dialogueOpen = () => {
-      GoBackPasswordChange();
-    }
+const ChangePassword = ({GoBackPasswordChange, closePasswordModal}: any) => {
+  // it will close the ChangePassword Modal  and open Password Change Modal
+  const dialogueOpen = () => {
+    GoBackPasswordChange();
+  };
 
   return (
     <TouchableWithoutFeedback>
-      <ScrollView contentContainerStyle={{flexGrow: 1}}>
+      <ScrollView contentContainerStyle={styles.scrollviewContainer}>
         <View style={styles.containerView}>
           <View style={styles.container}>
-           
-
             <View style={styles.iconContainer}>
-              <TouchableOpacity style={styles.iconView} onPress={() => closePasswordModal()}>
+              <TouchableOpacity
+                style={styles.iconView}
+                onPress={() => closePasswordModal()}>
                 <Image
                   source={require('../assets/images/cross.png')}
                   style={styles.iconStyle}
@@ -71,7 +67,11 @@ const ChangePassword = ({GoBackPasswordChange,closePasswordModal}: any) => {
               </TouchableOpacity>
             </View>
             <View style={styles.buttonContainer}>
-              <ButtonComp text="Done" BtnWidth={responsiveWidth(18)} onPress={dialogueOpen} />
+              <ButtonComp
+                text="Done"
+                BtnWidth={responsiveWidth(18)}
+                onPress={dialogueOpen}
+              />
             </View>
           </View>
         </View>
@@ -121,4 +121,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: responsiveHeight(17),
   },
+  scrollviewContainer: {flexGrow: 1},
 });
