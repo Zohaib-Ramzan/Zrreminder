@@ -21,6 +21,7 @@ import {
 } from 'react-native-responsive-dimensions';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
 
 type SignupProps = NativeStackScreenProps<RootStackParamList, 'Signup'>;
 
@@ -53,10 +54,10 @@ const Signup = ({navigation}: SignupProps) => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <ScrollView>
-          <View style={styles.container}>
+        <ScrollView keyboardShouldPersistTaps="handled">
+          <KeyboardAvoidingScrollView>
             <View style={styles.imgContainer}>
               <Image
                 source={require('../assets/images/logo.png')}
@@ -110,7 +111,6 @@ const Signup = ({navigation}: SignupProps) => {
               )}
 
               <ButtonComp text="Sign up" onPress={() => handleSignup()} />
-
               <View style={styles.alreadyAccountContainer}>
                 <Text style={styles.alreadyAccountText}>
                   Already Have an Account?
@@ -122,7 +122,7 @@ const Signup = ({navigation}: SignupProps) => {
                 </Pressable>
               </View>
             </View>
-          </View>
+          </KeyboardAvoidingScrollView>
         </ScrollView>
       </TouchableWithoutFeedback>
     </SafeAreaView>

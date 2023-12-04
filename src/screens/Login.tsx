@@ -8,6 +8,9 @@ import {
   Pressable,
   SafeAreaView,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
 } from 'react-native';
 import React, {useState} from 'react';
 import TextInputComp from '../components/TextInputComp';
@@ -69,42 +72,45 @@ const Login = ({navigation}: LoginProps) => {
 
   return (
     <SafeAreaView style={styles.safeAreaViewStyle}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <View style={styles.container}>
-          <View style={styles.imgContainer}>
-            <Image
-              source={require('../assets/images/logo.png')}
-              style={styles.logoStyle}
-            />
-          </View>
-          <Text style={styles.txtColor}>Sign in</Text>
-          <View style={styles.textinputContainer}>
-            <TextInputComp
-              placeholder={'Email'}
-              placeholderTextColor={'#b3b3b7'}
-              backgroundColor={'#464657'}
-              value={email}
-              onChangeText={(value: string) => setEmail(value)}
-              secureTextEntry={false}
-              textColor="#fff"
-            />
-            <TextInputComp
-              placeholder={'Password'}
-              placeholderTextColor={'#b3b3b7'}
-              backgroundColor={'#464657'}
-              value={password}
-              onChangeText={(value: string) => setPassword(value)}
-              secureTextEntry={true}
-              textColor="#fff"
-            />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <View style={styles.container}>
+            <View style={styles.imgContainer}>
+              <Image
+                source={require('../assets/images/logo.png')}
+                style={styles.logoStyle}
+              />
+            </View>
+            <Text style={styles.txtColor}>Sign in</Text>
+            <View style={styles.textinputContainer}>
+              <TextInputComp
+                placeholder={'Email'}
+                placeholderTextColor={'#b3b3b7'}
+                backgroundColor={'#464657'}
+                value={email}
+                onChangeText={(value: string) => setEmail(value)}
+                secureTextEntry={false}
+                textColor="#fff"
+              />
+              <TextInputComp
+                placeholder={'Password'}
+                placeholderTextColor={'#b3b3b7'}
+                backgroundColor={'#464657'}
+                value={password}
+                onChangeText={(value: string) => setPassword(value)}
+                secureTextEntry={true}
+                textColor="#fff"
+              />
 
-            <ButtonComp
-              text="Sign in"
-              // onPress={() => loginVerification()}
-              onPress={() => handleLogin()}
-            />
+              <ButtonComp
+                text="Sign in"
+                // onPress={() => loginVerification()}
+                onPress={() => handleLogin()}
+              />
 
-            {/* <Text style={styles.signupText}>- or sign up with -</Text>
+              {/* <Text style={styles.signupText}>- or sign up with -</Text>
             <View style={styles.signupButtonsContainer}>
               <View style={styles.signupGoogle}>
                 <ButtonComp
@@ -127,19 +133,22 @@ const Login = ({navigation}: LoginProps) => {
                 />
               </View>
             </View> */}
-            <View style={styles.signupNavigateContainer}>
-              <Text style={styles.signupNavigateText}>
-                Don't have an Account?
-              </Text>
-              <Pressable
-                onPress={() => navigation.navigate('Signup')}
-                style={styles.signupNavigateHyperlink}>
-                <Text style={styles.signupNavigateHyperlinkText}>Sign up</Text>
-              </Pressable>
+              <View style={styles.signupNavigateContainer}>
+                <Text style={styles.signupNavigateText}>
+                  Don't have an Account?
+                </Text>
+                <Pressable
+                  onPress={() => navigation.navigate('Signup')}
+                  style={styles.signupNavigateHyperlink}>
+                  <Text style={styles.signupNavigateHyperlinkText}>
+                    Sign up
+                  </Text>
+                </Pressable>
+              </View>
             </View>
           </View>
-        </View>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
