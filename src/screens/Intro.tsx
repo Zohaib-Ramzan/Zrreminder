@@ -52,7 +52,7 @@ const Intro = ({navigation}: IntroProps) => {
       </View>
       <View style={styles.circleIndicatorsView}>
         {ImgData.map((item, index) => {
-          const indicatorCnatinerView = {
+          const indicatorConatinerView = {
             height: currentIndex === index ? 10 : 8,
             width: currentIndex === index ? 10 : 8,
             borderRadius: currentIndex === index ? 5 : 4,
@@ -60,7 +60,7 @@ const Intro = ({navigation}: IntroProps) => {
             marginLeft: 5,
           };
           return (
-            <View key={index} style={indicatorCnatinerView}>
+            <View key={index} style={indicatorConatinerView}>
               {''}
             </View>
           );
