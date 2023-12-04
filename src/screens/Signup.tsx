@@ -139,7 +139,8 @@ const styles = StyleSheet.create({
     color: '#afafb0',
     fontSize: responsiveFontSize(2.5),
     fontWeight: '700',
-    marginBottom: responsiveHeight(3),
+    paddingHorizontal: responsiveWidth(4),
+    marginBottom: responsiveHeight(1),
   },
   logoStyle: {
     height: responsiveHeight(22),
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
   passwordMatchText: {color: 'red'},
   alreadyAccountContainer: {
     flexDirection: 'row',
-    margin: responsiveHeight(6.5),
+    marginBottom: responsiveHeight(2),
     alignSelf: 'center',
   },
   alreadyAccountText: {color: '#b3b3b7', fontWeight: '800'},

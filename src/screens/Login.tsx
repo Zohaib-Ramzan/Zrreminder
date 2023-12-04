@@ -6,7 +6,6 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Pressable,
-  ScrollView,
   SafeAreaView,
   Alert,
 } from 'react-native';
@@ -69,81 +68,77 @@ const Login = ({navigation}: LoginProps) => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.safeAreaViewStyle}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <ScrollView>
-          <View style={styles.container}>
-            <View style={styles.imgContainer}>
-              <Image
-                source={require('../assets/images/logo.png')}
-                style={styles.logoStyle}
-              />
-            </View>
-            <Text style={styles.txtColor}>Sign in</Text>
-            <View style={styles.textinputContainer}>
-              <TextInputComp
-                placeholder={'Email'}
-                placeholderTextColor={'#b3b3b7'}
-                backgroundColor={'#464657'}
-                value={email}
-                onChangeText={(value: string) => setEmail(value)}
-                secureTextEntry={false}
-                textColor="#fff"
-              />
-              <TextInputComp
-                placeholder={'Password'}
-                placeholderTextColor={'#b3b3b7'}
-                backgroundColor={'#464657'}
-                value={password}
-                onChangeText={(value: string) => setPassword(value)}
-                secureTextEntry={true}
-                textColor="#fff"
-              />
+        <View style={styles.container}>
+          <View style={styles.imgContainer}>
+            <Image
+              source={require('../assets/images/logo.png')}
+              style={styles.logoStyle}
+            />
+          </View>
+          <Text style={styles.txtColor}>Sign in</Text>
+          <View style={styles.textinputContainer}>
+            <TextInputComp
+              placeholder={'Email'}
+              placeholderTextColor={'#b3b3b7'}
+              backgroundColor={'#464657'}
+              value={email}
+              onChangeText={(value: string) => setEmail(value)}
+              secureTextEntry={false}
+              textColor="#fff"
+            />
+            <TextInputComp
+              placeholder={'Password'}
+              placeholderTextColor={'#b3b3b7'}
+              backgroundColor={'#464657'}
+              value={password}
+              onChangeText={(value: string) => setPassword(value)}
+              secureTextEntry={true}
+              textColor="#fff"
+            />
 
-              <ButtonComp
-                text="Sign in"
-                // onPress={() => loginVerification()}
-                onPress={() => handleLogin()}
-              />
+            <ButtonComp
+              text="Sign in"
+              // onPress={() => loginVerification()}
+              onPress={() => handleLogin()}
+            />
 
-              <Text style={styles.signupText}>- or sign up with -</Text>
-              <View style={styles.signupButtonsContainer}>
-                <View style={styles.signupGoogle}>
-                  <ButtonComp
-                    BtnWidth={responsiveWidth(15)}
-                    Btnmargin={responsiveWidth(0.1)}
-                  />
-                  <Image
-                    source={require('../assets/images/google_logo.png')}
-                    style={styles.googleImageContainer}
-                  />
-                </View>
-                <View style={styles.signupApple}>
-                  <ButtonComp
-                    BtnWidth={responsiveWidth(15)}
-                    Btnmargin={responsiveWidth(0.1)}
-                  />
-                  <Image
-                    source={require('../assets/images/apple_logo.png')}
-                    style={styles.appleImageContainer}
-                  />
-                </View>
+            {/* <Text style={styles.signupText}>- or sign up with -</Text>
+            <View style={styles.signupButtonsContainer}>
+              <View style={styles.signupGoogle}>
+                <ButtonComp
+                  BtnWidth={responsiveWidth(15)}
+                  Btnmargin={responsiveWidth(0.1)}
+                />
+                <Image
+                  source={require('../assets/images/google_logo.png')}
+                  style={styles.googleImageContainer}
+                />
               </View>
-              <View style={styles.signupNavigateContainer}>
-                <Text style={styles.signupNavigateText}>
-                  Don't have an Account?
-                </Text>
-                <Pressable
-                  onPress={() => navigation.navigate('Signup')}
-                  style={styles.signupNavigateHyperlink}>
-                  <Text style={styles.signupNavigateHyperlinkText}>
-                    Sign up
-                  </Text>
-                </Pressable>
+              <View style={styles.signupApple}>
+                <ButtonComp
+                  BtnWidth={responsiveWidth(15)}
+                  Btnmargin={responsiveWidth(0.1)}
+                />
+                <Image
+                  source={require('../assets/images/apple_logo.png')}
+                  style={styles.appleImageContainer}
+                />
               </View>
+            </View> */}
+            <View style={styles.signupNavigateContainer}>
+              <Text style={styles.signupNavigateText}>
+                Don't have an Account?
+              </Text>
+              <Pressable
+                onPress={() => navigation.navigate('Signup')}
+                style={styles.signupNavigateHyperlink}>
+                <Text style={styles.signupNavigateHyperlinkText}>Sign up</Text>
+              </Pressable>
             </View>
           </View>
-        </ScrollView>
+        </View>
       </TouchableWithoutFeedback>
     </SafeAreaView>
   );
@@ -160,7 +155,8 @@ const styles = StyleSheet.create({
     color: '#afafb0',
     fontSize: responsiveFontSize(2.5),
     fontWeight: '700',
-    marginBottom: responsiveHeight(3),
+    paddingHorizontal: responsiveWidth(4),
+    marginBottom: responsiveHeight(0.5),
   },
   logoStyle: {
     height: responsiveHeight(22),
@@ -211,10 +207,13 @@ const styles = StyleSheet.create({
   },
   signupNavigateContainer: {
     flexDirection: 'row',
-    margin: responsiveHeight(6.5),
+    margin: responsiveHeight(15),
     alignSelf: 'center',
   },
-  signupNavigateText: {color: '#b3b3b7', fontWeight: '800'},
+  signupNavigateText: {
+    color: '#b3b3b7',
+    fontWeight: '800',
+  },
   signupNavigateHyperlink: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -225,4 +224,5 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     fontWeight: '700',
   },
+  safeAreaViewStyle: {flex: 1},
 });
