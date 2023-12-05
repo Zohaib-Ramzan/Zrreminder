@@ -8,9 +8,6 @@ import {
   Pressable,
   SafeAreaView,
   Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ActivityIndicator,
 } from 'react-native';
 import React, {useState} from 'react';
 import TextInputComp from '../components/TextInputComp';
@@ -24,6 +21,7 @@ import {
 } from 'react-native-responsive-dimensions';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
 type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 const Login = ({navigation}: LoginProps) => {
@@ -76,9 +74,7 @@ const Login = ({navigation}: LoginProps) => {
 
   return (
     <SafeAreaView style={styles.safeAreaViewStyle}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}>
+      <KeyboardAvoidingScrollView>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           <View style={styles.container}>
             <View style={styles.imgContainer}>
@@ -153,7 +149,7 @@ const Login = ({navigation}: LoginProps) => {
             </View>
           </View>
         </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+      </KeyboardAvoidingScrollView>
     </SafeAreaView>
   );
 };
