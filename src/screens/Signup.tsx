@@ -44,7 +44,7 @@ const Signup = ({navigation}: SignupProps) => {
       console.warn('Successfully Signup!');
 
       const userCredential = await firestore()
-        .collection('cardCollection')
+        .collection('Users')
         .doc(isUserCreated.user.uid)
         .set({name: name, email: email, id: isUserCreated.user.uid});
       setIsLoading(true);

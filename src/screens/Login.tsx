@@ -42,7 +42,7 @@ const Login = ({navigation}: LoginProps) => {
         console.log(isUserValid);
 
         const getName = await firestore()
-          .collection('cardCollection')
+          .collection('Users')
           .doc(isUserValid.user.uid)
           .get()
           .then(doc => {
@@ -52,6 +52,7 @@ const Login = ({navigation}: LoginProps) => {
               console.log('Document data:', data);
 
               // Move navigation logic here to ensure 'name' is set before navigating
+              setIsLoading(false);
               navigation.navigate('Main', {
                 Email: isUserValid.user.email,
                 uid: isUserValid.user.uid,
@@ -105,7 +106,7 @@ const Login = ({navigation}: LoginProps) => {
               />
 
               <ButtonComp
-                text={isLoading ? '' : 'Sign in'}
+                text={'Sign in'}
                 // onPress={() => loginVerification()}
                 onPress={() => handleLogin()}
                 isLoading={isLoading}
