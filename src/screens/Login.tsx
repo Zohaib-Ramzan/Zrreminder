@@ -10,7 +10,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useState} from 'react';
 import TextInputComp from '../components/TextInputComp';
@@ -30,10 +30,12 @@ const Login = ({navigation}: LoginProps) => {
   // const {name} = route.params || {};
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
     // ... (existing code)
     if (email.length > 0 && password.length > 0) {
+      setIsLoading(true);
       try {
         const isUserValid = await auth().signInWithEmailAndPassword(
           email,
@@ -62,7 +64,9 @@ const Login = ({navigation}: LoginProps) => {
               console.log('No such document!');
             }
           });
+        setIsLoading(false);
       } catch (error) {
+        setIsLoading(false);
         console.warn(error);
       }
     } else {
@@ -104,11 +108,23 @@ const Login = ({navigation}: LoginProps) => {
                 textColor="#fff"
               />
 
-              <ButtonComp
-                text="Sign in"
-                // onPress={() => loginVerification()}
-                onPress={() => handleLogin()}
-              />
+              <View style={styles.loadingButton}>
+                <ButtonComp
+                  text={isLoading ? '' : 'Sign in'}
+                  // onPress={() => loginVerification()}
+                  onPress={() => handleLogin()}
+                  isLoading={isLoading}
+                />
+                {isLoading && (
+                  <View style={styles.activityIndicator}>
+                    <ActivityIndicator
+                      animating={true}
+                      size={'large'}
+                      color={'#464657'}
+                    />
+                  </View>
+                )}
+              </View>
 
               {/* <Text style={styles.signupText}>- or sign up with -</Text>
             <View style={styles.signupButtonsContainer}>
@@ -234,4 +250,16 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   safeAreaViewStyle: {flex: 1},
+  loadingButton: {
+    // position: 'absolute',
+  },
+  activityIndicator: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
