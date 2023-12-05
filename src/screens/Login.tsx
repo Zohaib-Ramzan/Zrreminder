@@ -108,23 +108,12 @@ const Login = ({navigation}: LoginProps) => {
                 textColor="#fff"
               />
 
-              <View style={styles.loadingButton}>
-                <ButtonComp
-                  text={isLoading ? '' : 'Sign in'}
-                  // onPress={() => loginVerification()}
-                  onPress={() => handleLogin()}
-                  isLoading={isLoading}
-                />
-                {isLoading && (
-                  <View style={styles.activityIndicator}>
-                    <ActivityIndicator
-                      animating={true}
-                      size={'large'}
-                      color={'#464657'}
-                    />
-                  </View>
-                )}
-              </View>
+              <ButtonComp
+                text={isLoading ? '' : 'Sign in'}
+                // onPress={() => loginVerification()}
+                onPress={() => handleLogin()}
+                isLoading={isLoading}
+              />
 
               {/* <Text style={styles.signupText}>- or sign up with -</Text>
             <View style={styles.signupButtonsContainer}>
@@ -250,16 +239,4 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   safeAreaViewStyle: {flex: 1},
-  loadingButton: {
-    // position: 'absolute',
-  },
-  activityIndicator: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
 });

@@ -1,4 +1,4 @@
-import {Text, Pressable, StyleSheet} from 'react-native';
+import {Text, Pressable, StyleSheet, ActivityIndicator} from 'react-native';
 import React, {PropsWithChildren} from 'react';
 import {
   responsiveHeight,
@@ -11,7 +11,7 @@ type ButtonProps = PropsWithChildren<{
   BtnHeight?: any;
   Btnmargin?: number;
   onPress?: any;
-  isLoading?: any;
+  isLoading?: boolean;
 }>;
 
 const ButtonComp = ({
@@ -20,6 +20,7 @@ const ButtonComp = ({
   BtnHeight,
   Btnmargin,
   onPress,
+  isLoading,
 }: // isLoading,
 ButtonProps) => {
   const containerCondition = {
@@ -31,7 +32,11 @@ ButtonProps) => {
     <Pressable
       style={[styles.containerView, containerCondition]}
       onPress={onPress}>
-      <Text style={styles.txtStyle}>{text}</Text>
+      {isLoading ? (
+        <ActivityIndicator size={'large'} color={'#464657'} />
+      ) : (
+        <Text style={styles.txtStyle}>{text}</Text>
+      )}
     </Pressable>
   );
 };

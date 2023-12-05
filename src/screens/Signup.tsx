@@ -30,24 +30,29 @@ const Signup = ({navigation}: SignupProps) => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSignup = async () => {
+    setIsLoading(true);
     try {
       const isUserCreated = await auth().createUserWithEmailAndPassword(
         email,
         password,
       );
       console.log(isUserCreated);
+      setIsLoading(false);
       console.warn('Successfully Signup!');
 
       const userCredential = await firestore()
         .collection('cardCollection')
         .doc(isUserCreated.user.uid)
         .set({name: name, email: email, id: isUserCreated.user.uid});
+      setIsLoading(true);
       navigation.navigate('Login', {
         name: name,
       });
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
       console.warn(error);
     }
@@ -110,7 +115,11 @@ const Signup = ({navigation}: SignupProps) => {
                 </Text>
               )}
 
-              <ButtonComp text="Sign up" onPress={() => handleSignup()} />
+              <ButtonComp
+                text="Sign up"
+                isLoading={isLoading}
+                onPress={() => handleSignup()}
+              />
               <View style={styles.alreadyAccountContainer}>
                 <Text style={styles.alreadyAccountText}>
                   Already Have an Account?
