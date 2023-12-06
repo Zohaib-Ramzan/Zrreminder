@@ -10,11 +10,8 @@ type SplashoProps = NativeStackScreenProps<RootStackParamList, 'Splash'>;
 const Splash = ({navigation}: SplashoProps) => {
   useEffect(() => {
     const timer = setTimeout(() => {
-      const unsubscribe = Auth().onAuthStateChanged(user => {
-        const routeName = user !== null ? 'Main' : 'Login';
-        navigation.dispatch(StackActions.replace(routeName));
-        unsubscribe(); // Unsubscribe after navigating
-      });
+      const routeName = Auth().currentUser?.uid ? 'Main' : 'Login';
+      navigation.dispatch(StackActions.replace(routeName));
     }, 3000);
 
     return () => {
