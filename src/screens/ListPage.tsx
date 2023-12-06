@@ -204,5 +204,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: responsiveFontSize(3),
     fontWeight: 'bold',
+    paddingHorizontal: responsiveWidth(4),
   },
 });
