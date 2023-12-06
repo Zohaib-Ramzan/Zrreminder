@@ -5,14 +5,14 @@ import {RootStackParamList} from '../routes/AppNavigator';
 import Auth from '@react-native-firebase/auth';
 import {StackActions} from '@react-navigation/native';
 
-type SplashoProps = NativeStackScreenProps<RootStackParamList, 'Splash'>;
+type SplashProps = NativeStackScreenProps<RootStackParamList, 'Splash'>;
 
-const Splash = ({navigation}: SplashoProps) => {
+const Splash = ({navigation}: SplashProps) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       const routeName = Auth().currentUser?.uid ? 'Main' : 'Login';
       navigation.dispatch(StackActions.replace(routeName));
-    }, 3000);
+    }, 2000);
 
     return () => {
       clearTimeout(timer); // Clear timeout when unmounting
