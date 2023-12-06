@@ -1,7 +1,6 @@
 import {
   Animated,
   Dimensions,
-  FlatList,
   Image,
   Pressable,
   StyleSheet,
@@ -9,12 +8,12 @@ import {
   View,
 } from 'react-native';
 import React, {useRef, useState} from 'react';
-import {NativeStackScreenProps} from "@react-navigation/native-stack"
-import { RootStackParamList } from '../routes/AppNavigator';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../routes/AppNavigator';
 
 const {width, height} = Dimensions.get('window');
 
-type IntroProps = NativeStackScreenProps<RootStackParamList,"Intro">;
+type IntroProps = NativeStackScreenProps<RootStackParamList, 'Intro'>;
 
 const Intro = ({navigation}: IntroProps) => {
   const ref = useRef<any>();
@@ -26,6 +25,7 @@ const Intro = ({navigation}: IntroProps) => {
     require('../assets/images/intro_3.png'),
     require('../assets/images/intro_4.png'),
   ];
+
   return (
     <View style={styles.container}>
       <View style={{height: height / 2}}>
@@ -37,11 +37,11 @@ const Intro = ({navigation}: IntroProps) => {
           pagingEnabled
           onScroll={e => {
             const x = e.nativeEvent.contentOffset.x;
-            setCurrentIndex(parseInt((x / (width - 50)).toFixed(0)));
+            setCurrentIndex(parseInt((x / (width - 50)).toFixed(0), 10));
           }}
           // keyExtractor={(item,index) => index.toString()}
           bounces={false}
-          renderItem={({item, index}) => {
+          renderItem={({item}) => {
             return (
               <Animated.View style={styles.listView}>
                 <Image source={item} style={styles.ImgStyle} />
@@ -52,22 +52,22 @@ const Intro = ({navigation}: IntroProps) => {
       </View>
       <View style={styles.circleIndicatorsView}>
         {ImgData.map((item, index) => {
+          const indicatorConatinerView = {
+            height: currentIndex === index ? 10 : 8,
+            width: currentIndex === index ? 10 : 8,
+            borderRadius: currentIndex === index ? 5 : 4,
+            backgroundColor: currentIndex === index ? '#6c63fe' : 'gray',
+            marginLeft: 5,
+          };
           return (
-            <View
-            key={index}
-              style={{
-                height: currentIndex == index ? 10 : 8,
-                width: currentIndex == index ? 10 : 8,
-                borderRadius: currentIndex == index ? 5 : 4,
-                backgroundColor: currentIndex == index ? '#6c63fe' : 'gray',
-                marginLeft: 5,
-              }}>
-              </View>
+            <View key={index} style={indicatorConatinerView}>
+              {''}
+            </View>
           );
         })}
       </View>
       <View style={styles.btnContainer}>
-        {currentIndex == 0 ? null : (
+        {currentIndex === 0 ? null : (
           <Pressable
             style={[
               styles.previousBtn,
@@ -83,7 +83,7 @@ const Intro = ({navigation}: IntroProps) => {
             <Text style={styles.btnTxt}>Previous</Text>
           </Pressable>
         )}
-        {ImgData.length - 1 == currentIndex ? null : (
+        {ImgData.length - 1 === currentIndex ? null : (
           <Pressable
             style={[styles.nextBtn, {width: currentIndex == 0 ? '100%' : 100}]}
             onPress={() => {
@@ -97,9 +97,9 @@ const Intro = ({navigation}: IntroProps) => {
           </Pressable>
         )}
         {ImgData.length - 1 !== currentIndex ? null : (
-          <Pressable style={styles.nextBtn}
-          onPress={() => navigation.navigate("Login")}
-          >
+          <Pressable
+            style={styles.nextBtn}
+            onPress={() => navigation.navigate('Login')}>
             <Text>Continue</Text>
           </Pressable>
         )}

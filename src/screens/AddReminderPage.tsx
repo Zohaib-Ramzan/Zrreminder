@@ -4,14 +4,11 @@ import {
   Text,
   View,
   TouchableWithoutFeedback,
-  ScrollView,
   TouchableOpacity,
   Image,
   FlatList,
   Alert,
   Pressable,
-  ScrollViewBase,
-  ScrollViewComponent
 } from 'react-native';
 import {
   responsiveFontSize,
@@ -19,15 +16,13 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import ButtonComp from '../components/ButtonComp';
-import Card from '../components/Card';
-import ModalCard from '../components/ModalCard';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const AddReminderPage = ({
   crossButton,
   initialData,
   initialIndex,
-  onValueSelected
+  onValueSelected,
 }: any) => {
   const [title, setTitle] = useState(initialData?.title || '');
   const [selectedCardIndex, setSelectedCardIndex] = useState<number | null>(
@@ -36,7 +31,6 @@ const AddReminderPage = ({
   const [selectedCardData, setSelectedCardData] = useState<any>(null);
 
   const [mainDataIndex, setMainDataIndex] = useState(null);
-  const [selectedText, setSelectedText] = useState("");
   const [selectedItemIndex, setSelectedItemIndex] = useState<any>(-1);
   const data = [
     'Same Day as Expiration    ',
@@ -47,12 +41,6 @@ const AddReminderPage = ({
     '3 Weeks Before Expiration',
     '4 Weeks Before Expiration',
   ];
-
-  const reminderText=()=> {
-  setSelectedText(data[selectedItemIndex])
-  const reminderTxt = selectedText
-    console.log(reminderTxt)
-  }
 
   useEffect(() => {
     setMainDataIndex(initialIndex);
@@ -73,8 +61,8 @@ const AddReminderPage = ({
 
   const onDonePress = () => {
     if (selectedItemIndex > -1) {
-      onValueSelected(data[selectedItemIndex])
-      crossButton()
+      onValueSelected(data[selectedItemIndex]);
+      crossButton();
     } else {
       Alert.alert('Please Select Card!');
     }
@@ -83,64 +71,64 @@ const AddReminderPage = ({
   return (
     <TouchableWithoutFeedback>
       {/* <ScrollView contentContainerStyle={{flexGrow: 1}}> */}
-        <View style={styles.containerView}>
-          <View style={styles.container}>
-            <View style={styles.iconContainer}>
-              <TouchableOpacity
-                style={styles.iconView}
-                onPress={() => crossButton()}>
-                <Image
-                  source={require('../assets/images/cross.png')}
-                  style={styles.iconStyle}
-                />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.titleTxt}>Reminder</Text>
-            <View style={styles.cardContainerView}>
-              <Pressable style={styles.cardContainer}>
-                <View>
-                  <FlatList
-                    data={data}
-                    renderItem={({item, index}) => {
-                      const isChecked = selectedItemIndex === index;
-                      console.log(selectedItemIndex);
-                      return (
-                        <View key={index} style={styles.reminderTxtContainer}>
-                          <TouchableOpacity
-                            style={styles.reminderItem}
-                            onPress={() => onChecked(index)}>
-                            {isChecked && (
-                              
-                              <Icon
-                                name="check"
-                                size={25}
-                                color="#fff"
-                                style={{
-                                  position: 'absolute',
-                                  right: responsiveWidth(65)
-                                }}
-                              />
-                           
-                            )}
-                            
-                            <Text style={[styles.reminderTxt,{color: isChecked ? "#fff" : "#6e6e7c"}]}>{item}</Text>
-                          </TouchableOpacity>
-                        </View>
-                      );
-                    }}
-                  />
-                </View>
-              </Pressable>
-            </View>
-            <View style={styles.buttonContainer}>
-              <ButtonComp
-                text="Done"
-                BtnWidth={responsiveWidth(18)}
-                onPress={() => onDonePress()}
+      <View style={styles.containerView}>
+        <View style={styles.container}>
+          <View style={styles.iconContainer}>
+            <TouchableOpacity
+              style={styles.iconView}
+              onPress={() => crossButton()}>
+              <Image
+                source={require('../assets/images/cross.png')}
+                style={styles.iconStyle}
               />
-            </View>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.titleTxt}>Reminder</Text>
+          <View style={styles.cardContainerView}>
+            <Pressable style={styles.cardContainer}>
+              <View>
+                <FlatList
+                  data={data}
+                  renderItem={({item, index}) => {
+                    const isChecked = selectedItemIndex === index;
+                    const reminderTextColor = isChecked
+                      ? {color: '#fff'}
+                      : {color: '#6e6e7c'};
+                    console.log(selectedItemIndex);
+                    return (
+                      <View key={index} style={styles.reminderTxtContainer}>
+                        <TouchableOpacity
+                          style={styles.reminderItem}
+                          onPress={() => onChecked(index)}>
+                          {isChecked && (
+                            <Icon
+                              name="check"
+                              size={25}
+                              color="#fff"
+                              style={styles.checkStyle}
+                            />
+                          )}
+
+                          <Text style={[styles.reminderTxt, reminderTextColor]}>
+                            {item}
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    );
+                  }}
+                />
+              </View>
+            </Pressable>
+          </View>
+          <View style={styles.buttonContainer}>
+            <ButtonComp
+              text="Done"
+              BtnWidth={responsiveWidth(18)}
+              onPress={() => onDonePress()}
+            />
           </View>
         </View>
+      </View>
       {/* </ScrollView> */}
     </TouchableWithoutFeedback>
   );
@@ -227,5 +215,9 @@ const styles = StyleSheet.create({
   },
   reminderItem: {
     marginBottom: responsiveHeight(4),
+  },
+  checkStyle: {
+    position: 'absolute',
+    right: responsiveWidth(65),
   },
 });

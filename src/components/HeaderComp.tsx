@@ -1,14 +1,14 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import React,{PropsWithChildren} from 'react';
+import React, {PropsWithChildren} from 'react';
 import {
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 
 type HeaderProps = PropsWithChildren<{
-    onPress?: any
-  }>
+  onPress?: any;
+}>;
 
 const HeaderComp = ({onPress}: HeaderProps) => {
   return (
@@ -27,16 +27,16 @@ export default HeaderComp;
 const styles = StyleSheet.create({
   container: {
     width: responsiveWidth(100),
-    height: responsiveHeight(13),
+    height: responsiveHeight(6),
     backgroundColor: '#1a1a1c',
   },
   iconContainer: {
     flex: 1,
     justifyContent: 'flex-end',
-    left:responsiveWidth(2)
+    left: responsiveWidth(2),
   },
-  pressableArea:{
-    height:responsiveHeight(5),
-    width:responsiveWidth(8),
-  }
+  pressableArea: {
+    height: responsiveHeight(5),
+    width: responsiveWidth(8),
+  },
 });

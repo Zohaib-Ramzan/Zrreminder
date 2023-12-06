@@ -4,9 +4,7 @@ import {
   Text,
   View,
   Pressable,
-  ScrollView,
   Modal,
-  TouchableOpacity,
   FlatList,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
@@ -14,7 +12,6 @@ import HeaderComp from '../components/HeaderComp';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../routes/AppNavigator';
-import {useFocusEffect} from '@react-navigation/native';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -22,8 +19,6 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import AddItem from './AddItem';
-import Card from '../components/Card';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import ReminderCard from '../components/ReminderCard';
 
 type dataArrayType = {
@@ -33,17 +28,15 @@ type dataArrayType = {
   endDate: string;
   reminderTxt: string;
   noteTxt: string;
-  selectedCardCategory?: string
+  selectedCardCategory?: string;
 };
- 
 
 type ListPageProps = NativeStackScreenProps<RootStackParamList, 'ListPage'>;
 const ListPage = ({navigation, route}: ListPageProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isEditPress, setIsEditPress] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [updatedData, setUpdatedData] = useState(null);
-  const [itemCat, setItemCat] = useState(route.params?.selectedCardTitle)
+  const [itemCat, setItemCat] = useState(route.params?.selectedCardTitle);
   const [dataArray, setDataArray] = useState<Array<dataArrayType>>([]);
   const crossButton = () => {
     setModalVisible(false);
@@ -52,7 +45,7 @@ const ListPage = ({navigation, route}: ListPageProps) => {
 
   useEffect(() => {
     if (route.params?.newUpdatedData) {
-      setDataArray((prevDataArray) => [
+      setDataArray(prevDataArray => [
         ...prevDataArray,
         {
           title: route.params?.newUpdatedData.title,
@@ -61,13 +54,13 @@ const ListPage = ({navigation, route}: ListPageProps) => {
           endDate: route.params?.newUpdatedData.endDate,
           reminderTxt: route.params?.newUpdatedData.reminderTxt,
           noteTxt: route.params?.newUpdatedData.noteTxt,
-          selectedCardCategory: route.params?.newUpdatedData.selectedCardCategory,
+          selectedCardCategory:
+            route.params?.newUpdatedData.selectedCardCategory,
         },
       ]);
     }
   }, [route.params?.newUpdatedData]);
 
-  
   useEffect(() => {
     if (route.params?.isEditPressed) {
       setModalVisible(true);
@@ -84,13 +77,15 @@ const ListPage = ({navigation, route}: ListPageProps) => {
   // console.log("isReminderCardVisible "+route.params?.selectedCardTitle)
   return (
     <SafeAreaView style={styles.containerView}>
-      <View style={{flex: 1}}>
+      <View style={styles.viewContainer}>
         <HeaderComp onPress={() => navigation.goBack()} />
         <View>
-        <Text style={{color: "#fff",fontSize:responsiveFontSize(3),fontWeight:"bold"}}>List:{'\n'}{itemCat}</Text>
+          <Text style={styles.listText}>
+            List:{'\n'}
+            {itemCat}
+          </Text>
         </View>
         <View style={styles.container}>
-
           <Modal visible={modalVisible} transparent>
             <AddItem
               crossButton={crossButton}
@@ -99,27 +94,31 @@ const ListPage = ({navigation, route}: ListPageProps) => {
             />
           </Modal>
 
-          <FlatList 
-          data={dataArray}
-          keyExtractor={(item, index) => index.toString()}
-          contentContainerStyle={styles.flatListContent}
-          renderItem={({item,index}) => {
-            const selectedCardItm = item.selectedCardCategory
-            return (
-              <View style={{marginBottom: responsiveHeight(5)}}>
-              {route.params?.isReminderCardVisible  &&  <ReminderCard updatedData={item} /> }
-              {console.log(" item Cat = " + selectedCardItm)}
-              </View>
-            )
-          }}
-          ListFooterComponent={() => (
-            <Pressable style={styles.imgContainer} onPress={() => setModalVisible(true)}>
-              <Image
-                source={require('../assets/images/plus-circle.png')}
-                style={styles.imgStyle}
-              />
-            </Pressable>
-          )}
+          <FlatList
+            data={dataArray}
+            keyExtractor={(item, index) => index.toString()}
+            contentContainerStyle={styles.flatListContent}
+            renderItem={({item}) => {
+              const selectedCardItm = item.selectedCardCategory;
+              return (
+                <View style={{marginBottom: responsiveHeight(5)}}>
+                  {route.params?.isReminderCardVisible && (
+                    <ReminderCard updatedData={item} />
+                  )}
+                  {console.log(' item Cat = ' + selectedCardItm)}
+                </View>
+              );
+            }}
+            ListFooterComponent={
+              <Pressable
+                style={styles.imgContainer}
+                onPress={() => setModalVisible(true)}>
+                <Image
+                  source={require('../assets/images/plus-circle.png')}
+                  style={styles.imgStyle}
+                />
+              </Pressable>
+            }
           />
           {/* <Pressable
             style={styles.imgContainer}
@@ -131,9 +130,7 @@ const ListPage = ({navigation, route}: ListPageProps) => {
           </Pressable> */}
           {/* { route.params?.isReminderCardVisible &&
          <ReminderCard updatedData={route.params?.newUpdatedData} />
-        
         } */}
-          
         </View>
       </View>
     </SafeAreaView>
@@ -163,7 +160,7 @@ const styles = StyleSheet.create({
   imgContainer: {
     // position: 'absolute',
     marginTop: responsiveHeight(10),
-    alignItems: "center",
+    alignItems: 'center',
     bottom: responsiveHeight(2),
   },
   reminderCard: {
@@ -201,5 +198,11 @@ const styles = StyleSheet.create({
   flatListContent: {
     width: responsiveScreenWidth(100), // Set to 100% of screen width
     paddingHorizontal: responsiveWidth(5), // Optional padding
+  },
+  viewContainer: {flex: 1},
+  listText: {
+    color: '#fff',
+    fontSize: responsiveFontSize(3),
+    fontWeight: 'bold',
   },
 });
