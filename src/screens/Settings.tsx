@@ -137,7 +137,7 @@ const Settings = ({navigation}: SettingsProps) => {
                 Delete All Items
               </Text>
             </Pressable>
-            <Pressable style={[styles.minibuttonView]}>
+            <Pressable style={styles.minibuttonView}>
               <Text style={[styles.buttonTextView, styles.redTextColor]}>
                 Delete Account
               </Text>
