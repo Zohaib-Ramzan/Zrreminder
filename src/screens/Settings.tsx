@@ -19,10 +19,12 @@ import ButtonComp from '../components/ButtonComp';
 import ChangePassword from './ChangePassword';
 import ModalCard from '../components/ModalCard';
 import EditName from './EditName';
+import Auth from '@react-native-firebase/auth';
+import {StackActions} from '@react-navigation/native';
 
 type SettingsProps = NativeStackScreenProps<RootStackParamList, 'Settings'>;
 
-const Settings = ({}: SettingsProps) => {
+const Settings = ({navigation}: SettingsProps) => {
   const [visible, setVisible] = useState(false);
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [editNameVisible, setEditNameVisible] = useState(false);
@@ -58,6 +60,12 @@ const Settings = ({}: SettingsProps) => {
   // close the Edit Name Confirmation Modal
   const closeModalEditNameConfirmation = () => {
     setNameChangedVisible(false);
+  };
+
+  // Signout function
+  const signOut = async () => {
+    await Auth().signOut();
+    navigation.dispatch(StackActions.replace('Login'));
   };
 
   return (
@@ -121,7 +129,7 @@ const Settings = ({}: SettingsProps) => {
               <Text style={styles.buttonTextView}>Edit Name</Text>
             </Pressable>
             <Pressable
-              style={[styles.buttonView, {marginBottom: responsiveHeight(3)}]}>
+              style={[styles.buttonView, {marginBottom: responsiveHeight(2)}]}>
               <Text style={styles.buttonTextView}>About</Text>
             </Pressable>
             <Pressable style={styles.minibuttonView}>
@@ -129,18 +137,18 @@ const Settings = ({}: SettingsProps) => {
                 Delete All Items
               </Text>
             </Pressable>
-            <Pressable
-              style={[
-                styles.minibuttonView,
-                {marginBottom: responsiveHeight(5)},
-              ]}>
+            <Pressable style={[styles.minibuttonView]}>
               <Text style={[styles.buttonTextView, styles.redTextColor]}>
                 Delete Account
               </Text>
             </Pressable>
           </View>
           <View style={styles.logoutButton}>
-            <ButtonComp text="Log Out" BtnHeight={responsiveHeight(13)} />
+            <ButtonComp
+              text="Log Out"
+              BtnHeight={responsiveHeight(10.5)}
+              onPress={signOut}
+            />
           </View>
         </View>
       </ScrollView>
@@ -157,24 +165,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#1a1a1c',
-    paddingVertical: responsiveHeight(1),
+    // paddingVertical: responsiveHeight(1),
   },
   txtStyle: {
     fontSize: responsiveFontSize(4),
     color: '#fff',
-    paddingVertical: responsiveHeight(4),
-    paddingHorizontal: responsiveWidth(4),
+    paddingVertical: responsiveHeight(2),
+    paddingHorizontal: responsiveWidth(4.5),
   },
   buttonView: {
     width: responsiveWidth(80),
-    height: responsiveHeight(10),
+    height: responsiveHeight(8),
     backgroundColor: '#2c2c34',
     borderRadius: 10,
     justifyContent: 'center',
     marginTop: responsiveHeight(2),
   },
   buttonContainer: {
-    top: responsiveHeight(5),
+    top: responsiveHeight(0),
     alignItems: 'center',
   },
   buttonTextView: {
@@ -185,7 +193,7 @@ const styles = StyleSheet.create({
   },
   minibuttonView: {
     width: responsiveWidth(60),
-    height: responsiveHeight(10),
+    height: responsiveHeight(7.5),
     backgroundColor: '#2c2c34',
     borderRadius: 10,
     justifyContent: 'center',
@@ -194,7 +202,7 @@ const styles = StyleSheet.create({
   logoutButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: responsiveHeight(4),
+    // marginTop: responsiveHeight(1),
   },
   containerView: {flex: 1},
   redTextColor: {

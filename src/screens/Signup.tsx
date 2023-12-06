@@ -8,6 +8,7 @@ import {
   Pressable,
   ScrollView,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import React, {useState} from 'react';
 import TextInputComp from '../components/TextInputComp';
@@ -33,28 +34,33 @@ const Signup = ({navigation}: SignupProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSignup = async () => {
-    setIsLoading(true);
-    try {
-      const isUserCreated = await auth().createUserWithEmailAndPassword(
-        email,
-        password,
-      );
-      console.log(isUserCreated);
-      setIsLoading(false);
-      console.warn('Successfully Signup!');
-
-      const userCredential = await firestore()
-        .collection('Users')
-        .doc(isUserCreated.user.uid)
-        .set({name: name, email: email, id: isUserCreated.user.uid});
+    if (email.length > 0 && password.length > 0) {
       setIsLoading(true);
-      navigation.navigate('Login', {
-        name: name,
-      });
-    } catch (error) {
-      setIsLoading(false);
-      console.log(error);
-      console.warn(error);
+      try {
+        const isUserCreated = await auth().createUserWithEmailAndPassword(
+          email,
+          password,
+        );
+
+        await auth().signOut();
+        console.log(isUserCreated);
+        setIsLoading(false);
+        console.warn('Successfully Signup!');
+
+        const userCredential = await firestore()
+          .collection('Users')
+          .doc(isUserCreated.user.uid)
+          .set({name: name, email: email, id: isUserCreated.user.uid});
+        navigation.navigate('Login', {
+          name: name,
+        });
+      } catch (error) {
+        setIsLoading(false);
+        console.log(error);
+        console.warn(error);
+      }
+    } else {
+      Alert.alert('Please fill details!');
     }
   };
 

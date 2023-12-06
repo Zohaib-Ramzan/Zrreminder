@@ -20,6 +20,7 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import auth from '@react-native-firebase/auth';
+import {StackActions} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
 type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
@@ -53,11 +54,12 @@ const Login = ({navigation}: LoginProps) => {
 
               // Move navigation logic here to ensure 'name' is set before navigating
               setIsLoading(false);
-              navigation.navigate('Main', {
-                Email: isUserValid.user.email,
-                uid: isUserValid.user.uid,
-                Name: data?.name, // Pass the retrieved name to the 'Home' screen
-              });
+              navigation.dispatch(StackActions.replace('Main'));
+              // navigation.navigate('Main', {
+              //   Email: isUserValid.user.email,
+              //   uid: isUserValid.user.uid,
+              //   Name: data?.name, // Pass the retrieved name to the 'Home' screen
+              // });
             } else {
               // Document doesn't exist
               console.log('No such document!');
@@ -108,7 +110,7 @@ const Login = ({navigation}: LoginProps) => {
               <ButtonComp
                 text={'Sign in'}
                 // onPress={() => loginVerification()}
-                onPress={() => handleLogin()}
+                onPress={handleLogin}
                 isLoading={isLoading}
               />
 

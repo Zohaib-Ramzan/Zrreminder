@@ -2,14 +2,24 @@ import {Image, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../routes/AppNavigator';
+import Auth from '@react-native-firebase/auth';
+import {StackActions} from '@react-navigation/native';
 
 type SplashoProps = NativeStackScreenProps<RootStackParamList, 'Splash'>;
 
 const Splash = ({navigation}: SplashoProps) => {
   useEffect(() => {
-    setTimeout(() => {
-      navigation.navigate('Intro');
+    const timer = setTimeout(() => {
+      const unsubscribe = Auth().onAuthStateChanged(user => {
+        const routeName = user !== null ? 'Main' : 'Login';
+        navigation.dispatch(StackActions.replace(routeName));
+        unsubscribe(); // Unsubscribe after navigating
+      });
     }, 3000);
+
+    return () => {
+      clearTimeout(timer); // Clear timeout when unmounting
+    };
   }, [navigation]);
   return (
     <View style={styles.container}>

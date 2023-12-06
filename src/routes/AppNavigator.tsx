@@ -1,6 +1,4 @@
-import {Text, View} from 'react-native';
 import React from 'react';
-import App from '../../App';
 
 // Navigation
 import {NavigationContainer} from '@react-navigation/native';
@@ -14,8 +12,6 @@ import BottomNav from './BottomNav';
 import ListPage from '../screens/ListPage';
 import ItemDetails from '../screens/ItemDetails';
 import AddItem from '../screens/AddItem';
-
-
 
 export type RootStackParamList = {
   Splash: any;
@@ -83,7 +79,7 @@ const AppNavigator = () => {
           name="Main"
           component={BottomNav}
           options={{
-            headerShown: false
+            headerShown: false,
           }}
         />
       </Stack.Navigator>
