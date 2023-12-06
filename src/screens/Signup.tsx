@@ -8,6 +8,7 @@ import {
   Pressable,
   ScrollView,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import React, {useState} from 'react';
 import TextInputComp from '../components/TextInputComp';
@@ -21,6 +22,7 @@ import {
 } from 'react-native-responsive-dimensions';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
 
 type SignupProps = NativeStackScreenProps<RootStackParamList, 'Signup'>;
 
@@ -29,34 +31,44 @@ const Signup = ({navigation}: SignupProps) => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSignup = async () => {
-    try {
-      const isUserCreated = await auth().createUserWithEmailAndPassword(
-        email,
-        password,
-      );
-      console.log(isUserCreated);
-      console.warn('Successfully Signup!');
+    if (email.length > 0 && password.length > 0) {
+      setIsLoading(true);
+      try {
+        const isUserCreated = await auth().createUserWithEmailAndPassword(
+          email,
+          password,
+        );
 
-      const userCredential = await firestore()
-        .collection('cardCollection')
-        .doc(isUserCreated.user.uid)
-        .set({name: name, email: email, id: isUserCreated.user.uid});
-      navigation.navigate('Login', {
-        name: name,
-      });
-    } catch (error) {
-      console.log(error);
-      console.warn(error);
+        await auth().signOut();
+        console.log(isUserCreated);
+        setIsLoading(false);
+        console.warn('Successfully Signup!');
+
+        const userCredential = await firestore()
+          .collection('Users')
+          .doc(isUserCreated.user.uid)
+          .set({name: name, email: email, id: isUserCreated.user.uid});
+        navigation.navigate('Login', {
+          name: name,
+        });
+      } catch (error) {
+        setIsLoading(false);
+        console.log(error);
+        console.warn(error);
+      }
+    } else {
+      Alert.alert('Please fill details!');
     }
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <ScrollView>
-          <View style={styles.container}>
+        <ScrollView keyboardShouldPersistTaps="handled">
+          <KeyboardAvoidingScrollView>
             <View style={styles.imgContainer}>
               <Image
                 source={require('../assets/images/logo.png')}
@@ -109,8 +121,11 @@ const Signup = ({navigation}: SignupProps) => {
                 </Text>
               )}
 
-              <ButtonComp text="Sign up" onPress={() => handleSignup()} />
-
+              <ButtonComp
+                text="Sign up"
+                isLoading={isLoading}
+                onPress={() => handleSignup()}
+              />
               <View style={styles.alreadyAccountContainer}>
                 <Text style={styles.alreadyAccountText}>
                   Already Have an Account?
@@ -122,7 +137,7 @@ const Signup = ({navigation}: SignupProps) => {
                 </Pressable>
               </View>
             </View>
-          </View>
+          </KeyboardAvoidingScrollView>
         </ScrollView>
       </TouchableWithoutFeedback>
     </SafeAreaView>
@@ -139,7 +154,8 @@ const styles = StyleSheet.create({
     color: '#afafb0',
     fontSize: responsiveFontSize(2.5),
     fontWeight: '700',
-    marginBottom: responsiveHeight(3),
+    paddingHorizontal: responsiveWidth(4),
+    marginBottom: responsiveHeight(1),
   },
   logoStyle: {
     height: responsiveHeight(22),
@@ -168,7 +184,7 @@ const styles = StyleSheet.create({
   passwordMatchText: {color: 'red'},
   alreadyAccountContainer: {
     flexDirection: 'row',
-    margin: responsiveHeight(6.5),
+    marginBottom: responsiveHeight(2),
     alignSelf: 'center',
   },
   alreadyAccountText: {color: '#b3b3b7', fontWeight: '800'},

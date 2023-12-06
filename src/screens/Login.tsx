@@ -6,7 +6,6 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Pressable,
-  ScrollView,
   SafeAreaView,
   Alert,
 } from 'react-native';
@@ -21,17 +20,21 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import auth from '@react-native-firebase/auth';
+import {StackActions} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
+import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
 type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 const Login = ({navigation}: LoginProps) => {
   // const {name} = route.params || {};
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
     // ... (existing code)
     if (email.length > 0 && password.length > 0) {
+      setIsLoading(true);
       try {
         const isUserValid = await auth().signInWithEmailAndPassword(
           email,
@@ -40,7 +43,7 @@ const Login = ({navigation}: LoginProps) => {
         console.log(isUserValid);
 
         const getName = await firestore()
-          .collection('cardCollection')
+          .collection('Users')
           .doc(isUserValid.user.uid)
           .get()
           .then(doc => {
@@ -50,17 +53,21 @@ const Login = ({navigation}: LoginProps) => {
               console.log('Document data:', data);
 
               // Move navigation logic here to ensure 'name' is set before navigating
-              navigation.navigate('Main', {
-                Email: isUserValid.user.email,
-                uid: isUserValid.user.uid,
-                Name: data?.name, // Pass the retrieved name to the 'Home' screen
-              });
+              setIsLoading(false);
+              navigation.dispatch(StackActions.replace('Main'));
+              // navigation.navigate('Main', {
+              //   Email: isUserValid.user.email,
+              //   uid: isUserValid.user.uid,
+              //   Name: data?.name, // Pass the retrieved name to the 'Home' screen
+              // });
             } else {
               // Document doesn't exist
               console.log('No such document!');
             }
           });
+        setIsLoading(false);
       } catch (error) {
+        setIsLoading(false);
         console.warn(error);
       }
     } else {
@@ -69,9 +76,9 @@ const Login = ({navigation}: LoginProps) => {
   };
 
   return (
-    <SafeAreaView>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <ScrollView>
+    <SafeAreaView style={styles.safeAreaViewStyle}>
+      <KeyboardAvoidingScrollView>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           <View style={styles.container}>
             <View style={styles.imgContainer}>
               <Image
@@ -101,34 +108,35 @@ const Login = ({navigation}: LoginProps) => {
               />
 
               <ButtonComp
-                text="Sign in"
+                text={'Sign in'}
                 // onPress={() => loginVerification()}
-                onPress={() => handleLogin()}
+                onPress={handleLogin}
+                isLoading={isLoading}
               />
 
-              <Text style={styles.signupText}>- or sign up with -</Text>
-              <View style={styles.signupButtonsContainer}>
-                <View style={styles.signupGoogle}>
-                  <ButtonComp
-                    BtnWidth={responsiveWidth(15)}
-                    Btnmargin={responsiveWidth(0.1)}
-                  />
-                  <Image
-                    source={require('../assets/images/google_logo.png')}
-                    style={styles.googleImageContainer}
-                  />
-                </View>
-                <View style={styles.signupApple}>
-                  <ButtonComp
-                    BtnWidth={responsiveWidth(15)}
-                    Btnmargin={responsiveWidth(0.1)}
-                  />
-                  <Image
-                    source={require('../assets/images/apple_logo.png')}
-                    style={styles.appleImageContainer}
-                  />
-                </View>
+              {/* <Text style={styles.signupText}>- or sign up with -</Text>
+            <View style={styles.signupButtonsContainer}>
+              <View style={styles.signupGoogle}>
+                <ButtonComp
+                  BtnWidth={responsiveWidth(15)}
+                  Btnmargin={responsiveWidth(0.1)}
+                />
+                <Image
+                  source={require('../assets/images/google_logo.png')}
+                  style={styles.googleImageContainer}
+                />
               </View>
+              <View style={styles.signupApple}>
+                <ButtonComp
+                  BtnWidth={responsiveWidth(15)}
+                  Btnmargin={responsiveWidth(0.1)}
+                />
+                <Image
+                  source={require('../assets/images/apple_logo.png')}
+                  style={styles.appleImageContainer}
+                />
+              </View>
+            </View> */}
               <View style={styles.signupNavigateContainer}>
                 <Text style={styles.signupNavigateText}>
                   Don't have an Account?
@@ -143,8 +151,8 @@ const Login = ({navigation}: LoginProps) => {
               </View>
             </View>
           </View>
-        </ScrollView>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingScrollView>
     </SafeAreaView>
   );
 };
@@ -160,7 +168,8 @@ const styles = StyleSheet.create({
     color: '#afafb0',
     fontSize: responsiveFontSize(2.5),
     fontWeight: '700',
-    marginBottom: responsiveHeight(3),
+    paddingHorizontal: responsiveWidth(4),
+    marginBottom: responsiveHeight(0.5),
   },
   logoStyle: {
     height: responsiveHeight(22),
@@ -211,10 +220,13 @@ const styles = StyleSheet.create({
   },
   signupNavigateContainer: {
     flexDirection: 'row',
-    margin: responsiveHeight(6.5),
+    margin: responsiveHeight(15),
     alignSelf: 'center',
   },
-  signupNavigateText: {color: '#b3b3b7', fontWeight: '800'},
+  signupNavigateText: {
+    color: '#b3b3b7',
+    fontWeight: '800',
+  },
   signupNavigateHyperlink: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -225,4 +237,5 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     fontWeight: '700',
   },
+  safeAreaViewStyle: {flex: 1},
 });

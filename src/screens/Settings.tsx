@@ -19,10 +19,12 @@ import ButtonComp from '../components/ButtonComp';
 import ChangePassword from './ChangePassword';
 import ModalCard from '../components/ModalCard';
 import EditName from './EditName';
+import Auth from '@react-native-firebase/auth';
+import {StackActions} from '@react-navigation/native';
 
 type SettingsProps = NativeStackScreenProps<RootStackParamList, 'Settings'>;
 
-const Settings = ({}: SettingsProps) => {
+const Settings = ({navigation}: SettingsProps) => {
   const [visible, setVisible] = useState(false);
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [editNameVisible, setEditNameVisible] = useState(false);
@@ -58,6 +60,12 @@ const Settings = ({}: SettingsProps) => {
   // close the Edit Name Confirmation Modal
   const closeModalEditNameConfirmation = () => {
     setNameChangedVisible(false);
+  };
+
+  // Signout function
+  const signOut = async () => {
+    await Auth().signOut();
+    navigation.dispatch(StackActions.replace('Login'));
   };
 
   return (
@@ -134,9 +142,13 @@ const Settings = ({}: SettingsProps) => {
                 Delete Account
               </Text>
             </Pressable>
-            <View style={styles.logoutButton}>
-              <ButtonComp text="Log Out" BtnHeight={responsiveHeight(10.5)} />
-            </View>
+          </View>
+          <View style={styles.logoutButton}>
+            <ButtonComp
+              text="Log Out"
+              BtnHeight={responsiveHeight(10.5)}
+              onPress={signOut}
+            />
           </View>
         </View>
       </ScrollView>
