@@ -21,6 +21,7 @@ import ModalCard from '../components/ModalCard';
 import EditName from './EditName';
 import Auth from '@react-native-firebase/auth';
 import {StackActions} from '@react-navigation/native';
+import {useToast} from 'react-native-toast-notifications';
 
 type SettingsProps = NativeStackScreenProps<RootStackParamList, 'Settings'>;
 
@@ -29,6 +30,7 @@ const Settings = ({navigation}: SettingsProps) => {
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [editNameVisible, setEditNameVisible] = useState(false);
   const [nameChangedVisible, setNameChangedVisible] = useState(false);
+  const {show: showToast} = useToast();
 
   // Go Back and show Password confirmation
   const GoBackPasswordChange = () => {
@@ -65,6 +67,7 @@ const Settings = ({navigation}: SettingsProps) => {
   // Signout function
   const signOut = async () => {
     await Auth().signOut();
+    showToast('Successfully Logout!');
     navigation.dispatch(StackActions.replace('Login'));
   };
 

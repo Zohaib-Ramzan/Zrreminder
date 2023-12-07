@@ -23,6 +23,7 @@ import auth from '@react-native-firebase/auth';
 import {StackActions} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
+import {useToast} from 'react-native-toast-notifications';
 type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 const Login = ({navigation}: LoginProps) => {
@@ -30,6 +31,7 @@ const Login = ({navigation}: LoginProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const {show: showToast} = useToast();
 
   const handleLogin = async () => {
     // ... (existing code)
@@ -51,9 +53,11 @@ const Login = ({navigation}: LoginProps) => {
               // Document exists, access its data
               const data = doc.data();
               console.log('Document data:', data);
-
               // Move navigation logic here to ensure 'name' is set before navigating
+
+              showToast('Successfully Login!');
               setIsLoading(false);
+
               navigation.dispatch(StackActions.replace('Main'));
               // navigation.navigate('Main', {
               //   Email: isUserValid.user.email,
@@ -62,13 +66,14 @@ const Login = ({navigation}: LoginProps) => {
               // });
             } else {
               // Document doesn't exist
-              console.log('No such document!');
+              showToast('Invalid User');
+              // console.log('No such document!');
             }
           });
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
-        console.warn(error);
+        showToast(error.message);
       }
     } else {
       Alert.alert('Please fill details!');

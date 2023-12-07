@@ -23,7 +23,7 @@ import {
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
-
+import {useToast} from 'react-native-toast-notifications';
 type SignupProps = NativeStackScreenProps<RootStackParamList, 'Signup'>;
 
 const Signup = ({navigation}: SignupProps) => {
@@ -32,6 +32,7 @@ const Signup = ({navigation}: SignupProps) => {
   const [name, setName] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const {show: showToast} = useToast();
 
   const handleSignup = async () => {
     if (email.length > 0 && password.length > 0) {
@@ -45,7 +46,7 @@ const Signup = ({navigation}: SignupProps) => {
         await auth().signOut();
         console.log(isUserCreated);
         setIsLoading(false);
-        console.warn('Successfully Signup!');
+        showToast('Successfully Signup!');
 
         const userCredential = await firestore()
           .collection('Users')
@@ -57,7 +58,7 @@ const Signup = ({navigation}: SignupProps) => {
       } catch (error) {
         setIsLoading(false);
         console.log(error);
-        console.warn(error);
+        showToast(error.message);
       }
     } else {
       Alert.alert('Please fill details!');
