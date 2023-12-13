@@ -7,7 +7,7 @@ import {
   FlatList,
   BackHandler,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import firestore from '@react-native-firebase/firestore';
 
 import {
@@ -20,6 +20,7 @@ import AddCategory from './AddCategory';
 import {CardData} from './types';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../routes/AppNavigator';
+import {NameContext} from '../global/AppContext';
 
 const ImageData = [
   require('../assets/images/logo.png'),
@@ -38,6 +39,7 @@ const Home = ({navigation}: HomeProps) => {
   // console.log("Email is : " + Email + " Uid is " + uid)
 
   // const [name,setName] = useState("")
+  const {name} = useContext(NameContext);
   const [closeCategoryModal, setCloseCategoryModal] = useState(false);
   const [closeEditCategoryModal, setCloseEditCategoryModal] = useState(false);
   const [selectedCardData, setSelectedCardData] = useState<CardData | null>(
@@ -216,7 +218,7 @@ const Home = ({navigation}: HomeProps) => {
         />
       </Modal> */}
       <View style={styles.hometxtView}>
-        <Text style={styles.txtStyle}>User's Personal Categories</Text>
+        <Text style={styles.txtStyle}>{name}'s Personal Categories</Text>
       </View>
       {fetchedCardData.length > 0 && (
         <View>

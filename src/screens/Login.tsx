@@ -9,7 +9,7 @@ import {
   SafeAreaView,
   Alert,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import TextInputComp from '../components/TextInputComp';
 import ButtonComp from '../components/ButtonComp';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -24,10 +24,12 @@ import {StackActions} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
 import {useToast} from 'react-native-toast-notifications';
+import {NameContext} from '../global/AppContext';
 type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 const Login = ({navigation}: LoginProps) => {
   // const {name} = route.params || {};
+  const {setName} = useContext(NameContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -53,6 +55,7 @@ const Login = ({navigation}: LoginProps) => {
               // Document exists, access its data
               const data = doc.data();
               console.log('Document data:', data);
+              setName(data?.name);
               // Move navigation logic here to ensure 'name' is set before navigating
 
               showToast('Successfully Login!');
