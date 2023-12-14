@@ -3,21 +3,26 @@ import React, {createContext, useState} from 'react';
 interface ContextProps {
   name: string;
   setName: React.Dispatch<React.SetStateAction<string>>;
+  uid: string;
+  setUid: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const initialContextValue: ContextProps = {
   name: '',
   setName: () => {}, // We can set an initial function here if needed
+  uid: '',
+  setUid: () => {},
 };
 
-const NameContext = createContext<ContextProps>(initialContextValue);
+const UserContext = createContext<ContextProps>(initialContextValue);
 
-const NameProvider = ({children}: any) => {
+const UserProvider = ({children}: any) => {
   const [name, setName] = useState('');
-  const contextValue = {name, setName};
+  const [uid, setUid] = useState('');
+  const contextValue = {name, setName, uid, setUid};
   return (
-    <NameContext.Provider value={contextValue}>{children}</NameContext.Provider>
+    <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>
   );
 };
 
-export {NameContext, NameProvider};
+export {UserContext, UserProvider};

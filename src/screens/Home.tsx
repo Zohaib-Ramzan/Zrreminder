@@ -20,8 +20,7 @@ import AddCategory from './AddCategory';
 import {CardData} from './types';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../routes/AppNavigator';
-import {NameContext} from '../global/AppContext';
-
+import {UserContext} from '../global/AppContext';
 const ImageData = [
   require('../assets/images/logo.png'),
   require('../assets/images/skin-care.png'),
@@ -30,6 +29,7 @@ const ImageData = [
   require('../assets/images/medicine.png'),
   require('../assets/images/detergent.png'),
 ];
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 
 // Define the type for the navigation prop
 type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
@@ -39,7 +39,8 @@ const Home = ({navigation}: HomeProps) => {
   // console.log("Email is : " + Email + " Uid is " + uid)
 
   // const [name,setName] = useState("")
-  const {name} = useContext(NameContext);
+  const {} = useContext(UserContext);
+  const [userName, setUserName] = useState('');
   const [closeCategoryModal, setCloseCategoryModal] = useState(false);
   const [closeEditCategoryModal, setCloseEditCategoryModal] = useState(false);
   const [selectedCardData, setSelectedCardData] = useState<CardData | null>(
@@ -62,6 +63,22 @@ const Home = ({navigation}: HomeProps) => {
       cardIndex: plusCircleImg(),
     },
   ]);
+
+  useEffect(() => {
+    const loadUserName = async () => {
+      try {
+        const storedUserName = await AsyncStorage.getItem('userName');
+        if (storedUserName !== null) {
+          setUserName(storedUserName);
+        }
+        console.log('User name loaded:', storedUserName);
+      } catch (error) {
+        console.error('Error loading user name:', error);
+      }
+    };
+
+    loadUserName();
+  }, []);
 
   useEffect(() => {
     const fetchCardsFromDB = async () => {
@@ -218,7 +235,7 @@ const Home = ({navigation}: HomeProps) => {
         />
       </Modal> */}
       <View style={styles.hometxtView}>
-        <Text style={styles.txtStyle}>{name}'s Personal Categories</Text>
+        <Text style={styles.txtStyle}>{userName}'s Personal Categories</Text>
       </View>
       {fetchedCardData.length > 0 && (
         <View>

@@ -24,12 +24,14 @@ import {StackActions} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
 import {useToast} from 'react-native-toast-notifications';
-import {NameContext} from '../global/AppContext';
+import {UserContext} from '../global/AppContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 const Login = ({navigation}: LoginProps) => {
   // const {name} = route.params || {};
-  const {setName} = useContext(NameContext);
+  const {setName, setUid} = useContext(UserContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -55,11 +57,20 @@ const Login = ({navigation}: LoginProps) => {
               // Document exists, access its data
               const data = doc.data();
               console.log('Document data:', data);
+              setUid(data?.id);
               setName(data?.name);
               // Move navigation logic here to ensure 'name' is set before navigating
-
+              const saveUserName = async () => {
+                try {
+                  await AsyncStorage.setItem('userName', data?.name);
+                  // Additional logic after saving the name
+                } catch (error) {
+                  console.error('Error saving user name:', error);
+                }
+              };
               showToast('Successfully Login!');
               setIsLoading(false);
+              saveUserName();
 
               navigation.dispatch(StackActions.replace('Main'));
               // navigation.navigate('Main', {

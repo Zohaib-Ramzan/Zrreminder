@@ -22,7 +22,7 @@ import EditName from './EditName';
 import Auth from '@react-native-firebase/auth';
 import {StackActions} from '@react-navigation/native';
 import {useToast} from 'react-native-toast-notifications';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 type SettingsProps = NativeStackScreenProps<RootStackParamList, 'Settings'>;
 
 const Settings = ({navigation}: SettingsProps) => {
@@ -31,6 +31,15 @@ const Settings = ({navigation}: SettingsProps) => {
   const [editNameVisible, setEditNameVisible] = useState(false);
   const [nameChangedVisible, setNameChangedVisible] = useState(false);
   const {show: showToast} = useToast();
+
+  // Remove the userCredentials from AsyncStorage
+  const clearUserCredentials = async () => {
+    try {
+      await AsyncStorage.removeItem('userName');
+    } catch (error) {
+      console.log('Error clearing User Credentials: ', error);
+    }
+  };
 
   // Go Back and show Password confirmation
   const GoBackPasswordChange = () => {
@@ -67,6 +76,7 @@ const Settings = ({navigation}: SettingsProps) => {
   // Signout function
   const signOut = async () => {
     await Auth().signOut();
+    clearUserCredentials();
     showToast('Successfully Logout!');
     navigation.dispatch(StackActions.replace('Login'));
   };
