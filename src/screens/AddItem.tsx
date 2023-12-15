@@ -43,8 +43,13 @@ const AddItem = ({crossButton, updatedData, isEditPress}: any) => {
   const navigation = useNavigation<AddItemProps>();
   const [title, setTitle] = useState('');
   const [selectedCardData, setSelectedCardData] = useState<any>(null);
-
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [isStartDatePickerVisible, setStartDatePickerVisibility] =
+    useState(false);
+  const [isExpireDatePickerVisible, setExpireDatePickerVisibility] =
+    useState(false);
+  const [prevSelectedDate, setPrevSelectedDate] = useState(new Date());
+  const [prevExpireDate, setPrevExpireDate] = useState(new Date());
+  // const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [selectedDate, setSelectedDate] = useState('Add Start Date');
   const [isStartingDateSelected, setIsStartingDateSelected] = useState(false);
   const [expireDate, setExpireDate] = useState('Add Expire Date');
@@ -99,26 +104,43 @@ const AddItem = ({crossButton, updatedData, isEditPress}: any) => {
     setIsReminderModalOpen(false);
   };
 
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
+  const showStartDatePicker = () => {
+    setStartDatePickerVisibility(true);
+    setExpireDatePickerVisibility(false); // Close the other date picker if open
   };
 
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
+  const showExpireDatePicker = () => {
+    setExpireDatePickerVisibility(true);
+    setStartDatePickerVisibility(false); // Close the other date picker if open
   };
 
-  const handleConfirm = (date: any) => {
-    // console.warn('A date has been picked: ', date);
+  const hideStartDatePicker = () => {
+    setStartDatePickerVisibility(false);
+  };
+
+  const hideExpireDatePicker = () => {
+    setExpireDatePickerVisibility(false);
+  };
+
+  const handleStartDateConfirm = (date: any) => {
+    const formattedDate = formatDate(date);
+    setSelectedDate(formattedDate);
+    hideStartDatePicker();
+    setPrevSelectedDate(date);
+  };
+
+  const handleExpireDateConfirm = (date: any) => {
+    const formattedDate = formatDate(date);
+    setExpireDate(formattedDate);
+    hideExpireDatePicker();
+    setPrevExpireDate(date);
+  };
+
+  const formatDate = (date: any) => {
     const dt = new Date(date);
     const x = dt.toISOString().split('T');
     const newDt = x[0].split('-');
-    if (isStartingDateSelected === true) {
-      setSelectedDate(newDt[2] + '/' + newDt[1] + '/' + newDt[0]);
-    } else {
-      setExpireDate(newDt[2] + '/' + newDt[1] + '/' + newDt[0]);
-    }
-    setIsStartingDateSelected(false);
-    hideDatePicker();
+    return newDt[2] + '/' + newDt[1] + '/' + newDt[0];
   };
 
   // useEffect(() => {
@@ -126,8 +148,12 @@ const AddItem = ({crossButton, updatedData, isEditPress}: any) => {
   // }, [initialIndex]);
 
   const onPressDateSelected = (value: boolean) => {
-    showDatePicker();
     setIsStartingDateSelected(value);
+    if (value) {
+      showStartDatePicker();
+    } else {
+      showExpireDatePicker();
+    }
   };
 
   const gotoItemDetailsPage = (dataToUpdate: any) => {
@@ -301,7 +327,7 @@ const AddItem = ({crossButton, updatedData, isEditPress}: any) => {
                 textColor="#fff"
                 multiline={true}
                 placeholder="&nbsp;&nbsp;Add Note"
-                placeholderTextColor="#464657"
+                placeholderTextColor="#afafb0"
                 backgroundColor="#1a1a1c"
                 width={responsiveWidth(65)}
                 value={noteText}
@@ -314,10 +340,23 @@ const AddItem = ({crossButton, updatedData, isEditPress}: any) => {
               />
             </View>
             <DateTimePickerModal
-              isVisible={isDatePickerVisible}
+              isVisible={
+                isStartingDateSelected
+                  ? isStartDatePickerVisible
+                  : isExpireDatePickerVisible
+              }
               mode="date"
-              onConfirm={handleConfirm}
-              onCancel={hideDatePicker}
+              date={isStartingDateSelected ? prevSelectedDate : prevExpireDate}
+              onConfirm={
+                isStartingDateSelected
+                  ? handleStartDateConfirm
+                  : handleExpireDateConfirm
+              }
+              onCancel={
+                isStartingDateSelected
+                  ? hideStartDatePicker
+                  : hideExpireDatePicker
+              }
             />
             <View style={styles.buttonContainer}>
               <ButtonComp
@@ -421,7 +460,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   calendarBoxTxtStyle: {
-    color: '#464657',
+    color: '#afafb0',
     fontSize: 12,
     textAlign: 'center',
     paddingTop: responsiveHeight(2),
