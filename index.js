@@ -10,9 +10,6 @@ import Home from './src/screens/Home';
 import HeaderComp from './src/components/HeaderComp';
 import ChangePassword from './src/screens/ChangePassword';
 import DeleteCard from './src/screens/DeleteCard';
-DeleteCard
-
-
+import customColorPicker from './src/components/customColorPicker';
 
 AppRegistry.registerComponent(appName, () => App);
-
