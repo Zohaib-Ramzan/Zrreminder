@@ -18,8 +18,8 @@ import {
 } from 'react-native-responsive-dimensions';
 import ButtonComp from '../components/ButtonComp';
 import Card from '../components/Card';
-import ColorPicker from 'react-native-wheel-color-picker';
 import firestore from '@react-native-firebase/firestore';
+import CustomColorPicker from '../components/customColorPicker';
 
 const ImageData = [
   require('../assets/images/logo.png'),
@@ -193,16 +193,18 @@ const AddCategory = ({
                 />
               </ScrollView>
             </View>
-            <Text style={styles.subText}>Colors</Text>
-            <View style={{marginTop: responsiveHeight(2)}}>
-              <ColorPicker onColorChange={onColorChange} swatchesOnly />
-            </View>
-            <View style={styles.buttonContainer}>
-              <ButtonComp
-                text={buttonTxt}
-                BtnWidth={responsiveWidth(18)}
-                onPress={onDonePress}
-              />
+            <View>
+              <Text style={styles.subText}>Colors</Text>
+              <View>
+                <CustomColorPicker onColorChange={onColorChange} />
+              </View>
+              <View style={styles.buttonContainer}>
+                <ButtonComp
+                  text={buttonTxt}
+                  BtnWidth={responsiveWidth(18)}
+                  onPress={onDonePress}
+                />
+              </View>
             </View>
           </View>
         </View>
@@ -218,7 +220,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: responsiveHeight(5),
+    marginBottom: responsiveHeight(8),
   },
   container: {
     height: responsiveHeight(85),
@@ -240,7 +242,7 @@ const styles = StyleSheet.create({
   },
   titleTxt: {
     fontSize: responsiveFontSize(3.5),
-    color: '#afafb0',
+    color: '#efeff0',
     marginLeft: responsiveWidth(5),
     marginBottom: responsiveHeight(2),
   },
@@ -250,13 +252,15 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignItems: 'center',
-    paddingTop: responsiveHeight(2),
+    marginTop: responsiveHeight(3),
   },
   subText: {
     fontSize: responsiveFontSize(2),
-    color: '#afafb0',
-    marginLeft: responsiveWidth(5),
-    marginTop: responsiveHeight(6),
+    color: '#d6d6d6',
+    marginLeft: responsiveWidth(8),
+    marginTop: responsiveHeight(5),
+    marginBottom: responsiveHeight(2),
+    fontWeight: 'bold',
   },
   imageFlatListStyle: {
     height: responsiveHeight(10),
@@ -268,7 +272,7 @@ const styles = StyleSheet.create({
   },
   scrollviewContainer: {
     alignItems: 'center',
-    marginTop: responsiveHeight(3),
+    marginTop: responsiveHeight(1.5),
   },
   selectedCardTouchable: {
     borderWidth: 2,
