@@ -3,8 +3,6 @@ import {
   Text,
   View,
   Image,
-  TouchableWithoutFeedback,
-  Keyboard,
   Pressable,
   SafeAreaView,
   Alert,
@@ -22,8 +20,9 @@ import {
 import auth from '@react-native-firebase/auth';
 import {StackActions} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
-import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
+import {KeyboardScrollView} from '@rlemasquerier/react-native-keyboard-scrollview';
 import {useToast} from 'react-native-toast-notifications';
+import {COLORS} from '../constants';
 type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 const Login = ({navigation}: LoginProps) => {
@@ -44,7 +43,7 @@ const Login = ({navigation}: LoginProps) => {
         );
         console.log(isUserValid);
 
-        const getName = await firestore()
+        await firestore()
           .collection('Users')
           .doc(isUserValid.user.uid)
           .get()
@@ -82,82 +81,49 @@ const Login = ({navigation}: LoginProps) => {
 
   return (
     <SafeAreaView style={styles.safeAreaViewStyle}>
-      <KeyboardAvoidingScrollView>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <View style={styles.container}>
-            <View style={styles.imgContainer}>
-              <Image
-                source={require('../assets/images/logo.png')}
-                style={styles.logoStyle}
-              />
-            </View>
-            <Text style={styles.txtColor}>Sign in</Text>
-            <View style={styles.textinputContainer}>
-              <TextInputComp
-                placeholder={'Email'}
-                placeholderTextColor={'#b3b3b7'}
-                backgroundColor={'#464657'}
-                value={email}
-                onChangeText={(value: string) => setEmail(value)}
-                secureTextEntry={false}
-                textColor="#fff"
-              />
-              <TextInputComp
-                placeholder={'Password'}
-                placeholderTextColor={'#b3b3b7'}
-                backgroundColor={'#464657'}
-                value={password}
-                onChangeText={(value: string) => setPassword(value)}
-                secureTextEntry={true}
-                textColor="#fff"
-              />
+      <KeyboardScrollView>
+        <View style={styles.container}>
+          <View style={styles.imgContainer}>
+            <Image
+              source={require('../assets/images/logo.png')}
+              style={styles.logoStyle}
+            />
+          </View>
+          <Text style={styles.txtColor}>Sign in</Text>
+          <View style={styles.textinputContainer}>
+            <TextInputComp
+              placeholder={'Email'}
+              value={email}
+              onChangeText={(value: string) => setEmail(value)}
+              secureTextEntry={false}
+            />
+            <TextInputComp
+              placeholder={'Password'}
+              value={password}
+              onChangeText={(value: string) => setPassword(value)}
+              secureTextEntry={true}
+            />
 
-              <ButtonComp
-                text={'Sign in'}
-                // onPress={() => loginVerification()}
-                onPress={handleLogin}
-                isLoading={isLoading}
-              />
+            <ButtonComp
+              text={'Sign in'}
+              // onPress={() => loginVerification()}
+              onPress={handleLogin}
+              isLoading={isLoading}
+            />
 
-              {/* <Text style={styles.signupText}>- or sign up with -</Text>
-            <View style={styles.signupButtonsContainer}>
-              <View style={styles.signupGoogle}>
-                <ButtonComp
-                  BtnWidth={responsiveWidth(15)}
-                  Btnmargin={responsiveWidth(0.1)}
-                />
-                <Image
-                  source={require('../assets/images/google_logo.png')}
-                  style={styles.googleImageContainer}
-                />
-              </View>
-              <View style={styles.signupApple}>
-                <ButtonComp
-                  BtnWidth={responsiveWidth(15)}
-                  Btnmargin={responsiveWidth(0.1)}
-                />
-                <Image
-                  source={require('../assets/images/apple_logo.png')}
-                  style={styles.appleImageContainer}
-                />
-              </View>
-            </View> */}
-              <View style={styles.signupNavigateContainer}>
-                <Text style={styles.signupNavigateText}>
-                  Don't have an Account?
-                </Text>
-                <Pressable
-                  onPress={() => navigation.navigate('Signup')}
-                  style={styles.signupNavigateHyperlink}>
-                  <Text style={styles.signupNavigateHyperlinkText}>
-                    Sign up
-                  </Text>
-                </Pressable>
-              </View>
+            <View style={styles.signupNavigateContainer}>
+              <Text style={styles.signupNavigateText}>
+                Don't have an Account?
+              </Text>
+              <Pressable
+                onPress={() => navigation.navigate('Signup')}
+                style={styles.signupNavigateHyperlink}>
+                <Text style={styles.signupNavigateHyperlinkText}>Sign up</Text>
+              </Pressable>
             </View>
           </View>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingScrollView>
+        </View>
+      </KeyboardScrollView>
     </SafeAreaView>
   );
 };
@@ -165,12 +131,15 @@ const Login = ({navigation}: LoginProps) => {
 export default Login;
 
 const styles = StyleSheet.create({
+  safeAreaViewStyle: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
   container: {
     flex: 1,
-    backgroundColor: '#1a1a1c',
   },
   txtColor: {
-    color: '#afafb0',
+    color: COLORS.textColor,
     fontSize: responsiveFontSize(2.5),
     fontWeight: '700',
     paddingHorizontal: responsiveWidth(4),
@@ -242,5 +211,4 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     fontWeight: '700',
   },
-  safeAreaViewStyle: {flex: 1},
 });
