@@ -21,6 +21,7 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {KeyboardScrollView} from '@rlemasquerier/react-native-keyboard-scrollview';
 import {useToast} from 'react-native-toast-notifications';
+import {COLORS} from '../constants';
 type SignupProps = NativeStackScreenProps<RootStackParamList, 'Signup'>;
 
 const Signup = ({navigation}: SignupProps) => {
@@ -75,40 +76,28 @@ const Signup = ({navigation}: SignupProps) => {
         <View style={styles.textinputContainer}>
           <TextInputComp
             placeholder={'Name'}
-            placeholderTextColor={'#b3b3b7'}
-            backgroundColor={'#464657'}
             value={name}
             onChangeText={(value: string) => setName(value)}
             secureTextEntry={false}
-            textColor="#fff"
           />
           <TextInputComp
             placeholder={'Email'}
-            placeholderTextColor={'#b3b3b7'}
-            backgroundColor={'#464657'}
             value={email}
             onChangeText={(value: string) => setEmail(value)}
-            textColor="#fff"
           />
 
           <TextInputComp
             placeholder={'Password'}
-            placeholderTextColor={'#b3b3b7'}
-            backgroundColor={'#464657'}
             value={password}
             onChangeText={(value: string) => setPassword(value)}
             secureTextEntry={true}
-            textColor="#fff"
           />
 
           <TextInputComp
             placeholder={'Confirm Password'}
-            placeholderTextColor={'#b3b3b7'}
-            backgroundColor={'#464657'}
             value={confirmPassword}
             onChangeText={(value: string) => setConfirmPassword(value)}
             secureTextEntry={true}
-            textColor="#fff"
           />
 
           {password !== confirmPassword && (
@@ -142,10 +131,10 @@ export default Signup;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a1c',
+    backgroundColor: COLORS.background,
   },
   txtColor: {
-    color: '#afafb0',
+    color: COLORS.textColor,
     fontSize: responsiveFontSize(2.5),
     fontWeight: '700',
     paddingHorizontal: responsiveWidth(4),

@@ -22,6 +22,7 @@ import {StackActions} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import {KeyboardScrollView} from '@rlemasquerier/react-native-keyboard-scrollview';
 import {useToast} from 'react-native-toast-notifications';
+import {COLORS} from '../constants';
 type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 const Login = ({navigation}: LoginProps) => {
@@ -92,21 +93,15 @@ const Login = ({navigation}: LoginProps) => {
           <View style={styles.textinputContainer}>
             <TextInputComp
               placeholder={'Email'}
-              placeholderTextColor={'#b3b3b7'}
-              backgroundColor={'#464657'}
               value={email}
               onChangeText={(value: string) => setEmail(value)}
               secureTextEntry={false}
-              textColor="#fff"
             />
             <TextInputComp
               placeholder={'Password'}
-              placeholderTextColor={'#b3b3b7'}
-              backgroundColor={'#464657'}
               value={password}
               onChangeText={(value: string) => setPassword(value)}
               secureTextEntry={true}
-              textColor="#fff"
             />
 
             <ButtonComp
@@ -116,29 +111,6 @@ const Login = ({navigation}: LoginProps) => {
               isLoading={isLoading}
             />
 
-            {/* <Text style={styles.signupText}>- or sign up with -</Text>
-            <View style={styles.signupButtonsContainer}>
-              <View style={styles.signupGoogle}>
-                <ButtonComp
-                  BtnWidth={responsiveWidth(15)}
-                  Btnmargin={responsiveWidth(0.1)}
-                />
-                <Image
-                  source={require('../assets/images/google_logo.png')}
-                  style={styles.googleImageContainer}
-                />
-              </View>
-              <View style={styles.signupApple}>
-                <ButtonComp
-                  BtnWidth={responsiveWidth(15)}
-                  Btnmargin={responsiveWidth(0.1)}
-                />
-                <Image
-                  source={require('../assets/images/apple_logo.png')}
-                  style={styles.appleImageContainer}
-                />
-              </View>
-            </View> */}
             <View style={styles.signupNavigateContainer}>
               <Text style={styles.signupNavigateText}>
                 Don't have an Account?
@@ -159,12 +131,15 @@ const Login = ({navigation}: LoginProps) => {
 export default Login;
 
 const styles = StyleSheet.create({
+  safeAreaViewStyle: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
   container: {
     flex: 1,
-    backgroundColor: '#1a1a1c',
   },
   txtColor: {
-    color: '#afafb0',
+    color: COLORS.textColor,
     fontSize: responsiveFontSize(2.5),
     fontWeight: '700',
     paddingHorizontal: responsiveWidth(4),
@@ -236,5 +211,4 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     fontWeight: '700',
   },
-  safeAreaViewStyle: {flex: 1},
 });

@@ -1,9 +1,11 @@
 import {Text, Pressable, StyleSheet, ActivityIndicator} from 'react-native';
 import React, {PropsWithChildren} from 'react';
 import {
+  responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
+import {COLORS} from '../constants';
 
 type ButtonProps = PropsWithChildren<{
   text?: string;
@@ -33,7 +35,7 @@ ButtonProps) => {
       style={[styles.containerView, containerCondition]}
       onPress={onPress}>
       {isLoading ? (
-        <ActivityIndicator size={'large'} color={'#464657'} />
+        <ActivityIndicator size={'large'} color={COLORS.primary} />
       ) : (
         <Text style={styles.txtStyle}>{text}</Text>
       )}
@@ -45,13 +47,14 @@ export default ButtonComp;
 
 const styles = StyleSheet.create({
   containerView: {
-    backgroundColor: '#d6d6d6',
+    backgroundColor: COLORS.buttonColor,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
   txtStyle: {
     fontWeight: 'bold',
-    color: '#727273',
+    color: COLORS.buttonTextColor,
+    fontSize: responsiveFontSize(1.75),
   },
 });
