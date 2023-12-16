@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View, TextInput} from 'react-native';
 import React, {PropsWithChildren} from 'react';
-import { responsiveFontSize,responsiveHeight,responsiveWidth } from "react-native-responsive-dimensions"
+import { responsiveFontSize,responsiveHeight,responsiveWidth } from 'react-native-responsive-dimensions';
 
 type TextInputProps = PropsWithChildren<{
   placeholder?: string;
@@ -25,7 +25,7 @@ const TextInputComp = ({
   onChangeText,
   styleField,
   width,
-  multiline
+  multiline,
 }: TextInputProps) => {
   return (
     <TextInput
@@ -37,12 +37,12 @@ const TextInputComp = ({
       onChangeText={onChangeText}
       style={[styleField,
         styles.textinputStyle,
-        {backgroundColor: backgroundColor, color: textColor, width: width || responsiveWidth(85),}
+        {backgroundColor: backgroundColor, color: textColor, width: width || responsiveWidth(85)},
       ]}
     />
   );
 };
-{console}
+
 export default TextInputComp;
 
 const styles = StyleSheet.create({

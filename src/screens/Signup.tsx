@@ -3,10 +3,7 @@ import {
   Text,
   View,
   Image,
-  TouchableWithoutFeedback,
-  Keyboard,
   Pressable,
-  ScrollView,
   SafeAreaView,
   Alert,
 } from 'react-native';
@@ -22,7 +19,7 @@ import {
 } from 'react-native-responsive-dimensions';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import {KeyboardAvoidingScrollView} from 'react-native-keyboard-avoiding-scroll-view';
+import {KeyboardScrollView} from '@rlemasquerier/react-native-keyboard-scrollview';
 import {useToast} from 'react-native-toast-notifications';
 type SignupProps = NativeStackScreenProps<RootStackParamList, 'Signup'>;
 
@@ -48,7 +45,7 @@ const Signup = ({navigation}: SignupProps) => {
         setIsLoading(false);
         showToast('Successfully Signup!');
 
-        const userCredential = await firestore()
+        await firestore()
           .collection('Users')
           .doc(isUserCreated.user.uid)
           .set({name: name, email: email, id: isUserCreated.user.uid});
@@ -67,80 +64,76 @@ const Signup = ({navigation}: SignupProps) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <ScrollView keyboardShouldPersistTaps="handled">
-          <KeyboardAvoidingScrollView>
-            <View style={styles.imgContainer}>
-              <Image
-                source={require('../assets/images/logo.png')}
-                style={styles.logoStyle}
-              />
-            </View>
-            <Text style={styles.txtColor}>Create your Account</Text>
-            <View style={styles.textinputContainer}>
-              <TextInputComp
-                placeholder={'Name'}
-                placeholderTextColor={'#b3b3b7'}
-                backgroundColor={'#464657'}
-                value={name}
-                onChangeText={(value: string) => setName(value)}
-                secureTextEntry={false}
-                textColor="#fff"
-              />
-              <TextInputComp
-                placeholder={'Email'}
-                placeholderTextColor={'#b3b3b7'}
-                backgroundColor={'#464657'}
-                value={email}
-                onChangeText={(value: string) => setEmail(value)}
-                textColor="#fff"
-              />
+      <View style={styles.imgContainer}>
+        <Image
+          source={require('../assets/images/logo.png')}
+          style={styles.logoStyle}
+        />
+      </View>
+      <Text style={styles.txtColor}>Create your Account</Text>
+      <KeyboardScrollView>
+        <View style={styles.textinputContainer}>
+          <TextInputComp
+            placeholder={'Name'}
+            placeholderTextColor={'#b3b3b7'}
+            backgroundColor={'#464657'}
+            value={name}
+            onChangeText={(value: string) => setName(value)}
+            secureTextEntry={false}
+            textColor="#fff"
+          />
+          <TextInputComp
+            placeholder={'Email'}
+            placeholderTextColor={'#b3b3b7'}
+            backgroundColor={'#464657'}
+            value={email}
+            onChangeText={(value: string) => setEmail(value)}
+            textColor="#fff"
+          />
 
-              <TextInputComp
-                placeholder={'Password'}
-                placeholderTextColor={'#b3b3b7'}
-                backgroundColor={'#464657'}
-                value={password}
-                onChangeText={(value: string) => setPassword(value)}
-                secureTextEntry={true}
-                textColor="#fff"
-              />
+          <TextInputComp
+            placeholder={'Password'}
+            placeholderTextColor={'#b3b3b7'}
+            backgroundColor={'#464657'}
+            value={password}
+            onChangeText={(value: string) => setPassword(value)}
+            secureTextEntry={true}
+            textColor="#fff"
+          />
 
-              <TextInputComp
-                placeholder={'Confirm Password'}
-                placeholderTextColor={'#b3b3b7'}
-                backgroundColor={'#464657'}
-                value={confirmPassword}
-                onChangeText={(value: string) => setConfirmPassword(value)}
-                secureTextEntry={true}
-                textColor="#fff"
-              />
+          <TextInputComp
+            placeholder={'Confirm Password'}
+            placeholderTextColor={'#b3b3b7'}
+            backgroundColor={'#464657'}
+            value={confirmPassword}
+            onChangeText={(value: string) => setConfirmPassword(value)}
+            secureTextEntry={true}
+            textColor="#fff"
+          />
 
-              {password !== confirmPassword && (
-                <Text style={styles.passwordMatchText}>
-                  Password does not match
-                </Text>
-              )}
+          {password !== confirmPassword && (
+            <Text style={styles.passwordMatchText}>
+              Password does not match
+            </Text>
+          )}
 
-              <ButtonComp
-                text="Sign up"
-                isLoading={isLoading}
-                onPress={() => handleSignup()}
-              />
-              <View style={styles.alreadyAccountContainer}>
-                <Text style={styles.alreadyAccountText}>
-                  Already Have an Account?
-                </Text>
-                <Pressable
-                  onPress={() => navigation.navigate('Login')}
-                  style={styles.loginHyperlinkContainer}>
-                  <Text style={styles.loginHyperlinkText}>Sign in</Text>
-                </Pressable>
-              </View>
-            </View>
-          </KeyboardAvoidingScrollView>
-        </ScrollView>
-      </TouchableWithoutFeedback>
+          <ButtonComp
+            text="Sign up"
+            isLoading={isLoading}
+            onPress={() => handleSignup()}
+          />
+          <View style={styles.alreadyAccountContainer}>
+            <Text style={styles.alreadyAccountText}>
+              Already Have an Account?
+            </Text>
+            <Pressable
+              onPress={() => navigation.navigate('Login')}
+              style={styles.loginHyperlinkContainer}>
+              <Text style={styles.loginHyperlinkText}>Sign in</Text>
+            </Pressable>
+          </View>
+        </View>
+      </KeyboardScrollView>
     </SafeAreaView>
   );
 };
