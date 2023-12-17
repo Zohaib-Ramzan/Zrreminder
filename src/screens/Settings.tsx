@@ -5,6 +5,7 @@ import {
   Text,
   View,
   Modal,
+  Alert,
 } from 'react-native';
 import React, {useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -19,9 +20,8 @@ import ButtonComp from '../components/ButtonComp';
 import ChangePassword from './ChangePassword';
 import ModalCard from '../components/ModalCard';
 import EditName from './EditName';
-import Auth from '@react-native-firebase/auth';
-import {StackActions} from '@react-navigation/native';
-import {useToast} from 'react-native-toast-notifications';
+import {useFirebaseAuth, useToastHelper} from '../hooks';
+import {resetAndGo} from '../constants';
 
 type SettingsProps = NativeStackScreenProps<RootStackParamList, 'Settings'>;
 
@@ -30,7 +30,9 @@ const Settings = ({navigation}: SettingsProps) => {
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [editNameVisible, setEditNameVisible] = useState(false);
   const [nameChangedVisible, setNameChangedVisible] = useState(false);
-  const {show: showToast} = useToast();
+
+  const {showNormalToast} = useToastHelper();
+  const {userLogout} = useFirebaseAuth();
 
   // Go Back and show Password confirmation
   const GoBackPasswordChange = () => {
@@ -65,10 +67,21 @@ const Settings = ({navigation}: SettingsProps) => {
   };
 
   // Signout function
-  const signOut = async () => {
-    await Auth().signOut();
-    showToast('Successfully Logout!');
-    navigation.dispatch(StackActions.replace('Login'));
+  const signOut = () => {
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      {
+        text: 'Yes',
+        onPress: async () => {
+          await userLogout();
+          showNormalToast('Successfully Logout!');
+          resetAndGo(navigation, 'Login');
+        },
+      },
+      {
+        text: 'No',
+        style: 'cancel',
+      },
+    ]);
   };
 
   return (

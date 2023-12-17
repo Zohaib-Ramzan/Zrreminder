@@ -55,5 +55,27 @@ export function useFirebaseAuth() {
     return auth().currentUser !== null;
   };
 
-  return {createUser, userLogin, userLogout, isUserLoggedIn};
+  const getUserId = () => {
+    return auth().currentUser?.uid;
+  };
+
+  const loadUserData = (userId: string, onDataLoaded: Function) => {
+    return USERS_COLLECTION.doc(userId).onSnapshot(doc => {
+      if (doc.exists) {
+        onDataLoaded({
+          id: doc.id,
+          ...doc.data(),
+        });
+      }
+    });
+  };
+
+  return {
+    createUser,
+    userLogin,
+    userLogout,
+    isUserLoggedIn,
+    loadUserData,
+    getUserId,
+  };
 }
