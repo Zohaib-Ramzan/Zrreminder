@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import React from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import TextInputComp from '../components/TextInputComp';
 import {
   responsiveFontSize,
@@ -15,11 +15,22 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import ButtonComp from '../components/ButtonComp';
+import {UserDataContext} from '../context';
+import {useFirebaseAuth, useToastHelper} from '../hooks';
 
-const EditName = ({GoBackEditName, closeModal}: any) => {
-  const dialogueOpen = () => {
-    GoBackEditName();
-  };
+const EditName = ({closeModal}: any) => {
+  const [isSaving, setIsSaving] = useState(false);
+  const [name, setName] = useState('');
+
+  const {userData} = useContext(UserDataContext);
+  const {updateUserData} = useFirebaseAuth();
+  const {showSuccessToast, showErrorToast} = useToastHelper();
+
+  useEffect(() => {
+    if (userData) {
+      setName(userData.name);
+    }
+  }, [userData]);
 
   return (
     <TouchableWithoutFeedback>
@@ -40,19 +51,9 @@ const EditName = ({GoBackEditName, closeModal}: any) => {
             <View style={styles.textInputContainer}>
               <TouchableOpacity style={{marginBottom: responsiveHeight(0.1)}}>
                 <TextInputComp
-                  textColor="#fff"
-                  placeholder="New Name"
-                  backgroundColor="#1a1a1c"
-                  placeholderTextColor="#afafb0"
-                />
-              </TouchableOpacity>
-              <TouchableOpacity style={{marginBottom: responsiveHeight(0.1)}}>
-                <TextInputComp
-                  secureTextEntry={true}
-                  textColor="#fff"
-                  placeholder="Password"
-                  backgroundColor="#1a1a1c"
-                  placeholderTextColor="#afafb0"
+                  placeholder="Your Name"
+                  value={name}
+                  onChangeText={setName}
                 />
               </TouchableOpacity>
             </View>
@@ -60,7 +61,8 @@ const EditName = ({GoBackEditName, closeModal}: any) => {
               <ButtonComp
                 text="Done"
                 BtnWidth={responsiveWidth(18)}
-                onPress={dialogueOpen}
+                onPress={handleOnDone}
+                isLoading={isSaving}
               />
             </View>
           </View>
@@ -68,6 +70,21 @@ const EditName = ({GoBackEditName, closeModal}: any) => {
       </ScrollView>
     </TouchableWithoutFeedback>
   );
+
+  function handleOnDone() {
+    setIsSaving(true);
+    updateUserData({name})
+      .then(() => {
+        showSuccessToast('Name changed successfully');
+        closeModal();
+      })
+      .catch(error => {
+        showErrorToast(error.message);
+      })
+      .finally(() => {
+        setIsSaving(false);
+      });
+  }
 };
 
 export default EditName;

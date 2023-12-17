@@ -61,11 +61,11 @@ const Home = ({navigation}: HomeProps) => {
     },
   ]);
 
-  const {getUserId, loadUserData} = useFirebaseAuth();
+  const {loadUserData} = useFirebaseAuth();
   const {userData, setUserData} = useContext(UserDataContext);
 
   useEffect(() => {
-    const subscribe = loadUserData(getUserId(), setUserData);
+    const subscribe = loadUserData(setUserData);
     return () => subscribe?.();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

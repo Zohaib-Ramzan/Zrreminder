@@ -59,14 +59,21 @@ export function useFirebaseAuth() {
     return auth().currentUser?.uid;
   };
 
-  const loadUserData = (userId: string, onDataLoaded: Function) => {
-    return USERS_COLLECTION.doc(userId).onSnapshot(doc => {
+  const loadUserData = (onDataLoaded: Function) => {
+    return USERS_COLLECTION.doc(getUserId()).onSnapshot(doc => {
       if (doc.exists) {
         onDataLoaded({
           id: doc.id,
           ...doc.data(),
         });
       }
+    });
+  };
+
+  const updateUserData = (data: any) => {
+    return USERS_COLLECTION.doc(getUserId()).update({
+      ...data,
+      updatedAt: firestore.FieldValue.serverTimestamp(),
     });
   };
 
@@ -77,5 +84,6 @@ export function useFirebaseAuth() {
     isUserLoggedIn,
     loadUserData,
     getUserId,
+    updateUserData,
   };
 }
