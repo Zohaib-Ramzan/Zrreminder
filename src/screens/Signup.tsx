@@ -5,7 +5,6 @@ import {
   Image,
   Pressable,
   SafeAreaView,
-  Alert,
 } from 'react-native';
 import React, {useState} from 'react';
 import TextInputComp from '../components/TextInputComp';
@@ -17,11 +16,9 @@ import {
   responsiveFontSize,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import {KeyboardScrollView} from '@rlemasquerier/react-native-keyboard-scrollview';
-import {useToast} from 'react-native-toast-notifications';
-import {COLORS} from '../constants';
+import {COLORS, isEmptyString, resetAndGo} from '../constants';
+import {useFirebaseAuth, useToastHelper} from '../hooks';
 type SignupProps = NativeStackScreenProps<RootStackParamList, 'Signup'>;
 
 const Signup = ({navigation}: SignupProps) => {
@@ -30,36 +27,30 @@ const Signup = ({navigation}: SignupProps) => {
   const [name, setName] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const {show: showToast} = useToast();
+
+  const {showErrorToast, showNormalToast, showSuccessToast} = useToastHelper();
+  const {createUser} = useFirebaseAuth();
 
   const handleSignup = async () => {
-    if (email.length > 0 && password.length > 0) {
-      setIsLoading(true);
-      try {
-        const isUserCreated = await auth().createUserWithEmailAndPassword(
-          email,
-          password,
-        );
-
-        await auth().signOut();
-        console.log(isUserCreated);
-        setIsLoading(false);
-        showToast('Successfully Signup!');
-
-        await firestore()
-          .collection('Users')
-          .doc(isUserCreated.user.uid)
-          .set({name: name, email: email, id: isUserCreated.user.uid});
-        navigation.navigate('Login', {
-          name: name,
-        });
-      } catch (error) {
-        setIsLoading(false);
-        console.log(error);
-        showToast(error.message);
-      }
+    if (
+      isEmptyString(email) ||
+      isEmptyString(password) ||
+      isEmptyString(name)
+    ) {
+      showNormalToast('Please fill all the fields');
     } else {
-      Alert.alert('Please fill details!');
+      setIsLoading(true);
+      createUser(email, password, name)
+        .then(() => {
+          showSuccessToast("You're account is created!");
+          resetAndGo(navigation, 'Main');
+        })
+        .catch(error => {
+          showErrorToast(error.message);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   };
 

@@ -5,7 +5,6 @@ import {
   Image,
   Pressable,
   SafeAreaView,
-  Alert,
 } from 'react-native';
 import React, {useState} from 'react';
 import TextInputComp from '../components/TextInputComp';
@@ -17,65 +16,35 @@ import {
   responsiveFontSize,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import auth from '@react-native-firebase/auth';
-import {StackActions} from '@react-navigation/native';
-import firestore from '@react-native-firebase/firestore';
 import {KeyboardScrollView} from '@rlemasquerier/react-native-keyboard-scrollview';
-import {useToast} from 'react-native-toast-notifications';
-import {COLORS} from '../constants';
+import {COLORS, isEmptyString, resetAndGo} from '../constants';
+import {useFirebaseAuth, useToastHelper} from '../hooks';
 type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 const Login = ({navigation}: LoginProps) => {
-  // const {name} = route.params || {};
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const {show: showToast} = useToast();
+
+  const {showSuccessToast, showErrorToast, showNormalToast} = useToastHelper();
+  const {userLogin} = useFirebaseAuth();
 
   const handleLogin = async () => {
-    // ... (existing code)
-    if (email.length > 0 && password.length > 0) {
-      setIsLoading(true);
-      try {
-        const isUserValid = await auth().signInWithEmailAndPassword(
-          email,
-          password,
-        );
-        console.log(isUserValid);
-
-        await firestore()
-          .collection('Users')
-          .doc(isUserValid.user.uid)
-          .get()
-          .then(doc => {
-            if (doc.exists) {
-              // Document exists, access its data
-              const data = doc.data();
-              console.log('Document data:', data);
-              // Move navigation logic here to ensure 'name' is set before navigating
-
-              showToast('Successfully Login!');
-              setIsLoading(false);
-
-              navigation.dispatch(StackActions.replace('Main'));
-              // navigation.navigate('Main', {
-              //   Email: isUserValid.user.email,
-              //   uid: isUserValid.user.uid,
-              //   Name: data?.name, // Pass the retrieved name to the 'Home' screen
-              // });
-            } else {
-              // Document doesn't exist
-              showToast('Invalid User');
-              // console.log('No such document!');
-            }
-          });
-        setIsLoading(false);
-      } catch (error) {
-        setIsLoading(false);
-        showToast(error.message);
-      }
+    if (isEmptyString(email) || isEmptyString(password)) {
+      showNormalToast('Please enter email and password');
     } else {
-      Alert.alert('Please fill details!');
+      setIsLoading(true);
+      userLogin(email, password)
+        .then(() => {
+          showSuccessToast("You're logged in!");
+          resetAndGo(navigation, 'Main');
+        })
+        .catch(error => {
+          showErrorToast(error.message);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   };
 

@@ -5,11 +5,10 @@ import {
   Modal,
   TouchableWithoutFeedback,
   FlatList,
-  BackHandler,
+  // BackHandler,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import firestore from '@react-native-firebase/firestore';
-
 import {
   responsiveHeight,
   responsiveFontSize,
@@ -20,6 +19,8 @@ import AddCategory from './AddCategory';
 import {CardData} from './types';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../routes/AppNavigator';
+import {UserDataContext} from '../context';
+import {useFirebaseAuth} from '../hooks';
 
 const ImageData = [
   require('../assets/images/logo.png'),
@@ -32,7 +33,6 @@ const ImageData = [
 
 // Define the type for the navigation prop
 type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
-
 const Home = ({navigation}: HomeProps) => {
   // const {Email, uid, Name} = route.params || {};
   // console.log("Email is : " + Email + " Uid is " + uid)
@@ -60,6 +60,14 @@ const Home = ({navigation}: HomeProps) => {
       cardIndex: plusCircleImg(),
     },
   ]);
+
+  const {loadUserData} = useFirebaseAuth();
+  const {userData, setUserData} = useContext(UserDataContext);
+
+  useEffect(() => {
+    const subscribe = loadUserData(setUserData);
+    return () => subscribe?.();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const fetchCardsFromDB = async () => {
@@ -95,36 +103,22 @@ const Home = ({navigation}: HomeProps) => {
     fetchCardsFromDB();
   }, []);
 
-  // const [selectedCardDataArray, setSelectedCardDataArray] = useState<
-  //   CardData[]
-  // >([
-  //   {
-  //     backgroundColor: '#2c2c34',
-  //     onPress: () => setCloseCategoryModal(true),
-  //     imgUrl: plusCircleImg(),
-  //     isLongPressed: false,
-  //   },
-  // ]);
-
   useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      () => {
-        // Reset the isLongPressed property of all cards to false
-        const updatedCardDataArray = fetchedCardData.map(cardData => ({
-          ...cardData,
-          isLongPressed: false,
-        }));
-
-        setFetchedCardData(updatedCardDataArray);
-
-        return true; // Prevent default behavior (closing the app)
-      },
-    );
-
-    return () => {
-      backHandler.remove(); // Remove the event listener when the component is unmounted
-    };
+    // const backHandler = BackHandler.addEventListener(
+    //   'hardwareBackPress',
+    //   () => {
+    //     // Reset the isLongPressed property of all cards to false
+    //     const updatedCardDataArray = fetchedCardData.map(cardData => ({
+    //       ...cardData,
+    //       isLongPressed: false,
+    //     }));
+    //     setFetchedCardData(updatedCardDataArray);
+    //     return true; // Prevent default behavior (closing the app)
+    //   },
+    // );
+    // return () => {
+    //   backHandler.remove(); // Remove the event listener when the component is unmounted
+    // };
   }, [fetchedCardData]);
 
   const handleCardLongPress = (index: number) => {
@@ -216,7 +210,9 @@ const Home = ({navigation}: HomeProps) => {
         />
       </Modal> */}
       <View style={styles.hometxtView}>
-        <Text style={styles.txtStyle}>User's Personal Categories</Text>
+        <Text style={styles.txtStyle}>
+          {`${userData?.name}'s Personal Categories`}
+        </Text>
       </View>
       {fetchedCardData.length > 0 && (
         <View>
