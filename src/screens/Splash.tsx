@@ -2,22 +2,25 @@ import {Image, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../routes/AppNavigator';
-import Auth from '@react-native-firebase/auth';
-import {StackActions} from '@react-navigation/native';
+import {useFirebaseAuth} from '../hooks';
+import {resetAndGo} from '../constants';
 
 type SplashProps = NativeStackScreenProps<RootStackParamList, 'Splash'>;
 
 const Splash = ({navigation}: SplashProps) => {
+  const {isUserLoggedIn} = useFirebaseAuth();
+
   useEffect(() => {
     const timer = setTimeout(() => {
-      const routeName = Auth().currentUser?.uid ? 'Main' : 'Login';
-      navigation.dispatch(StackActions.replace(routeName));
+      const routeName = isUserLoggedIn() ? 'Main' : 'Login';
+      resetAndGo(navigation, routeName);
     }, 2000);
 
     return () => {
-      clearTimeout(timer); // Clear timeout when unmounting
+      clearTimeout(timer);
     };
-  }, [navigation]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <View style={styles.container}>
       <Image

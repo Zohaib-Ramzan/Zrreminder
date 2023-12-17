@@ -32,10 +32,11 @@ ButtonProps) => {
   };
   return (
     <Pressable
+      pointerEvents={isLoading ? 'none' : 'auto'}
       style={[styles.containerView, containerCondition]}
       onPress={onPress}>
       {isLoading ? (
-        <ActivityIndicator size={'large'} color={COLORS.primary} />
+        <ActivityIndicator size={'large'} color={COLORS.textColor} />
       ) : (
         <Text style={styles.txtStyle}>{text}</Text>
       )}
