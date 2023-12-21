@@ -6,28 +6,28 @@ import {
   Pressable,
   SafeAreaView,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import TextInputComp from '../components/TextInputComp';
 import ButtonComp from '../components/ButtonComp';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../routes/AppNavigator';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../routes/AppNavigator';
 import {
   responsiveHeight,
   responsiveFontSize,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import {KeyboardScrollView} from '@rlemasquerier/react-native-keyboard-scrollview';
-import {COLORS, isEmptyString, resetAndGo} from '../constants';
-import {useFirebaseAuth, useToastHelper} from '../hooks';
+import { KeyboardScrollView } from '@rlemasquerier/react-native-keyboard-scrollview';
+import { COLORS, isEmptyString, resetAndGo } from '../constants';
+import { useFirebaseAuth, useToastHelper } from '../hooks';
 type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
-const Login = ({navigation}: LoginProps) => {
+const Login = ({ navigation }: LoginProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const {showSuccessToast, showErrorToast, showNormalToast} = useToastHelper();
-  const {userLogin} = useFirebaseAuth();
+  const { showSuccessToast, showErrorToast, showNormalToast } = useToastHelper();
+  const { userLogin } = useFirebaseAuth();
 
   const handleLogin = async () => {
     if (isEmptyString(email) || isEmptyString(password)) {
@@ -127,23 +127,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  signupGoogle: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  signupApple: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: responsiveWidth(2),
-  },
-  signupText: {
-    color: '#b3b3b7',
-    marginTop: responsiveHeight(4),
-    textAlign: 'center',
-    fontWeight: '700',
-  },
+  // signupGoogle: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
+  // signupApple: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   marginLeft: responsiveWidth(2),
+  // },
+  // signupText: {
+  //   color: '#b3b3b7',
+  //   marginTop: responsiveHeight(4),
+  //   textAlign: 'center',
+  //   fontWeight: '700',
+  // },
   signupButtonsContainer: {
     flexDirection: 'row',
     marginTop: responsiveHeight(4),
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   signupNavigateText: {
-    color: '#b3b3b7',
+    color: COLORS.signupNavigateTextColor,
     fontWeight: '800',
   },
   signupNavigateHyperlink: {
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     marginLeft: responsiveWidth(1),
   },
   signupNavigateHyperlinkText: {
-    color: '#54545e',
+    color: COLORS.signupNavigateHyperlinkTextColor,
     textDecorationLine: 'underline',
     fontWeight: '700',
   },

@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import TextInputComp from '../components/TextInputComp';
 import {
   responsiveFontSize,
@@ -15,16 +15,17 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import ButtonComp from '../components/ButtonComp';
-import {UserDataContext} from '../context';
-import {useFirebaseAuth, useToastHelper} from '../hooks';
+import { UserDataContext } from '../context';
+import { useFirebaseAuth, useToastHelper } from '../hooks';
+import { COLORS } from '../constants';
 
-const EditName = ({closeModal}: any) => {
+const EditName = ({ closeModal }: any) => {
   const [isSaving, setIsSaving] = useState(false);
   const [name, setName] = useState('');
 
-  const {userData} = useContext(UserDataContext);
-  const {updateUserData} = useFirebaseAuth();
-  const {showSuccessToast, showErrorToast} = useToastHelper();
+  const { userData } = useContext(UserDataContext);
+  const { updateUserData } = useFirebaseAuth();
+  const { showSuccessToast, showErrorToast } = useToastHelper();
 
   useEffect(() => {
     if (userData) {
@@ -49,7 +50,7 @@ const EditName = ({closeModal}: any) => {
             </View>
             <Text style={styles.titleTxt}>Edit Name</Text>
             <View style={styles.textInputContainer}>
-              <TouchableOpacity style={{marginBottom: responsiveHeight(0.1)}}>
+              <TouchableOpacity style={{ marginBottom: responsiveHeight(0.1) }}>
                 <TextInputComp
                   placeholder="Your Name"
                   value={name}
@@ -73,7 +74,7 @@ const EditName = ({closeModal}: any) => {
 
   function handleOnDone() {
     setIsSaving(true);
-    updateUserData({name})
+    updateUserData({ name })
       .then(() => {
         showSuccessToast('Name changed successfully');
         closeModal();
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
     height: responsiveHeight(85),
     width: responsiveWidth(92),
     borderRadius: 10,
-    backgroundColor: '#2c2c34',
+    backgroundColor: COLORS.cardBG,
   },
   iconContainer: {
     alignItems: 'flex-end',
@@ -110,13 +111,13 @@ const styles = StyleSheet.create({
     marginRight: responsiveWidth(4),
   },
   iconStyle: {
-    tintColor: '#afafb0',
+    tintColor: COLORS.white,
     height: responsiveHeight(4),
     width: responsiveWidth(4),
   },
   titleTxt: {
     fontSize: responsiveFontSize(3.5),
-    color: '#afafb0',
+    color: COLORS.textColor,
     textAlign: 'center',
     marginBottom: responsiveHeight(8),
   },
@@ -130,5 +131,5 @@ const styles = StyleSheet.create({
     paddingTop: responsiveHeight(17),
     justifyContent: 'flex-end',
   },
-  scrollViewContainer: {flexGrow: 1},
+  scrollViewContainer: { flexGrow: 1 },
 });

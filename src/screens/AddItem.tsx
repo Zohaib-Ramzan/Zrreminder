@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -23,11 +23,12 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontIcon from 'react-native-vector-icons/FontAwesome';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import AddReminderPage from './AddReminderPage';
-import {launchImageLibrary} from 'react-native-image-picker';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../routes/AppNavigator';
-import {RouteProp} from '@react-navigation/native';
+import { launchImageLibrary } from 'react-native-image-picker';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../routes/AppNavigator';
+import { RouteProp } from '@react-navigation/native';
+import { COLORS } from '../constants';
 
 type AddItemProps = NativeStackScreenProps<RootStackParamList, 'AddItem'>;
 
@@ -38,7 +39,7 @@ type RouteParam = {
   };
 };
 
-const AddItem = ({crossButton, updatedData, isEditPress}: any) => {
+const AddItem = ({ crossButton, updatedData, isEditPress }: any) => {
   const route = useRoute<RouteProp<RouteParam, 'AddItem'>>();
   const navigation = useNavigation<AddItemProps>();
   const [title, setTitle] = useState('');
@@ -167,18 +168,18 @@ const AddItem = ({crossButton, updatedData, isEditPress}: any) => {
     if (title !== '' && imageSelect !== null) {
       console.log(
         title +
-          ' ' +
-          imageSelect +
-          ' ' +
-          selectedDate +
-          ' ' +
-          expireDate +
-          ' ' +
-          reminderText +
-          ' ' +
-          noteText +
-          ' ' +
-          selectedCardCategory,
+        ' ' +
+        imageSelect +
+        ' ' +
+        selectedDate +
+        ' ' +
+        expireDate +
+        ' ' +
+        reminderText +
+        ' ' +
+        noteText +
+        ' ' +
+        selectedCardCategory,
       );
       const updatedData = {
         ...selectedCardData,
@@ -200,9 +201,9 @@ const AddItem = ({crossButton, updatedData, isEditPress}: any) => {
 
   const plusCircleStyles = isImageSelected
     ? {
-        right: responsiveWidth(15),
-        bottom: responsiveHeight(1),
-      }
+      right: responsiveWidth(15),
+      bottom: responsiveHeight(1),
+    }
     : {};
 
   return (
@@ -224,12 +225,12 @@ const AddItem = ({crossButton, updatedData, isEditPress}: any) => {
               {isEditPress === true ? 'Edit Item' : 'Add Item'}
             </Text>
             <View style={styles.textInputContainer}>
-              <TouchableOpacity style={{marginBottom: responsiveHeight(0.1)}}>
+              <TouchableOpacity style={{ marginBottom: responsiveHeight(0.1) }}>
                 <TextInputComp
-                  textColor="#fff"
+                  textColor={COLORS.textColor}
                   placeholder="Add Title"
-                  backgroundColor="#1a1a1c"
-                  placeholderTextColor="#afafb0"
+                  backgroundColor={COLORS.background}
+                  placeholderTextColor={COLORS.placeholderTextColor}
                   value={title}
                   onChangeText={setTitle}
                 />
@@ -242,8 +243,8 @@ const AddItem = ({crossButton, updatedData, isEditPress}: any) => {
               <Card
                 height={responsiveHeight(20)}
                 width={responsiveWidth(36)}
-                backgroundColor="#1a1a1c"
-                imageUrl={imageSelect && {uri: imageSelect}}
+                backgroundColor={COLORS.background}
+                imageUrl={imageSelect && { uri: imageSelect }}
                 ImgHeight={responsiveHeight(20)}
                 ImgWidth={responsiveWidth(36)}
               />
@@ -276,16 +277,16 @@ const AddItem = ({crossButton, updatedData, isEditPress}: any) => {
                 onPress={() => onPressDateSelected(true)}>
                 <Text style={styles.calendarBoxTxtStyle}>{selectedDate}</Text>
                 <View style={styles.calendarContainerView}>
-                  <Icon name="calendar-month" size={25} color="#464657" />
+                  <Icon name="calendar-month" size={25} color={COLORS.calenderIconTintColor} />
                 </View>
               </Pressable>
-              <View style={{marginLeft: responsiveWidth(4)}}>
+              <View style={{ marginLeft: responsiveWidth(4) }}>
                 <Pressable
                   style={styles.calendarBox}
                   onPress={() => onPressDateSelected(false)}>
                   <Text style={styles.calendarBoxTxtStyle}>{expireDate}</Text>
                   <View style={styles.calendarContainerView}>
-                    <Icon name="calendar-month" size={25} color="#464657" />
+                    <Icon name="calendar-month" size={25} color={COLORS.calenderIconTintColor} />
                   </View>
                 </Pressable>
               </View>
@@ -301,7 +302,7 @@ const AddItem = ({crossButton, updatedData, isEditPress}: any) => {
                 />
               </View>
             </Modal>
-            <View style={{marginBottom: responsiveHeight(1)}}>
+            <View style={{ marginBottom: responsiveHeight(1) }}>
               <Text style={styles.subText}>Select Reminder</Text>
             </View>
             <View style={styles.selectReminderView}>
@@ -318,17 +319,17 @@ const AddItem = ({crossButton, updatedData, isEditPress}: any) => {
                 onPress={openReminderModal}>
                 <Text style={styles.calendarBoxTxtStyle}>{reminderText}</Text>
                 <View style={styles.calendarContainerView}>
-                  <FontIcon name="bell" size={20} color="#464657" />
+                  <FontIcon name="bell" size={20} color={COLORS.calenderIconTintColor} />
                 </View>
               </Pressable>
             </View>
             <View style={styles.addNoteView}>
               <TextInputComp
-                textColor="#fff"
+                textColor={COLORS.textColor}
                 multiline={true}
                 placeholder="&nbsp;&nbsp;Add Note"
-                placeholderTextColor="#afafb0"
-                backgroundColor="#1a1a1c"
+                placeholderTextColor={COLORS.placeholderTextColor}
+                backgroundColor={COLORS.background}
                 width={responsiveWidth(65)}
                 value={noteText}
                 onChangeText={setNoteText}
@@ -385,7 +386,7 @@ const styles = StyleSheet.create({
     height: responsiveHeight(90),
     width: responsiveWidth(92),
     borderRadius: 10,
-    backgroundColor: '#2c2c34',
+    backgroundColor: COLORS.addItemCardBG,
   },
   iconContainer: {
     alignItems: 'flex-end',
@@ -395,13 +396,13 @@ const styles = StyleSheet.create({
     marginRight: responsiveWidth(4),
   },
   iconStyle: {
-    tintColor: '#afafb0',
+    tintColor: COLORS.white,
     height: responsiveHeight(4),
     width: responsiveWidth(4),
   },
   titleTxt: {
     fontSize: responsiveFontSize(3.5),
-    color: '#afafb0',
+    color: COLORS.textColor,
     marginLeft: responsiveWidth(5),
     marginBottom: responsiveHeight(2),
   },
@@ -415,7 +416,7 @@ const styles = StyleSheet.create({
   },
   subText: {
     fontSize: responsiveFontSize(2),
-    color: '#afafb0',
+    color: COLORS.textColor,
     marginTop: responsiveHeight(2),
     textAlign: 'center',
     fontWeight: 'bold',
@@ -432,12 +433,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: responsiveHeight(3),
   },
-  selectedCardTouchable: {
-    borderWidth: 2,
-    borderColor: 'yellow', // You can set any highlight color here
-    borderRadius: 12,
-  },
-  additemContainer: {},
   plusCircleContainer: {
     position: 'absolute',
     // right: responsiveWidth(15),
@@ -456,20 +451,20 @@ const styles = StyleSheet.create({
   calendarBox: {
     width: responsiveWidth(40),
     height: responsiveHeight(7),
-    backgroundColor: '#1a1a1c',
+    backgroundColor: COLORS.background,
     borderRadius: 10,
   },
   calendarBoxTxtStyle: {
-    color: '#afafb0',
+    color: COLORS.calenderPlaceHolderTextColor,
     fontSize: 12,
     textAlign: 'center',
     paddingTop: responsiveHeight(2),
     marginLeft: responsiveWidth(4),
     fontWeight: 'bold',
   },
-  contentContainerView: {flexGrow: 1},
+  contentContainerView: { flexGrow: 1 },
   imageBoxContainer: {
-    backgroundColor: '#2c2c34',
+    backgroundColor: COLORS.addItemCardBG,
     height: responsiveHeight(6),
     width: responsiveWidth(11),
     borderRadius: 8,
@@ -482,7 +477,7 @@ const styles = StyleSheet.create({
     bottom: responsiveHeight(1.5),
     marginLeft: responsiveWidth(2),
   },
-  addReminderView: {flex: 1},
-  selectReminderView: {alignItems: 'center', height: responsiveHeight(5)},
-  addNoteView: {alignItems: 'center', marginTop: responsiveHeight(2)},
+  addReminderView: { flex: 1 },
+  selectReminderView: { alignItems: 'center', height: responsiveHeight(5) },
+  addNoteView: { alignItems: 'center', marginTop: responsiveHeight(2) },
 });

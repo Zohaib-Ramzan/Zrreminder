@@ -1,5 +1,5 @@
-import {View, Text, StyleSheet, TouchableOpacity, Modal} from 'react-native';
-import React, {useState} from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import React, { useState } from 'react';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -10,9 +10,10 @@ import Card from '../components/Card';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontIcon from 'react-native-vector-icons/FontAwesome';
 import AddItem from './AddItem';
+import { COLORS } from '../constants';
 
-const ItemDetails = ({navigation, route}: any) => {
-  const {updatedData} = route.params;
+const ItemDetails = ({ navigation, route }: any) => {
+  const { updatedData } = route.params;
   const crossButton = () => {
     setIsVisible(false);
   };
@@ -40,7 +41,7 @@ const ItemDetails = ({navigation, route}: any) => {
       newUpdatedData: updatedData,
     });
   };
-  const {title, imgUrl, startDate, endDate, reminderTxt, noteTxt} = updatedData;
+  const { title, imgUrl, startDate, endDate, reminderTxt, noteTxt } = updatedData;
   const [isVisible, setIsVisible] = useState<boolean>(false);
   return (
     <View style={styles.container}>
@@ -57,7 +58,7 @@ const ItemDetails = ({navigation, route}: any) => {
             <Card
               height={responsiveHeight(25)}
               width={responsiveWidth(50)}
-              imageUrl={{uri: imgUrl}}
+              imageUrl={{ uri: imgUrl }}
               ImgHeight={responsiveHeight(25)}
               ImgWidth={responsiveWidth(50)}
               opacity={1}
@@ -96,8 +97,8 @@ const ItemDetails = ({navigation, route}: any) => {
           </View>
 
           <View style={styles.reminderTextView}>
-            <FontIcon name="bell" size={responsiveHeight(3)} color="#adadb0" />
-            <View style={{marginTop: responsiveHeight(1)}}>
+            <FontIcon name="bell" size={responsiveHeight(3)} color={COLORS.bellIconTintColor} />
+            <View style={{ marginTop: responsiveHeight(1) }}>
               <Text style={styles.calenderTxt}>Reminder: {reminderTxt}</Text>
             </View>
           </View>
@@ -105,28 +106,28 @@ const ItemDetails = ({navigation, route}: any) => {
           <View style={styles.noteTextView}>
             <Text style={[styles.calenderTxt, styles.boldFont]}>Note</Text>
             <Text
-              style={[styles.calenderTxt, {fontSize: responsiveFontSize(2)}]}>
+              style={[styles.calenderTxt, { fontSize: responsiveFontSize(2) }]}>
               {noteTxt}
             </Text>
           </View>
 
           <View style={styles.iconsContainer}>
             <TouchableOpacity
-              style={{marginLeft: responsiveWidth(25)}}
+              style={{ marginLeft: responsiveWidth(25) }}
               onPress={onPressDelete}>
               <Icon
                 name={'delete'}
                 size={responsiveHeight(4)}
-                color={'#aa5945'}
+                color={COLORS.deleteIconTintColor}
               />
             </TouchableOpacity>
             <TouchableOpacity
-              style={{marginLeft: responsiveWidth(25)}}
+              style={{ marginLeft: responsiveWidth(25) }}
               onPress={onPressEdit}>
               <Icon
                 name={'edit'}
                 size={responsiveHeight(4)}
-                color={'#9dbead'}
+                color={COLORS.editIconTintColor}
               />
             </TouchableOpacity>
           </View>
@@ -141,10 +142,10 @@ export default ItemDetails;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1a1c',
+    backgroundColor: COLORS.background,
   },
   txtStyle: {
-    color: '#fff',
+    color: COLORS.textColor,
     fontSize: responsiveFontSize(3.5),
   },
   detailCardContainerView: {
@@ -154,7 +155,7 @@ const styles = StyleSheet.create({
   detailCardContainer: {
     height: responsiveHeight(65),
     width: responsiveWidth(90),
-    backgroundColor: '#2c2c34',
+    backgroundColor: COLORS.itemDetailsCardBG,
     borderRadius: 10,
   },
   iconsContainer: {
@@ -168,18 +169,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   titleTxtStyle: {
-    color: '#adadb0',
+    color: COLORS.textColor,
     fontSize: responsiveFontSize(2),
     fontWeight: 'bold',
   },
   calenderTxt: {
-    color: '#adadb0',
+    color: COLORS.textColor,
     fontFamily: 'AlegreyaSans-MediumItalic',
     fontSize: responsiveFontSize(1.9),
     fontWeight: '600',
   },
-  calenderView: {flexDirection: 'row', justifyContent: 'space-around'},
-  cardContainer: {alignItems: 'center', bottom: responsiveHeight(8)},
+  calenderView: { flexDirection: 'row', justifyContent: 'space-around' },
+  cardContainer: { alignItems: 'center', bottom: responsiveHeight(8) },
   startDateView: {
     position: 'absolute',
     bottom: responsiveHeight(0.1),
@@ -190,8 +191,8 @@ const styles = StyleSheet.create({
     bottom: responsiveHeight(0.1),
     right: responsiveWidth(14),
   },
-  reminderTextView: {alignItems: 'center', marginTop: responsiveHeight(3)},
-  noteTextView: {alignItems: 'center', marginTop: responsiveHeight(2)},
+  reminderTextView: { alignItems: 'center', marginTop: responsiveHeight(3) },
+  noteTextView: { alignItems: 'center', marginTop: responsiveHeight(2) },
   boldFont: {
     fontWeight: 'bold',
   },

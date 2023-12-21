@@ -1,14 +1,14 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect} from 'react';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../routes/AppNavigator';
-import {useFirebaseAuth} from '../hooks';
-import {resetAndGo} from '../constants';
+import { Image, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../routes/AppNavigator';
+import { useFirebaseAuth } from '../hooks';
+import { COLORS, resetAndGo } from '../constants';
 
 type SplashProps = NativeStackScreenProps<RootStackParamList, 'Splash'>;
 
-const Splash = ({navigation}: SplashProps) => {
-  const {isUserLoggedIn} = useFirebaseAuth();
+const Splash = ({ navigation }: SplashProps) => {
+  const { isUserLoggedIn } = useFirebaseAuth();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#1a1a1c',
+    backgroundColor: COLORS.background,
   },
   logoImg: {
     height: 180,
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   taglineTxt: {
     fontSize: 16,
     fontStyle: 'italic',
-    color: '#f9f9f9',
+    color: COLORS.splashTagLineTextColor,
     position: 'absolute',
     bottom: 10,
     textAlign: 'center',
