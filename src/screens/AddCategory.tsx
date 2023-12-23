@@ -21,7 +21,7 @@ import CustomColorPicker from '../components/customColorPicker';
 import {COLORS, isEmptyString} from '../constants';
 import {CATEGORY_ICONS} from '../assets/images';
 import {CategoryProps} from '../interface';
-import {useProductsDataHelper, useToastHelper} from '../hooks';
+import {useCategoryDataHelper, useToastHelper} from '../hooks';
 
 interface AddCategoryProps {
   onCloseModal: void;
@@ -36,7 +36,7 @@ const AddCategory = (props: AddCategoryProps) => {
   const [isSaving, setIsSaving] = useState(false);
 
   const {showSuccessToast, showErrorToast, showNormalToast} = useToastHelper();
-  const {addNewCategory} = useProductsDataHelper();
+  const {addNewCategory} = useCategoryDataHelper();
 
   useEffect(() => {}, []);
 

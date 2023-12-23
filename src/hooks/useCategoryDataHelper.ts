@@ -2,7 +2,7 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import {CategoryProps} from '../interface';
 
-export function useProductsDataHelper() {
+export function useCategoryDataHelper() {
   const MY_USER_ID = auth().currentUser?.uid;
   const CATEGORIES_COLLECTION = firestore().collection('categories');
 
