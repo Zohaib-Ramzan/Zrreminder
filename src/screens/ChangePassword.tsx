@@ -15,8 +15,9 @@ import {
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
 import ButtonComp from '../components/ButtonComp';
+import { COLORS } from '../constants';
 
-const ChangePassword = ({GoBackPasswordChange, closePasswordModal}: any) => {
+const ChangePassword = ({ GoBackPasswordChange, closePasswordModal }: any) => {
   // it will close the ChangePassword Modal  and open Password Change Modal
   const dialogueOpen = () => {
     GoBackPasswordChange();
@@ -39,30 +40,21 @@ const ChangePassword = ({GoBackPasswordChange, closePasswordModal}: any) => {
             </View>
             <Text style={styles.titleTxt}>Change Password</Text>
             <View style={styles.textInputContainer}>
-              <TouchableOpacity style={{marginBottom: responsiveHeight(0.1)}}>
+              <TouchableOpacity style={{ marginBottom: responsiveHeight(0.1) }}>
                 <TextInputComp
-                  textColor="#fff"
                   placeholder="Email"
-                  backgroundColor="#1a1a1c"
-                  placeholderTextColor="#afafb0"
                 />
               </TouchableOpacity>
-              <TouchableOpacity style={{marginBottom: responsiveHeight(0.1)}}>
+              <TouchableOpacity style={{ marginBottom: responsiveHeight(0.1) }}>
                 <TextInputComp
                   secureTextEntry={true}
-                  textColor="#fff"
                   placeholder="Current Password"
-                  backgroundColor="#1a1a1c"
-                  placeholderTextColor="#afafb0"
                 />
               </TouchableOpacity>
-              <TouchableOpacity style={{marginBottom: responsiveHeight(0.1)}}>
+              <TouchableOpacity style={{ marginBottom: responsiveHeight(0.1) }}>
                 <TextInputComp
                   secureTextEntry={true}
-                  textColor="#fff"
                   placeholder="New Password"
-                  backgroundColor="#1a1a1c"
-                  placeholderTextColor="#afafb0"
                 />
               </TouchableOpacity>
             </View>
@@ -93,7 +85,7 @@ const styles = StyleSheet.create({
     height: responsiveHeight(85),
     width: responsiveWidth(92),
     borderRadius: 10,
-    backgroundColor: '#2c2c34',
+    backgroundColor: COLORS.cardBG,
   },
   iconContainer: {
     alignItems: 'flex-end',
@@ -103,13 +95,13 @@ const styles = StyleSheet.create({
     marginRight: responsiveWidth(4),
   },
   iconStyle: {
-    tintColor: '#afafb0',
+    tintColor: COLORS.white,
     height: responsiveHeight(4),
     width: responsiveWidth(4),
   },
   titleTxt: {
     fontSize: responsiveFontSize(3.5),
-    color: '#afafb0',
+    color: COLORS.textColor,
     textAlign: 'center',
     marginBottom: responsiveHeight(8),
   },
@@ -121,5 +113,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: responsiveHeight(17),
   },
-  scrollviewContainer: {flexGrow: 1},
+  scrollviewContainer: { flexGrow: 1 },
 });

@@ -6,30 +6,30 @@ import {
   Pressable,
   SafeAreaView,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import TextInputComp from '../components/TextInputComp';
 import ButtonComp from '../components/ButtonComp';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../routes/AppNavigator';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../routes/AppNavigator';
 import {
   responsiveHeight,
   responsiveFontSize,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import {KeyboardScrollView} from '@rlemasquerier/react-native-keyboard-scrollview';
-import {COLORS, isEmptyString, resetAndGo} from '../constants';
-import {useFirebaseAuth, useToastHelper} from '../hooks';
+import { KeyboardScrollView } from '@rlemasquerier/react-native-keyboard-scrollview';
+import { COLORS, isEmptyString, resetAndGo } from '../constants';
+import { useFirebaseAuth, useToastHelper } from '../hooks';
 type SignupProps = NativeStackScreenProps<RootStackParamList, 'Signup'>;
 
-const Signup = ({navigation}: SignupProps) => {
+const Signup = ({ navigation }: SignupProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const {showErrorToast, showNormalToast, showSuccessToast} = useToastHelper();
-  const {createUser} = useFirebaseAuth();
+  const { showErrorToast, showNormalToast, showSuccessToast } = useToastHelper();
+  const { createUser } = useFirebaseAuth();
 
   const handleSignup = async () => {
     if (
@@ -155,20 +155,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: responsiveWidth(2),
   },
-  passwordMatchText: {color: 'red'},
+  passwordMatchText: { color: 'red' },
   alreadyAccountContainer: {
     flexDirection: 'row',
     marginBottom: responsiveHeight(2),
     alignSelf: 'center',
   },
-  alreadyAccountText: {color: '#b3b3b7', fontWeight: '800'},
+  alreadyAccountText: { color: '#b3b3b7', fontWeight: '800' },
   loginHyperlinkContainer: {
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: responsiveWidth(1),
   },
   loginHyperlinkText: {
-    color: '#54545e',
+    color: COLORS.signupNavigateHyperlinkTextColor,
     textDecorationLine: 'underline',
     fontWeight: '700',
   },

@@ -9,7 +9,7 @@ import {
   FlatList,
   Alert,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import TextInputComp from '../components/TextInputComp';
 import {
   responsiveFontSize,
@@ -20,6 +20,7 @@ import ButtonComp from '../components/ButtonComp';
 import Card from '../components/Card';
 import firestore from '@react-native-firebase/firestore';
 import CustomColorPicker from '../components/customColorPicker';
+import { COLORS } from '../constants';
 
 const ImageData = [
   require('../assets/images/logo.png'),
@@ -131,7 +132,7 @@ const AddCategory = ({
     }
   };
   const cardProps = (imgUrl: any) => {
-    return {imgUrl};
+    return { imgUrl };
   };
 
   return (
@@ -151,12 +152,11 @@ const AddCategory = ({
             </View>
             <Text style={styles.titleTxt}>{categoryTitle}</Text>
             <View style={styles.textInputContainer}>
-              <TouchableOpacity style={{marginBottom: responsiveHeight(0.1)}}>
+              <TouchableOpacity style={{ marginBottom: responsiveHeight(0.1) }}>
                 <TextInputComp
-                  textColor="#fff"
+                  textColor={COLORS.white}
                   placeholder="Add Title"
-                  backgroundColor="#1a1a1c"
-                  placeholderTextColor="#afafb0"
+                  placeholderTextColor={COLORS.placeholderTextColor}
                   value={addTitle}
                   onChangeText={setAddTitle}
                 />
@@ -168,7 +168,7 @@ const AddCategory = ({
                 <FlatList
                   numColumns={Math.ceil(ImageData.length / 2)}
                   data={ImageData}
-                  renderItem={({item, index}) => {
+                  renderItem={({ item, index }) => {
                     const isSelected = index === selectedCardIndex;
                     return (
                       <View key={index} style={styles.cardContainer}>
@@ -181,9 +181,9 @@ const AddCategory = ({
                             ImgHeight={responsiveHeight(7)}
                             ImgWidth={responsiveWidth(18)}
                             backgroundColor={
-                              isSelected ? currentColor : '#464657'
+                              isSelected ? currentColor : COLORS.defaultCardBG
                             }
-                            tintColor={'#fff'}
+                            tintColor={COLORS.white}
                             onPress={() => onCardSelect(index, item)}
                           />
                         </TouchableOpacity>
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     height: responsiveHeight(85),
     width: responsiveWidth(92),
     borderRadius: 10,
-    backgroundColor: '#2c2c34',
+    backgroundColor: COLORS.addCategoryCardBG,
   },
   iconContainer: {
     alignItems: 'flex-end',
@@ -236,13 +236,13 @@ const styles = StyleSheet.create({
     marginRight: responsiveWidth(4),
   },
   iconStyle: {
-    tintColor: '#afafb0',
+    tintColor: COLORS.white,
     height: responsiveHeight(4),
     width: responsiveWidth(4),
   },
   titleTxt: {
     fontSize: responsiveFontSize(3.5),
-    color: '#efeff0',
+    color: COLORS.textColor,
     marginLeft: responsiveWidth(5),
     marginBottom: responsiveHeight(2),
   },
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
   },
   subText: {
     fontSize: responsiveFontSize(2),
-    color: '#d6d6d6',
+    color: COLORS.textColor,
     marginLeft: responsiveWidth(8),
     marginTop: responsiveHeight(5),
     marginBottom: responsiveHeight(2),
@@ -276,8 +276,8 @@ const styles = StyleSheet.create({
   },
   selectedCardTouchable: {
     borderWidth: 2,
-    borderColor: 'yellow', // You can set any highlight color here
+    borderColor: COLORS.selectedCardBorderColor, // You can set any highlight color here
     borderRadius: 12,
   },
-  contentContainerView: {flexGrow: 1},
+  contentContainerView: { flexGrow: 1 },
 });

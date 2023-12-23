@@ -7,11 +7,11 @@ import {
   Modal,
   FlatList,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import HeaderComp from '../components/HeaderComp';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../routes/AppNavigator';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../routes/AppNavigator';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -20,6 +20,7 @@ import {
 } from 'react-native-responsive-dimensions';
 import AddItem from './AddItem';
 import ReminderCard from '../components/ReminderCard';
+import { COLORS } from '../constants';
 
 type dataArrayType = {
   title: string;
@@ -32,7 +33,7 @@ type dataArrayType = {
 };
 
 type ListPageProps = NativeStackScreenProps<RootStackParamList, 'ListPage'>;
-const ListPage = ({navigation, route}: ListPageProps) => {
+const ListPage = ({ navigation, route }: ListPageProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isEditPress, setIsEditPress] = useState(false);
   const [updatedData, setUpdatedData] = useState(null);
@@ -98,10 +99,10 @@ const ListPage = ({navigation, route}: ListPageProps) => {
             data={dataArray}
             keyExtractor={(item, index) => index.toString()}
             contentContainerStyle={styles.flatListContent}
-            renderItem={({item}) => {
+            renderItem={({ item }) => {
               const selectedCardItm = item.selectedCardCategory;
               return (
-                <View style={{marginBottom: responsiveHeight(5)}}>
+                <View style={{ marginBottom: responsiveHeight(5) }}>
                   {route.params?.isReminderCardVisible && (
                     <ReminderCard updatedData={item} />
                   )}
@@ -142,7 +143,7 @@ export default ListPage;
 const styles = StyleSheet.create({
   containerView: {
     flex: 1,
-    backgroundColor: '#1a1a1c',
+    backgroundColor: COLORS.background,
   },
   container: {
     flex: 1,
@@ -150,12 +151,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   txtStyle: {
-    color: '#fff',
+    color: COLORS.textColor,
   },
   imgStyle: {
     height: responsiveHeight(15),
     width: responsiveWidth(15),
     resizeMode: 'contain',
+    tintColor: COLORS.addIcontintColor
   },
   imgContainer: {
     // position: 'absolute',
@@ -163,18 +165,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     bottom: responsiveHeight(2),
   },
-  reminderCard: {
-    height: responsiveHeight(30),
-    width: responsiveWidth(70),
-    backgroundColor: '#8ac185',
-    borderRadius: 10,
-  },
-  reminderCardTitle: {
-    fontSize: responsiveFontSize(2.8),
-    fontFamily: 'AlegreyaSans-ExtraBoldItalic',
-    color: '#344932',
-    textAlign: 'center',
-  },
+  // reminderCard: {
+  //   height: responsiveHeight(30),
+  //   width: responsiveWidth(70),
+  //   backgroundColor: '#8ac185',
+  //   borderRadius: 10,
+  // },
+  // reminderCardTitle: {
+  //   fontSize: responsiveFontSize(2.8),
+  //   fontFamily: 'AlegreyaSans-ExtraBoldItalic',
+  //   color: '#fff',
+  //   textAlign: 'center',
+  // },
   reminderCardTitleContainer: {
     marginTop: responsiveHeight(2),
   },
@@ -189,19 +191,19 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(1.5),
     textAlign: 'center',
   },
-  productImgContainer: {
-    height: responsiveHeight(18),
-    width: responsiveWidth(34),
-    backgroundColor: '#fff',
-    borderRadius: 10,
-  },
+  // productImgContainer: {
+  //   height: responsiveHeight(18),
+  //   width: responsiveWidth(34),
+  //   backgroundColor: '#fff',
+  //   borderRadius: 10,
+  // },
   flatListContent: {
     width: responsiveScreenWidth(100), // Set to 100% of screen width
     paddingHorizontal: responsiveWidth(5), // Optional padding
   },
-  viewContainer: {flex: 1},
+  viewContainer: { flex: 1 },
   listText: {
-    color: '#fff',
+    color: COLORS.textColor,
     fontSize: responsiveFontSize(3),
     fontWeight: 'bold',
     paddingHorizontal: responsiveWidth(4),

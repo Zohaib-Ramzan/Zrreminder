@@ -7,15 +7,16 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../routes/AppNavigator';
+import React, { useRef, useState } from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../routes/AppNavigator';
+import { COLORS } from '../constants';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 type IntroProps = NativeStackScreenProps<RootStackParamList, 'Intro'>;
 
-const Intro = ({navigation}: IntroProps) => {
+const Intro = ({ navigation }: IntroProps) => {
   const ref = useRef<any>();
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -28,7 +29,7 @@ const Intro = ({navigation}: IntroProps) => {
 
   return (
     <View style={styles.container}>
-      <View style={{height: height / 2}}>
+      <View style={{ height: height / 2 }}>
         <Animated.FlatList
           ref={ref}
           data={ImgData}
@@ -41,7 +42,7 @@ const Intro = ({navigation}: IntroProps) => {
           }}
           // keyExtractor={(item,index) => index.toString()}
           bounces={false}
-          renderItem={({item}) => {
+          renderItem={({ item }) => {
             return (
               <Animated.View style={styles.listView}>
                 <Image source={item} style={styles.ImgStyle} />
@@ -56,7 +57,7 @@ const Intro = ({navigation}: IntroProps) => {
             height: currentIndex === index ? 10 : 8,
             width: currentIndex === index ? 10 : 8,
             borderRadius: currentIndex === index ? 5 : 4,
-            backgroundColor: currentIndex === index ? '#6c63fe' : 'gray',
+            backgroundColor: currentIndex === index ? COLORS.introSliderColor : COLORS.gray,
             marginLeft: 5,
           };
           return (
@@ -85,7 +86,7 @@ const Intro = ({navigation}: IntroProps) => {
         )}
         {ImgData.length - 1 === currentIndex ? null : (
           <Pressable
-            style={[styles.nextBtn, {width: currentIndex == 0 ? '100%' : 100}]}
+            style={[styles.nextBtn, { width: currentIndex == 0 ? '100%' : 100 }]}
             onPress={() => {
               setCurrentIndex(currentIndex + 1);
               ref.current.scrollToIndex({
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   previousBtn: {
-    backgroundColor: '#6c63fe',
+    backgroundColor: COLORS.introSliderColor,
     width: 100,
     height: 40,
     justifyContent: 'center',
@@ -151,7 +152,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   nextBtn: {
-    backgroundColor: '#6c63fe',
+    backgroundColor: COLORS.introSliderColor,
     width: 100,
     height: 40,
     justifyContent: 'center',

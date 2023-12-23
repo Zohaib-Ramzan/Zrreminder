@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -17,6 +17,7 @@ import {
 } from 'react-native-responsive-dimensions';
 import ButtonComp from '../components/ButtonComp';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { COLORS } from '../constants';
 
 const AddReminderPage = ({
   crossButton,
@@ -89,11 +90,11 @@ const AddReminderPage = ({
               <View>
                 <FlatList
                   data={data}
-                  renderItem={({item, index}) => {
+                  renderItem={({ item, index }) => {
                     const isChecked = selectedItemIndex === index;
                     const reminderTextColor = isChecked
-                      ? {color: '#fff'}
-                      : {color: '#6e6e7c'};
+                      ? { color: COLORS.white }
+                      : { color: COLORS.addReminderPageNonSelectTextColor };
                     console.log(selectedItemIndex);
                     return (
                       <View key={index} style={styles.reminderTxtContainer}>
@@ -104,7 +105,7 @@ const AddReminderPage = ({
                             <Icon
                               name="check"
                               size={25}
-                              color="#fff"
+                              color={COLORS.white}
                               style={styles.checkStyle}
                             />
                           )}
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
     height: responsiveHeight(90),
     width: responsiveWidth(92),
     borderRadius: 10,
-    backgroundColor: '#2c2c34',
+    backgroundColor: COLORS.addCategoryCardBG,
   },
   iconContainer: {
     alignItems: 'flex-end',
@@ -157,13 +158,13 @@ const styles = StyleSheet.create({
     marginRight: responsiveWidth(4),
   },
   iconStyle: {
-    tintColor: '#afafb0',
+    tintColor: COLORS.iconTintColor,
     height: responsiveHeight(4),
     width: responsiveWidth(4),
   },
   titleTxt: {
     fontSize: responsiveFontSize(3.5),
-    color: '#ffffff',
+    color: COLORS.white,
     marginLeft: responsiveWidth(5),
     marginBottom: responsiveHeight(2),
   },
@@ -188,7 +189,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     height: responsiveHeight(62),
     width: responsiveWidth(85),
-    backgroundColor: '#1a1a1c',
+    backgroundColor: COLORS.background,
     borderRadius: 20,
   },
   cardContainerView: {
@@ -205,7 +206,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   reminderTxt: {
-    color: '#fff',
+    color: COLORS.white,
     fontSize: responsiveFontSize(2.7),
   },
   reminderTxtContainer: {

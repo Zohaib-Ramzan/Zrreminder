@@ -7,32 +7,32 @@ import {
   Modal,
   Alert,
 } from 'react-native';
-import React, {useState} from 'react';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../routes/AppNavigator';
+import React, { useState } from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../routes/AppNavigator';
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import ButtonComp from '../components/ButtonComp';
 import ChangePassword from './ChangePassword';
 import ModalCard from '../components/ModalCard';
 import EditName from './EditName';
-import {useFirebaseAuth, useToastHelper} from '../hooks';
-import {resetAndGo} from '../constants';
+import { useFirebaseAuth, useToastHelper } from '../hooks';
+import { COLORS, resetAndGo } from '../constants';
 
 type SettingsProps = NativeStackScreenProps<RootStackParamList, 'Settings'>;
 
-const Settings = ({navigation}: SettingsProps) => {
+const Settings = ({ navigation }: SettingsProps) => {
   const [visible, setVisible] = useState(false);
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [editNameVisible, setEditNameVisible] = useState(false);
   const [nameChangedVisible, setNameChangedVisible] = useState(false);
 
-  const {showNormalToast} = useToastHelper();
-  const {userLogout} = useFirebaseAuth();
+  const { showNormalToast } = useToastHelper();
+  const { userLogout } = useFirebaseAuth();
 
   // Go Back and show Password confirmation
   const GoBackPasswordChange = () => {
@@ -145,7 +145,7 @@ const Settings = ({navigation}: SettingsProps) => {
               <Text style={styles.buttonTextView}>Edit Name</Text>
             </Pressable>
             <Pressable
-              style={[styles.buttonView, {marginBottom: responsiveHeight(2)}]}>
+              style={[styles.buttonView, { marginBottom: responsiveHeight(2) }]}>
               <Text style={styles.buttonTextView}>About</Text>
             </Pressable>
             <Pressable style={styles.minibuttonView}>
@@ -180,19 +180,19 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#1a1a1c',
+    backgroundColor: COLORS.background,
     // paddingVertical: responsiveHeight(1),
   },
   txtStyle: {
     fontSize: responsiveFontSize(4),
-    color: '#fff',
+    color: COLORS.textColor,
     paddingVertical: responsiveHeight(2),
     paddingHorizontal: responsiveWidth(4.5),
   },
   buttonView: {
     width: responsiveWidth(80),
     height: responsiveHeight(8),
-    backgroundColor: '#2c2c34',
+    backgroundColor: COLORS.settingButtons,
     borderRadius: 10,
     justifyContent: 'center',
     marginTop: responsiveHeight(2),
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonTextView: {
-    color: '#afafb0',
+    color: COLORS.textColor,
     fontWeight: 'bold',
     textAlign: 'center',
     justifyContent: 'center',
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   minibuttonView: {
     width: responsiveWidth(60),
     height: responsiveHeight(7.5),
-    backgroundColor: '#2c2c34',
+    backgroundColor: COLORS.settingButtons,
     borderRadius: 10,
     justifyContent: 'center',
     marginTop: responsiveHeight(2),
@@ -220,8 +220,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // marginTop: responsiveHeight(1),
   },
-  containerView: {flex: 1},
+  containerView: { flex: 1 },
   redTextColor: {
-    color: 'red',
+    color: COLORS.settingsMiniButtonTextColor,
   },
 });

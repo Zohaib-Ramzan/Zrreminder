@@ -1,11 +1,11 @@
-import {StyleSheet, TextInput} from 'react-native';
-import React, {PropsWithChildren} from 'react';
+import { StyleSheet, TextInput } from 'react-native';
+import React, { PropsWithChildren } from 'react';
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-import {COLORS} from '../constants';
+import { COLORS } from '../constants';
 
 type TextInputProps = PropsWithChildren<{
   placeholder?: string;
