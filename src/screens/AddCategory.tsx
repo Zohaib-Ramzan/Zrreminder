@@ -7,9 +7,8 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
-  Alert,
 } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import TextInputComp from '../components/TextInputComp';
 import {
   responsiveFontSize,
@@ -18,121 +17,66 @@ import {
 } from 'react-native-responsive-dimensions';
 import ButtonComp from '../components/ButtonComp';
 import Card from '../components/Card';
-import firestore from '@react-native-firebase/firestore';
 import CustomColorPicker from '../components/customColorPicker';
-import { COLORS } from '../constants';
+import {COLORS, isEmptyString} from '../constants';
+import {CATEGORY_ICONS} from '../assets/images';
+import {CategoryProps} from '../interface';
+import {useProductsDataHelper, useToastHelper} from '../hooks';
 
-const ImageData = [
-  require('../assets/images/logo.png'),
-  require('../assets/images/skin-care.png'),
-  require('../assets/images/bottles.png'),
-  require('../assets/images/cereals.png'),
-  require('../assets/images/medicine.png'),
-  require('../assets/images/detergent.png'),
-];
+interface AddCategoryProps {
+  onCloseModal: void;
+  editData?: CategoryProps;
+}
+const AddCategory = (props: AddCategoryProps) => {
+  const {onCloseModal} = props;
 
-const AddCategory = ({
-  closeAddCategoryModal,
-  crossButton,
-  initialData,
-  initialIndex,
-  updateCardData,
-  saveAddCategoryModal,
-}: any) => {
-  const [addTitle, setAddTitle] = useState<string>('');
-  const [currentColor, setCurrentColor] = useState('#464657');
-  const [selectedImagePath, setSelectedImagePath] = useState<string>('');
-  const [selectedCardIndex, setSelectedCardIndex] = useState<any>(null);
-  const [selectedCardData, setSelectedCardData] = useState<any>(null);
-  const [categoryTitle, setCategoryTitle] = useState<string>('Add Category');
-  const [buttonTxt, setButtonTxt] = useState<string>('Done');
-  const [mainDataIndex, setMainDataIndex] = useState(null);
+  const [name, setName] = useState('');
+  const [selectedIcon, setSelectedIcon] = useState('');
+  const [selectedBGColor, setSelectedBGColor] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
-  useEffect(() => {
-    setMainDataIndex(initialIndex);
-    console.log('selectedXardIndex' + initialIndex);
-  }, [initialIndex]);
+  const {showSuccessToast, showErrorToast, showNormalToast} = useToastHelper();
+  const {addNewCategory} = useProductsDataHelper();
 
-  // useEffect(() => {
-  //   setSelectedCardIndex(initialIndex); // Update selectedCardIndex when the component receives a new initialIndex
-  // }, [initialIndex]);
+  useEffect(() => {}, []);
 
-  useEffect(() => {
-    if (initialData) {
-      setAddTitle(initialData.title);
-      setCurrentColor(initialData.backgroundColor);
-      setSelectedCardIndex(initialData.imgUrl - 1); // Assuming "index" is a property in initialData
-      setSelectedCardData(initialData); // Set the whole initialData object
-
-      // Update category title and button text based on initialData
-      initialData === null
-        ? setCategoryTitle('Add Category')
-        : setCategoryTitle('Edit Category');
-      initialData === null ? setButtonTxt('Done') : setButtonTxt('Update');
+  const onDonePress = () => {
+    if (isEmptyString(name)) {
+      showNormalToast('Please type a valid name');
+      return;
     }
-  }, [initialData]);
+    if (isEmptyString(selectedIcon)) {
+      showNormalToast('Please select a category icon');
+      return;
+    }
+    if (isEmptyString(selectedBGColor)) {
+      showNormalToast('Please select a color');
+      return;
+    }
 
-  const onColorChange = (selectedColor: string) => {
-    return setCurrentColor(selectedColor);
-  };
-
-  const onCardSelect = (index: number, imgUrl: any) => {
-    setSelectedCardIndex(index);
-    setSelectedCardData(cardProps(imgUrl));
-    setSelectedImagePath(ImageData[index]); // Set the selected image path
-    // console.log("Image string is: " + ImageData[index]);
-  };
-
-  const createCardDB = () => {
-    const userDocument = firestore()
-      .collection('cardCollection')
-      .add({
-        title: addTitle,
-        backgroundColor: currentColor,
-        cardIndex: selectedCardIndex,
-        createdAt: firestore.FieldValue.serverTimestamp(),
-      })
+    setIsSaving(true);
+    addNewCategory({
+      name: name,
+      icon: selectedIcon,
+      bgColor: selectedBGColor,
+    })
       .then(() => {
-        console.log('User added!');
+        showSuccessToast('Category added successfully');
+        handleOnClose();
+      })
+      .catch(() => {
+        showErrorToast('Unable to add category, please try again');
+      })
+      .finally(() => {
+        setIsSaving(false);
       });
   };
 
-  const onDonePress = async () => {
-    if (initialData == null) {
-      if (selectedCardData !== null) {
-        // You can navigate to the other screen here and pass the selectedCardData
-        // and other relevant props to the target screen.
-        selectedCardData.title = addTitle;
-        selectedCardData.backgroundColor = currentColor;
-        // Create a new collection in Firestore with the given title
-        createCardDB();
-
-        closeAddCategoryModal(selectedCardData);
-        crossButton();
-      } else {
-        // Handle case where no card is selected.
-        Alert.alert('Please Select Card!');
-      }
-    } else {
-      if (selectedCardData !== null && selectedCardIndex !== null) {
-        const updatedData = {
-          ...selectedCardData,
-          title: addTitle,
-          imgUrl: ImageData[selectedCardIndex],
-
-          backgroundColor: currentColor,
-          isLongPressed: false, // Reset long press status
-        };
-        updateCardData(mainDataIndex, updatedData);
-        // console.log('Selet Ind:' + selectedCardIndex);
-        saveAddCategoryModal(); // Close the edit modal
-      } else {
-        Alert.alert('Please Select Card!');
-      }
-    }
-  };
-  const cardProps = (imgUrl: any) => {
-    return { imgUrl };
+  const handleOnClose = () => {
+    setName('');
+    setSelectedIcon('');
+    setSelectedBGColor('');
+    onCloseModal && onCloseModal();
   };
 
   return (
@@ -143,22 +87,22 @@ const AddCategory = ({
             <View style={styles.iconContainer}>
               <TouchableOpacity
                 style={styles.iconView}
-                onPress={() => crossButton()}>
+                onPress={() => handleOnClose()}>
                 <Image
                   source={require('../assets/images/cross.png')}
                   style={styles.iconStyle}
                 />
               </TouchableOpacity>
             </View>
-            <Text style={styles.titleTxt}>{categoryTitle}</Text>
+            <Text style={styles.titleTxt}>{'Add Category'}</Text>
             <View style={styles.textInputContainer}>
-              <TouchableOpacity style={{ marginBottom: responsiveHeight(0.1) }}>
+              <TouchableOpacity style={{marginBottom: responsiveHeight(0.1)}}>
                 <TextInputComp
                   textColor={COLORS.white}
                   placeholder="Add Title"
                   placeholderTextColor={COLORS.placeholderTextColor}
-                  value={addTitle}
-                  onChangeText={setAddTitle}
+                  value={name}
+                  onChangeText={setName}
                 />
               </TouchableOpacity>
             </View>
@@ -166,10 +110,10 @@ const AddCategory = ({
             <View style={styles.scrollviewContainer}>
               <ScrollView horizontal>
                 <FlatList
-                  numColumns={Math.ceil(ImageData.length / 2)}
-                  data={ImageData}
-                  renderItem={({ item, index }) => {
-                    const isSelected = index === selectedCardIndex;
+                  numColumns={Math.ceil(CATEGORY_ICONS.length / 2)}
+                  data={CATEGORY_ICONS}
+                  renderItem={({item, index}) => {
+                    const isSelected = item.name === selectedIcon;
                     return (
                       <View key={index} style={styles.cardContainer}>
                         <TouchableOpacity
@@ -177,14 +121,16 @@ const AddCategory = ({
                           <Card
                             height={responsiveHeight(9)}
                             width={responsiveWidth(19)}
-                            imageUrl={item}
+                            imageUrl={item.icon}
                             ImgHeight={responsiveHeight(7)}
                             ImgWidth={responsiveWidth(18)}
                             backgroundColor={
-                              isSelected ? currentColor : COLORS.defaultCardBG
+                              isSelected
+                                ? selectedBGColor
+                                : COLORS.defaultCardBG
                             }
                             tintColor={COLORS.white}
-                            onPress={() => onCardSelect(index, item)}
+                            onPress={() => setSelectedIcon(item.name)}
                           />
                         </TouchableOpacity>
                       </View>
@@ -196,13 +142,14 @@ const AddCategory = ({
             <View>
               <Text style={styles.subText}>Colors</Text>
               <View>
-                <CustomColorPicker onColorChange={onColorChange} />
+                <CustomColorPicker onColorChange={setSelectedBGColor} />
               </View>
               <View style={styles.buttonContainer}>
                 <ButtonComp
-                  text={buttonTxt}
+                  text={'Done'}
                   BtnWidth={responsiveWidth(18)}
                   onPress={onDonePress}
+                  isLoading={isSaving}
                 />
               </View>
             </View>
@@ -279,5 +226,5 @@ const styles = StyleSheet.create({
     borderColor: COLORS.selectedCardBorderColor, // You can set any highlight color here
     borderRadius: 12,
   },
-  contentContainerView: { flexGrow: 1 },
+  contentContainerView: {flexGrow: 1},
 });

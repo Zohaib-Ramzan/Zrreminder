@@ -7,7 +7,7 @@ import {
   FlatList,
   // BackHandler,
 } from 'react-native';
-import React, { useState, useEffect, useContext } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import firestore from '@react-native-firebase/firestore';
 import {
   responsiveHeight,
@@ -16,12 +16,12 @@ import {
 } from 'react-native-responsive-dimensions';
 import Card from '../components/Card';
 import AddCategory from './AddCategory';
-import { CardData } from './types';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../routes/AppNavigator';
-import { UserDataContext } from '../context';
-import { useFirebaseAuth } from '../hooks';
-import { COLORS } from '../constants';
+import {CardData} from './types';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../routes/AppNavigator';
+import {UserDataContext} from '../context';
+import {useFirebaseAuth} from '../hooks';
+import {COLORS} from '../constants';
 
 const ImageData = [
   require('../assets/images/logo.png'),
@@ -34,7 +34,7 @@ const ImageData = [
 
 // Define the type for the navigation prop
 type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
-const Home = ({ navigation }: HomeProps) => {
+const Home = ({navigation}: HomeProps) => {
   // const {Email, uid, Name} = route.params || {};
   // console.log("Email is : " + Email + " Uid is " + uid)
 
@@ -62,8 +62,8 @@ const Home = ({ navigation }: HomeProps) => {
     },
   ]);
 
-  const { loadUserData } = useFirebaseAuth();
-  const { userData, setUserData } = useContext(UserDataContext);
+  const {loadUserData} = useFirebaseAuth();
+  const {userData, setUserData} = useContext(UserDataContext);
 
   useEffect(() => {
     const subscribe = loadUserData(setUserData);
@@ -193,6 +193,7 @@ const Home = ({ navigation }: HomeProps) => {
     <View style={styles.container}>
       <Modal transparent visible={closeCategoryModal}>
         <AddCategory
+          onCloseModal={crossButton}
           crossButton={crossButton}
           closeAddCategoryModal={closeModal}
           initialData={selectedCardData}
@@ -218,11 +219,11 @@ const Home = ({ navigation }: HomeProps) => {
       {fetchedCardData.length > 0 && (
         <View>
           <FlatList
-            style={{ height: responsiveHeight(68), bottom: responsiveHeight(3) }}
+            style={{height: responsiveHeight(68), bottom: responsiveHeight(3)}}
             numColumns={2}
             data={fetchedCardData}
             keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item, index }) => {
+            renderItem={({item, index}) => {
               const onPress = () => {
                 if (item.imgUrl === plusCircleImg()) {
                   item.onPress(); // Execute the plusCircleImg() onPress function
@@ -237,13 +238,17 @@ const Home = ({ navigation }: HomeProps) => {
                       item.imgUrl === plusCircleImg()
                         ? COLORS.addCardColor
                         : item.isLongPressed === true
-                          ? COLORS.cardLongPressColor
-                          : item.backgroundColor
+                        ? COLORS.cardLongPressColor
+                        : item.backgroundColor
                     }
                     onPress={onPress}
                     onLongPress={() => handleCardLongPress(index)}
                     text={item.title}
-                    cardTextColor={item.isLongPressed ? COLORS.cardLongPressTextColor : COLORS.cardTextColor}
+                    cardTextColor={
+                      item.isLongPressed
+                        ? COLORS.cardLongPressTextColor
+                        : COLORS.cardTextColor
+                    }
                     imageUrl={
                       ImageData[item.cardIndex]
                         ? ImageData[item.cardIndex]
@@ -257,7 +262,7 @@ const Home = ({ navigation }: HomeProps) => {
                     }
                     cardStyles={[
                       styles.cardStyles,
-                      { opacity: item.isLongPressed ? 1 : null },
+                      {opacity: item.isLongPressed ? 1 : null},
                     ]}
                     isLongPressed={item.isLongPressed}
                     onPressDelete={() => deleteCard(index)}
