@@ -24,3 +24,7 @@ export const CATEGORY_ICONS = [
     icon: require('./detergent.png'),
   },
 ];
+
+export const getIconByName = (iconName: string) => {
+  return CATEGORY_ICONS.find(i => i.name === iconName)?.icon || null;
+};

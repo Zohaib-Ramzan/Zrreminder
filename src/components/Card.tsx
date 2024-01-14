@@ -32,7 +32,7 @@ type CardProps = PropsWithChildren<{
   cardTextColor?: string;
   onPressDelete?: () => void;
   onPressEdit?: () => void;
-  opacity?: number
+  opacity?: number;
   itemCat?: any;
 }>;
 
@@ -55,7 +55,6 @@ const Card = ({
   opacity,
   itemCat = text,
 }: CardProps) => {
-
   return (
     <Pressable
       onPress={onPress}
@@ -83,20 +82,35 @@ const Card = ({
           ]}
         />
       )}
-       <Text numberOfLines={1} ellipsizeMode='tail' style={[styles.cardText,{color:cardTextColor,maxWidth:'80%'}]}>{text}</Text>
-       
-       
-      {isLongPressed && (
-        console.log(itemCat),
-        <View style={styles.iconsContainer}>
-        <TouchableOpacity onPress={onPressDelete}>
-          <Icon name={'delete'} size={responsiveHeight(5)} color={'#aa5945'} />
-        </TouchableOpacity>
-        <TouchableOpacity style={{marginLeft: responsiveWidth(5)}} onPress={onPressEdit}>
-          <Icon name={'edit'} size={responsiveHeight(5)} color={'#9dbead'} />
-        </TouchableOpacity>
-      </View>
-      )}
+      <Text
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={[styles.cardText, {color: cardTextColor, maxWidth: '80%'}]}>
+        {text}
+      </Text>
+
+      {isLongPressed &&
+        (console.log(itemCat),
+        (
+          <View style={styles.iconsContainer}>
+            <TouchableOpacity onPress={onPressDelete}>
+              <Icon
+                name={'delete'}
+                size={responsiveHeight(5)}
+                color={'#aa5945'}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{marginLeft: responsiveWidth(5)}}
+              onPress={onPressEdit}>
+              <Icon
+                name={'edit'}
+                size={responsiveHeight(5)}
+                color={'#9dbead'}
+              />
+            </TouchableOpacity>
+          </View>
+        ))}
     </Pressable>
   );
 };

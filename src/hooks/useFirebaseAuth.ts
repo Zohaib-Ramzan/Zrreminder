@@ -60,14 +60,19 @@ export function useFirebaseAuth() {
   };
 
   const loadUserData = (onDataLoaded: Function) => {
-    return USERS_COLLECTION.doc(getUserId()).onSnapshot(doc => {
-      if (doc.exists) {
-        onDataLoaded({
-          id: doc.id,
-          ...doc.data(),
-        });
-      }
-    });
+    return USERS_COLLECTION.doc(getUserId()).onSnapshot(
+      doc => {
+        if (doc.exists) {
+          onDataLoaded({
+            id: doc.id,
+            ...doc.data(),
+          });
+        }
+      },
+      error => {
+        console.log('loadUserData Error', error);
+      },
+    );
   };
 
   const updateUserData = (data: any) => {
