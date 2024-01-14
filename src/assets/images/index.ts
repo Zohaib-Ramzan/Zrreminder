@@ -25,6 +25,6 @@ export const CATEGORY_ICONS = [
   },
 ];
 
-export const getIconByName = (iconName: string) => {
+export const getCategoryIconByName = (iconName: string) => {
   return CATEGORY_ICONS.find(i => i.name === iconName)?.icon || null;
 };

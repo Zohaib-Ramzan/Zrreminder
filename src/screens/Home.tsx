@@ -20,7 +20,7 @@ import {UserDataContext} from '../context';
 import {useCategoryDataHelper, useFirebaseAuth} from '../hooks';
 import {COLORS} from '../constants';
 import {CategoryProps} from '../interface';
-import {getIconByName} from '../assets/images';
+import {getCategoryIconByName} from '../assets/images';
 import PlusImg from '../assets/images/plus-circle.png';
 
 type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
@@ -85,7 +85,7 @@ const Home = ({navigation}: HomeProps) => {
                   onLongPress={() => {}}
                   text={catItem.name}
                   cardTextColor={COLORS.cardTextColor}
-                  imageUrl={getIconByName(catItem.icon)}
+                  imageUrl={getCategoryIconByName(catItem.icon)}
                   ImgHeight={responsiveHeight(15)}
                   ImgWidth={responsiveWidth(40)}
                   cardStyles={[styles.cardStyles]}
