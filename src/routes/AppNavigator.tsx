@@ -1,8 +1,8 @@
 import React from 'react';
 
 // Navigation
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from '../screens/Login';
 import Signup from '../screens/Signup';
 import Intro from '../screens/Intro';
@@ -12,6 +12,7 @@ import BottomNav from './BottomNav';
 import ListPage from '../screens/ListPage';
 import ItemDetails from '../screens/ItemDetails';
 import AddItem from '../screens/AddItem';
+import ResetPasswordEmail from '../screens/ResetPasswordEmail';
 
 export type RootStackParamList = {
   Splash: any;
@@ -24,6 +25,7 @@ export type RootStackParamList = {
   ListPage: any;
   ItemDetails: any;
   AddItem: any;
+  ResetPasswordEmail: any;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -35,45 +37,45 @@ const AppNavigator = () => {
         <Stack.Screen
           name="Splash"
           component={Splash}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Intro"
           component={Intro}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Login"
           component={Login}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Signup"
           component={Signup}
           options={{
             headerTintColor: '#d6d6d6',
-            headerStyle: {backgroundColor: '#1a1a1c'},
+            headerStyle: { backgroundColor: '#1a1a1c' },
           }}
         />
         <Stack.Screen
           name="Home"
           component={Home}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="ListPage"
           component={ListPage}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="AddItem"
           component={AddItem}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="ItemDetails"
           component={ItemDetails}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Main"
@@ -82,6 +84,12 @@ const AppNavigator = () => {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name="ResetPasswordEmail"
+          component={ResetPasswordEmail}
+          options={{ headerShown: false }}
+        />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

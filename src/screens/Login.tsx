@@ -19,6 +19,7 @@ import {
 import { KeyboardScrollView } from '@rlemasquerier/react-native-keyboard-scrollview';
 import { COLORS, isEmptyString, resetAndGo } from '../constants';
 import { useFirebaseAuth, useToastHelper } from '../hooks';
+import ResetPasswordEmail from './ResetPasswordEmail';
 type LoginProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 const Login = ({ navigation }: LoginProps) => {
@@ -47,6 +48,11 @@ const Login = ({ navigation }: LoginProps) => {
         });
     }
   };
+
+  const gotoEmailReset = () => {
+    console.log("Reset your Email");
+    navigation.navigate('ResetPasswordEmail');
+  }
 
   return (
     <SafeAreaView style={styles.safeAreaViewStyle}>
@@ -79,6 +85,10 @@ const Login = ({ navigation }: LoginProps) => {
               onPress={handleLogin}
               isLoading={isLoading}
             />
+
+            <Pressable onPress={() => gotoEmailReset()}>
+              <Text style={styles.signupNavigateHyperlinkText}>Forgot password?</Text>
+            </Pressable>
 
             <View style={styles.signupNavigateContainer}>
               <Text style={styles.signupNavigateText}>

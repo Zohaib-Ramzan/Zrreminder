@@ -47,6 +47,24 @@ export function useFirebaseAuth() {
     });
   };
 
+  const userForgetPassword = (email: string) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await auth().sendPasswordResetEmail(email);
+            resolve();
+        } catch (error) {
+            console.log(error);
+            let errorMsg = 'Something went wrong. Please try again later';
+            if (error.code === 'auth/invalid-email') {
+                errorMsg = 'Please enter a valid email address';
+            } else if (error.code === 'auth/invalid-login') {
+                errorMsg = 'Invalid email';
+            }
+            reject(new Error(errorMsg));
+        }
+    });
+};
+
   const userLogout = () => {
     return auth().signOut();
   };
@@ -85,5 +103,6 @@ export function useFirebaseAuth() {
     loadUserData,
     getUserId,
     updateUserData,
+    userForgetPassword,
   };
 }
