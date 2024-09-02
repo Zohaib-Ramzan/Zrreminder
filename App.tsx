@@ -15,5 +15,4 @@ const App = () => {
     </UserDataProvider>
   );
 };
-
 export default App;

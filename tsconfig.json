@@ -1,3 +1,22 @@
 {
+  "compilerOptions": {
+    "jsx": "react",
+    "target": "ES2017",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": ["./src/*"]
+    },
+    "lib": ["ES2017"]
+  },
   "extends": "@tsconfig/react-native/tsconfig.json"
 }

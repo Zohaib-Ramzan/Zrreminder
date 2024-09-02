@@ -9,7 +9,7 @@ import {
   FlatList,
   Alert,
 } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import TextInputComp from '../components/TextInputComp';
 import {
   responsiveFontSize,
@@ -20,7 +20,7 @@ import ButtonComp from '../components/ButtonComp';
 import Card from '../components/Card';
 import firestore from '@react-native-firebase/firestore';
 import CustomColorPicker from '../components/customColorPicker';
-import { COLORS } from '../constants';
+import {COLORS} from '../constants';
 
 const ImageData = [
   require('../assets/images/logo.png'),
@@ -132,7 +132,7 @@ const AddCategory = ({
     }
   };
   const cardProps = (imgUrl: any) => {
-    return { imgUrl };
+    return {imgUrl};
   };
 
   return (
@@ -152,7 +152,7 @@ const AddCategory = ({
             </View>
             <Text style={styles.titleTxt}>{categoryTitle}</Text>
             <View style={styles.textInputContainer}>
-              <TouchableOpacity style={{ marginBottom: responsiveHeight(0.1) }}>
+              <TouchableOpacity style={{marginBottom: responsiveHeight(0.1)}}>
                 <TextInputComp
                   textColor={COLORS.white}
                   placeholder="Add Title"
@@ -168,7 +168,7 @@ const AddCategory = ({
                 <FlatList
                   numColumns={Math.ceil(ImageData.length / 2)}
                   data={ImageData}
-                  renderItem={({ item, index }) => {
+                  renderItem={({item, index}) => {
                     const isSelected = index === selectedCardIndex;
                     return (
                       <View key={index} style={styles.cardContainer}>
@@ -279,5 +279,5 @@ const styles = StyleSheet.create({
     borderColor: COLORS.selectedCardBorderColor, // You can set any highlight color here
     borderRadius: 12,
   },
-  contentContainerView: { flexGrow: 1 },
+  contentContainerView: {flexGrow: 1},
 });
