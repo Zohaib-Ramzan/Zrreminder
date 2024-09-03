@@ -9,7 +9,7 @@ import {
   FlatList,
   Alert,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import TextInputComp from '../components/TextInputComp';
 import {
   responsiveFontSize,
@@ -20,7 +20,7 @@ import ButtonComp from '../components/ButtonComp';
 import Card from '../components/Card';
 import firestore from '@react-native-firebase/firestore';
 import CustomColorPicker from '../components/customColorPicker';
-import {COLORS} from '../constants';
+import { COLORS } from '../constants';
 
 const ImageData = [
   require('../assets/images/logo.png'),
@@ -53,10 +53,6 @@ const AddCategory = ({
     console.log('selectedXardIndex' + initialIndex);
   }, [initialIndex]);
 
-  // useEffect(() => {
-  //   setSelectedCardIndex(initialIndex); // Update selectedCardIndex when the component receives a new initialIndex
-  // }, [initialIndex]);
-
   useEffect(() => {
     if (initialData) {
       setAddTitle(initialData.title);
@@ -83,56 +79,86 @@ const AddCategory = ({
     // console.log("Image string is: " + ImageData[index]);
   };
 
-  const createCardDB = () => {
-    const userDocument = firestore()
-      .collection('cardCollection')
-      .add({
+  const createCardDB = async () => {
+    try {
+      const docRef = await firestore().collection('cardCollection').add({
         title: addTitle,
+        imgUrl: ImageData[selectedCardIndex],
         backgroundColor: currentColor,
-        cardIndex: selectedCardIndex,
-        createdAt: firestore.FieldValue.serverTimestamp(),
-      })
-      .then(() => {
-        console.log('User added!');
+        createdAt: new Date(),
+        isLongPressed: false,
       });
+  
+      console.log('New card created with ID:', docRef.id);
+      return docRef.id;
+    } catch (error) {
+      console.error('Error creating new card:', error);
+      return null;
+    }
   };
 
   const onDonePress = async () => {
     if (initialData == null) {
-      if (selectedCardData !== null) {
-        // You can navigate to the other screen here and pass the selectedCardData
-        // and other relevant props to the target screen.
-        selectedCardData.title = addTitle;
-        selectedCardData.backgroundColor = currentColor;
-        // Create a new collection in Firestore with the given title
-        createCardDB();
-
-        closeAddCategoryModal(selectedCardData);
-        crossButton();
+      // Adding a new card
+      if (selectedCardIndex !== null) {
+        const newDocId = await createCardDB();
+  
+        if (newDocId) {
+          closeAddCategoryModal({
+            id: newDocId,
+            title: addTitle,
+            imgUrl: ImageData[selectedCardIndex],
+            backgroundColor: currentColor,
+            isLongPressed: false,
+          });
+          crossButton();
+        } else {
+          Alert.alert('Error', 'Failed to create new card');
+        }
       } else {
-        // Handle case where no card is selected.
         Alert.alert('Please Select Card!');
       }
     } else {
+      // Editing an existing card
       if (selectedCardData !== null && selectedCardIndex !== null) {
-        const updatedData = {
-          ...selectedCardData,
-          title: addTitle,
-          imgUrl: ImageData[selectedCardIndex],
-
-          backgroundColor: currentColor,
-          isLongPressed: false, // Reset long press status
-        };
-        updateCardData(mainDataIndex, updatedData);
-        // console.log('Selet Ind:' + selectedCardIndex);
-        saveAddCategoryModal(); // Close the edit modal
+        try {
+          const docRef = firestore().collection('cardCollection').doc(initialData.id);
+          
+          await docRef.update({
+            title: addTitle,
+            imgUrl: ImageData[selectedCardIndex],
+            backgroundColor: currentColor,
+            isLongPressed: false,
+          });
+  
+          console.log('Document successfully updated!');
+          
+          updateCardData(mainDataIndex, {
+            id: initialData.id,
+            title: addTitle,
+            imgUrl: ImageData[selectedCardIndex],
+            backgroundColor: currentColor,
+            isLongPressed: false,
+          });
+          
+          crossButton();
+          saveAddCategoryModal();
+          
+        } catch (error: any) {
+          console.error('Error updating document:', error.message);
+          Alert.alert('Error', 'Failed to update category');
+        }
       } else {
         Alert.alert('Please Select Card!');
       }
     }
   };
+  
+  
+  
+  
   const cardProps = (imgUrl: any) => {
-    return {imgUrl};
+    return { imgUrl };
   };
 
   return (
@@ -152,7 +178,7 @@ const AddCategory = ({
             </View>
             <Text style={styles.titleTxt}>{categoryTitle}</Text>
             <View style={styles.textInputContainer}>
-              <TouchableOpacity style={{marginBottom: responsiveHeight(0.1)}}>
+              <TouchableOpacity style={{ marginBottom: responsiveHeight(0.1) }}>
                 <TextInputComp
                   textColor={COLORS.white}
                   placeholder="Add Title"
@@ -168,7 +194,7 @@ const AddCategory = ({
                 <FlatList
                   numColumns={Math.ceil(ImageData.length / 2)}
                   data={ImageData}
-                  renderItem={({item, index}) => {
+                  renderItem={({ item, index }) => {
                     const isSelected = index === selectedCardIndex;
                     return (
                       <View key={index} style={styles.cardContainer}>
@@ -279,5 +305,5 @@ const styles = StyleSheet.create({
     borderColor: COLORS.selectedCardBorderColor, // You can set any highlight color here
     borderRadius: 12,
   },
-  contentContainerView: {flexGrow: 1},
+  contentContainerView: { flexGrow: 1 },
 });

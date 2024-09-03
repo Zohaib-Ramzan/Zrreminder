@@ -54,7 +54,7 @@ const Home = ({ navigation }: HomeProps) => {
   };
   const [fetchedCardData, setFetchedCardData] = useState<CardData[]>([
     {
-      // backgroundColor: '#2c2c34',
+      backgroundColor: '#2c2c34',
       onPress: () => setCloseCategoryModal(true),
       imgUrl: plusCircleImg(),
       isLongPressed: false,
@@ -63,7 +63,7 @@ const Home = ({ navigation }: HomeProps) => {
   ]);
 
   const { loadUserData } = useFirebaseAuth();
-  const { userData, setUserData } = useContext(UserDataContext);
+  const { userData, setUserData }: any = useContext(UserDataContext);
 
   useEffect(() => {
     const subscribe = loadUserData(setUserData);
@@ -86,7 +86,7 @@ const Home = ({ navigation }: HomeProps) => {
         const updatedData = [
           ...data,
           {
-            // backgroundColor: '#2c2c34',
+            backgroundColor: '#2c2c34',
             onPress: () => setCloseCategoryModal(true),
             imgUrl: plusCircleImg(),
             isLongPressed: false,
@@ -153,8 +153,11 @@ const Home = ({ navigation }: HomeProps) => {
   };
 
   const editCard = (item: CardData, index: number) => {
-    // Edit Card
-    setSelectedCardData(item); // This line sets the selectedCardData
+    console.log('Editing item:', JSON.stringify(item));
+    setSelectedCardData({
+      ...item,
+      id: item.id,
+    });
     setSelectedCardIndex(index);
     setCloseCategoryModal(true);
   };
@@ -166,14 +169,25 @@ const Home = ({ navigation }: HomeProps) => {
   };
 
   const updateCardData = (selectedCardIndex: number, updatedData: CardData) => {
-    setFetchedCardData(selectedCardDataArray => {
-      const updatedCardDataArray = [...fetchedCardData];
-      updatedCardDataArray[selectedCardIndex] = updatedData;
-      console.log(updatedCardDataArray[selectedCardIndex].imgUrl + ' index');
+    setFetchedCardData(prevDataArray => {
+      const updatedCardDataArray = [...prevDataArray];
+      
+      if (updatedData.id) {
+        // Updating an existing card
+        const indexToUpdate = updatedCardDataArray.findIndex(card => card.id === updatedData.id);
+        if (indexToUpdate !== -1) {
+          updatedCardDataArray[indexToUpdate] = updatedData;
+        }
+      } else {
+        // Adding a new card
+        updatedCardDataArray.unshift(updatedData);
+      }
+      
       return updatedCardDataArray;
     });
   };
-
+  
+  
   const toggleModal = () => {
     setLongPressModal(!longPressModal);
     setIsLongPress(!isLongPress);
@@ -186,9 +200,25 @@ const Home = ({ navigation }: HomeProps) => {
   };
 
   const closeModal = (selectedData: CardData) => {
-    setFetchedCardData(prevDataArray => [selectedData, ...prevDataArray]);
+    setFetchedCardData(prevDataArray => {
+      const updatedData = [...prevDataArray];
+      
+      // Find the index of the plus button card
+      const plusIndex = updatedData.findIndex(card => card.imgUrl === plusCircleImg());
+      
+      if (plusIndex !== -1 && !selectedData.id) {
+        // Replacing the plus button card with the new card
+        updatedData[plusIndex] = selectedData;
+      } else {
+        // Adding a new card to the beginning of the array
+        updatedData.unshift(selectedData);
+      }
+      
+      return updatedData;
+    });
   };
-
+  
+  
   return (
     <View style={styles.container}>
       <Modal transparent visible={closeCategoryModal}>
@@ -201,15 +231,6 @@ const Home = ({ navigation }: HomeProps) => {
           saveAddCategoryModal={saveAddCategoryModal}
         />
       </Modal>
-      {/* <Modal transparent visible={closeEditCategoryModal}>
-        <EditCategory
-          closeEditCategoryModal={saveEditCategoryModal} // Make sure this prop is correctly passed
-          crossButton={crossButton}
-          initialData={selectedCardData}
-          initialIndex={selectedCardIndex}
-          updateCardData={updateCardData}
-        />
-      </Modal> */}
       <View style={styles.hometxtView}>
         <Text style={styles.txtStyle}>
           {`${userData?.name}'s Personal Categories`}
