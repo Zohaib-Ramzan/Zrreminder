@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   StyleSheet,
   Text,
@@ -29,6 +29,10 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../routes/AppNavigator';
 import { RouteProp } from '@react-navigation/native';
 import { COLORS } from '../constants';
+import firestore from '@react-native-firebase/firestore';
+import { useFirebaseAuth } from '../hooks/useFirebaseAuth';
+import { UserDataContext } from '../context/UserDataContext';
+
 
 type AddItemProps = NativeStackScreenProps<RootStackParamList, 'AddItem'>;
 
@@ -59,9 +63,12 @@ const AddItem = ({ crossButton, updatedData, isEditPress }: any) => {
   const [isImageSelected, setIsImageSelected] = useState(false);
   const [reminderText, setReminderText] = useState('Add Reminder');
   const [noteText, setNoteText] = useState('');
-  const [selectedCardCategory, setSelectedCardCategory] = useState(
-    route.params?.selectedCardTitle,
-  );
+  const [selectedCardCategory, setSelectedCardCategory] = useState(''); // fix this '' in database by locally store it
+  const {getUserId} = useFirebaseAuth();
+  const { userData } = useContext(UserDataContext);
+
+  // const selectedCardCategory = route.params?.selectedCardTitle;
+  
 
   console.log(route.params?.selectedCardTitle);
 
@@ -157,47 +164,95 @@ const AddItem = ({ crossButton, updatedData, isEditPress }: any) => {
     }
   };
 
-  const gotoItemDetailsPage = (dataToUpdate: any) => {
+  const gotoItemDetailsPage = (dataToUpdate: any, docId: any) => {
     crossButton();
     navigation.navigate('ItemDetails', {
       updatedData: dataToUpdate,
+      docId: docId,
+      selectedCardCategory: selectedCardCategory
     });
   };
 
-  const onDonePress = () => {
-    if (title !== '' && imageSelect !== null) {
-      console.log(
-        title +
-        ' ' +
-        imageSelect +
-        ' ' +
-        selectedDate +
-        ' ' +
-        expireDate +
-        ' ' +
-        reminderText +
-        ' ' +
-        noteText +
-        ' ' +
-        selectedCardCategory,
-      );
-      const updatedData = {
-        ...selectedCardData,
-        title: title,
-        imgUrl: imageSelect,
-        startDate: selectedDate,
-        endDate: expireDate,
-        reminderTxt: reminderText,
-        noteTxt: noteText,
-        selectedCardCategory: selectedCardCategory,
-      };
-      crossButton();
-      gotoItemDetailsPage(updatedData);
-    } else {
-      Alert.alert('Please Select All Fields!');
-      // gotoItemDetailsPage()
-    }
-  };
+ const onDonePress = () => {
+  if (title !== '' && imageSelect !== null) {
+    console.log(
+      title +
+      ' ' +
+      imageSelect +
+      ' ' +
+      selectedDate +
+      ' ' +
+      expireDate +
+      ' ' +
+      reminderText +
+      ' ' +
+      noteText +
+      ' ' +
+      selectedCardCategory,
+    );
+    setSelectedCardCategory(route.params?.selectedCardTitle)
+    const updatedData = {
+      ...selectedCardData,
+      title: title,
+      imgUrl: imageSelect,
+      startDate: selectedDate,
+      endDate: expireDate,
+      reminderTxt: reminderText,
+      noteTxt: noteText,
+    };
+
+    // Generate unique document ID
+    const newDocRef = firestore().collection('lists').doc();
+
+    // Firestore code
+    const userId = getUserId();
+    
+    firestore()
+    .runTransaction((transaction) => {
+      return transaction.get(newDocRef).then(doc => {
+        if (!doc.exists) {
+          // Document does not exist, so we create a new one
+          transaction.set(newDocRef, {
+            selectedCardCategory: userData.cardCategoryTitle,
+            userId: userId,
+            docId: newDocRef.id,
+            title: title,
+            imgUrl: imageSelect,
+            startDate: selectedDate,
+            endDate: expireDate,
+            reminderTxt: reminderText,
+            noteTxt: noteText,
+            createdAt: new Date(),
+          });
+        } else {
+          // Document exists, update it
+          transaction.update(newDocRef, {
+            userId: userId,
+            docId: newDocRef.id,
+            title: title,
+            imgUrl: imageSelect,
+            startDate: selectedDate,
+            endDate: expireDate,
+            reminderTxt: reminderText,
+            noteTxt: noteText,
+            updatedAt: new Date(),
+          });
+        }
+      });
+    })
+    .then(() => {
+      console.log('Document successfully written or updated!');
+      const docId = newDocRef.id;
+      gotoItemDetailsPage(updatedData, docId);
+    })
+    .catch((error) => {
+      console.error('Error writing document: ', error);
+      Alert.alert('Error', 'Failed to save item. Please try again.');
+    });
+
+  // Remove the else block for now
+}
+};
 
   const plusCircleStyles = isImageSelected
     ? {

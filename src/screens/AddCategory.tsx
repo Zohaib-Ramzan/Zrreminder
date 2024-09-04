@@ -18,9 +18,10 @@ import {
 } from 'react-native-responsive-dimensions';
 import ButtonComp from '../components/ButtonComp';
 import Card from '../components/Card';
-import firestore from '@react-native-firebase/firestore';
 import CustomColorPicker from '../components/customColorPicker';
 import { COLORS } from '../constants';
+import { useFirebaseAuth } from '../hooks/useFirebaseAuth';
+import firestore from '@react-native-firebase/firestore';
 
 const ImageData = [
   require('../assets/images/logo.png'),
@@ -47,10 +48,12 @@ const AddCategory = ({
   const [categoryTitle, setCategoryTitle] = useState<string>('Add Category');
   const [buttonTxt, setButtonTxt] = useState<string>('Done');
   const [mainDataIndex, setMainDataIndex] = useState(null);
+  const {getUserId} = useFirebaseAuth();
+
+  const userId = getUserId();
 
   useEffect(() => {
     setMainDataIndex(initialIndex);
-    console.log('selectedXardIndex' + initialIndex);
   }, [initialIndex]);
 
   useEffect(() => {
@@ -76,12 +79,12 @@ const AddCategory = ({
     setSelectedCardIndex(index);
     setSelectedCardData(cardProps(imgUrl));
     setSelectedImagePath(ImageData[index]); // Set the selected image path
-    // console.log("Image string is: " + ImageData[index]);
   };
 
   const createCardDB = async () => {
     try {
       const docRef = await firestore().collection('cardCollection').add({
+        userid: userId,
         title: addTitle,
         imgUrl: ImageData[selectedCardIndex],
         backgroundColor: currentColor,
@@ -89,7 +92,6 @@ const AddCategory = ({
         isLongPressed: false,
       });
   
-      console.log('New card created with ID:', docRef.id);
       return docRef.id;
     } catch (error) {
       console.error('Error creating new card:', error);
@@ -130,8 +132,6 @@ const AddCategory = ({
             backgroundColor: currentColor,
             isLongPressed: false,
           });
-  
-          console.log('Document successfully updated!');
           
           updateCardData(mainDataIndex, {
             id: initialData.id,

@@ -1,3 +1,4 @@
+import React, {PropsWithChildren} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,33 +8,27 @@ import {
   ImageSourcePropType,
   TouchableOpacity,
 } from 'react-native';
-import React, {PropsWithChildren} from 'react';
-
-import {
-  responsiveHeight,
-  responsiveFontSize,
-  responsiveWidth,
-} from 'react-native-responsive-dimensions';
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type CardProps = PropsWithChildren<{
   text?: string;
   backgroundColor?: string;
   imageUrl?: ImageSourcePropType;
-  onPress?: any;
-  height?: any;
-  width?: any;
-  ImgHeight?: any;
-  ImgWidth?: any;
-  tintColor?: any;
+  onPress?: () => void;
+  height?: number;
+  width?: number;
+  ImgHeight?: number;
+  ImgWidth?: number;
+  tintColor?: string;
   cardStyles?: any;
   onLongPress?: () => void;
   isLongPressed?: boolean;
   cardTextColor?: string;
   onPressDelete?: () => void;
   onPressEdit?: () => void;
-  opacity?: number
-  itemCat?: any;
+  opacity?: number;
+  itemCat?: string;
 }>;
 
 const Card = ({
@@ -55,6 +50,12 @@ const Card = ({
   opacity,
   itemCat = text,
 }: CardProps) => {
+  const truncateText = (text: string, maxLength: number): string => {
+    if (text.length <= maxLength) return text;
+    return `${text.substring(0, maxLength)}...`;
+  };
+
+  const truncatedText = truncateText(text || '', 60);
 
   return (
     <Pressable
@@ -83,19 +84,22 @@ const Card = ({
           ]}
         />
       )}
-       <Text numberOfLines={1} ellipsizeMode='tail' style={[styles.cardText,{color:cardTextColor,maxWidth:'80%'}]}>{text}</Text>
-       
-       
+      <View style={styles.textContainer}>
+        <Text numberOfLines={3} ellipsizeMode='tail' style={[styles.cardText,{color:cardTextColor,maxWidth:'80%'}]}>
+          {truncatedText}
+        </Text>
+      </View>
+      
       {isLongPressed && (
         console.log(itemCat),
         <View style={styles.iconsContainer}>
-        <TouchableOpacity onPress={onPressDelete}>
-          <Icon name={'delete'} size={responsiveHeight(5)} color={'#aa5945'} />
-        </TouchableOpacity>
-        <TouchableOpacity style={{marginLeft: responsiveWidth(5)}} onPress={onPressEdit}>
-          <Icon name={'edit'} size={responsiveHeight(5)} color={'#9dbead'} />
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity onPress={onPressDelete}>
+            <Icon name={'delete'} size={responsiveHeight(5)} color={'#aa5945'} />
+          </TouchableOpacity>
+          <TouchableOpacity style={{marginLeft: responsiveWidth(5)}} onPress={onPressEdit}>
+            <Icon name={'edit'} size={responsiveHeight(5)} color={'#9dbead'} />
+          </TouchableOpacity>
+        </View>
       )}
     </Pressable>
   );
@@ -114,14 +118,26 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     opacity: 0.4,
   },
-  cardText: {
-    fontSize: responsiveFontSize(2.8),
+  textContainer: {
     position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cardText: {
+    fontSize: responsiveFontSize(3),
     fontFamily: 'AlegreyaSans-ExtraBoldItalic',
   },
   iconsContainer: {
     position: 'absolute',
     flexDirection: 'row',
     bottom: responsiveHeight(1),
+    left: 0,
+    right: 0,
+    justifyContent: 'space-between',
+    paddingHorizontal: responsiveWidth(5),
   },
 });

@@ -13,7 +13,7 @@ import AddItem from './AddItem';
 import { COLORS } from '../constants';
 
 const ItemDetails = ({ navigation, route }: any) => {
-  const { updatedData } = route.params;
+  const { updatedData, docId } = route.params;
   const crossButton = () => {
     setIsVisible(false);
   };
@@ -34,6 +34,7 @@ const ItemDetails = ({ navigation, route }: any) => {
   //   setIsRemindderVisible(true)
   //   navigation.goBack()
   // }
+  console.log("DOC ID IS:" + docId)
 
   const goBackListPage = () => {
     navigation.navigate('ListPage', {

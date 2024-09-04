@@ -7,7 +7,7 @@ import {
   Modal,
   FlatList,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import HeaderComp from '../components/HeaderComp';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -21,6 +21,7 @@ import {
 import AddItem from './AddItem';
 import ReminderCard from '../components/ReminderCard';
 import { COLORS } from '../constants';
+import { UserDataContext } from '../context/UserDataContext';
 
 type dataArrayType = {
   title: string;
@@ -39,10 +40,23 @@ const ListPage = ({ navigation, route }: ListPageProps) => {
   const [updatedData, setUpdatedData] = useState(null);
   const [itemCat, setItemCat] = useState(route.params?.selectedCardTitle);
   const [dataArray, setDataArray] = useState<Array<dataArrayType>>([]);
+  const { userData, updateCardCategoryTitle } = useContext(UserDataContext);
   const crossButton = () => {
     setModalVisible(false);
     setIsEditPress(false);
   };
+
+  const handleCardCategoryPress = (itemCat: string) => {
+    updateCardCategoryTitle(itemCat);
+    // Navigate to AddItem screen or perform any other action
+  };
+
+  console.log("ListPage cardcat" + userData.cardCategoryTitle)
+  const handlePlusCirclePressed = () => {
+    handleCardCategoryPress(itemCat)
+    setModalVisible(true)
+  }
+ 
 
   useEffect(() => {
     if (route.params?.newUpdatedData) {
@@ -113,7 +127,7 @@ const ListPage = ({ navigation, route }: ListPageProps) => {
             ListFooterComponent={
               <Pressable
                 style={styles.imgContainer}
-                onPress={() => setModalVisible(true)}>
+                onPress={() => handlePlusCirclePressed()}>
                 <Image
                   source={require('../assets/images/plus-circle.png')}
                   style={styles.imgStyle}

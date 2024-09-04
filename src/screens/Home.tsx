@@ -5,6 +5,7 @@ import {
   Modal,
   TouchableWithoutFeedback,
   FlatList,
+  BackHandler,
   // BackHandler,
 } from 'react-native';
 import React, { useState, useEffect, useContext } from 'react';
@@ -35,10 +36,7 @@ const ImageData = [
 // Define the type for the navigation prop
 type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 const Home = ({ navigation }: HomeProps) => {
-  // const {Email, uid, Name} = route.params || {};
-  // console.log("Email is : " + Email + " Uid is " + uid)
 
-  // const [name,setName] = useState("")
   const [closeCategoryModal, setCloseCategoryModal] = useState(false);
   const [closeEditCategoryModal, setCloseEditCategoryModal] = useState(false);
   const [selectedCardData, setSelectedCardData] = useState<CardData | null>(
@@ -95,7 +93,6 @@ const Home = ({ navigation }: HomeProps) => {
         ];
 
         setFetchedCardData(updatedData);
-        // console.log(fetchedCardData)
       } catch (error) {
         console.error('Error fetching cards:', error);
       }
@@ -105,21 +102,21 @@ const Home = ({ navigation }: HomeProps) => {
   }, []);
 
   useEffect(() => {
-    // const backHandler = BackHandler.addEventListener(
-    //   'hardwareBackPress',
-    //   () => {
-    //     // Reset the isLongPressed property of all cards to false
-    //     const updatedCardDataArray = fetchedCardData.map(cardData => ({
-    //       ...cardData,
-    //       isLongPressed: false,
-    //     }));
-    //     setFetchedCardData(updatedCardDataArray);
-    //     return true; // Prevent default behavior (closing the app)
-    //   },
-    // );
-    // return () => {
-    //   backHandler.remove(); // Remove the event listener when the component is unmounted
-    // };
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        // Reset the isLongPressed property of all cards to false
+        const updatedCardDataArray = fetchedCardData.map(cardData => ({
+          ...cardData,
+          isLongPressed: false,
+        }));
+        setFetchedCardData(updatedCardDataArray);
+        return true; // Prevent default behavior (closing the app)
+      },
+    );
+    return () => {
+      backHandler.remove(); // Remove the event listener when the component is unmounted
+    };
   }, [fetchedCardData]);
 
   const handleCardLongPress = (index: number) => {
@@ -153,7 +150,6 @@ const Home = ({ navigation }: HomeProps) => {
   };
 
   const editCard = (item: CardData, index: number) => {
-    console.log('Editing item:', JSON.stringify(item));
     setSelectedCardData({
       ...item,
       id: item.id,
@@ -161,11 +157,12 @@ const Home = ({ navigation }: HomeProps) => {
     setSelectedCardIndex(index);
     setCloseCategoryModal(true);
   };
-  // console.log("s c i "+selectedCardDataArray[0].title)
-  const gotoListPage = (ind: number) => {
+  const gotoListPage = (item: CardData) => {
     return navigation.navigate('ListPage', {
-      selectedCardTitle: fetchedCardData[ind].title,
+      selectedCardTitle: item.title,
+      id: item.id
     });
+    
   };
 
   const updateCardData = (selectedCardIndex: number, updatedData: CardData) => {
@@ -248,7 +245,7 @@ const Home = ({ navigation }: HomeProps) => {
                 if (item.imgUrl === plusCircleImg()) {
                   item.onPress(); // Execute the plusCircleImg() onPress function
                 } else {
-                  gotoListPage(index); // Pass the index to gotoListPage function
+                  gotoListPage(item); // Pass the index to gotoListPage function
                 }
               };
               return (
