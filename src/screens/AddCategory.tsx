@@ -23,6 +23,7 @@ import { COLORS } from '../constants';
 import { useFirebaseAuth } from '../hooks/useFirebaseAuth';
 import firestore from '@react-native-firebase/firestore';
 
+
 const ImageData = [
   require('../assets/images/logo.png'),
   require('../assets/images/skin-care.png'),
@@ -47,6 +48,7 @@ const AddCategory = ({
   const [selectedCardData, setSelectedCardData] = useState<any>(null);
   const [categoryTitle, setCategoryTitle] = useState<string>('Add Category');
   const [buttonTxt, setButtonTxt] = useState<string>('Done');
+  const [loading , setLoading] = useState(false);
   const [mainDataIndex, setMainDataIndex] = useState(null);
   const {getUserId} = useFirebaseAuth();
 
@@ -100,6 +102,7 @@ const AddCategory = ({
   };
 
   const onDonePress = async () => {
+    setLoading(true);
     if (initialData == null) {
       // Adding a new card
       if (selectedCardIndex !== null) {
@@ -113,11 +116,14 @@ const AddCategory = ({
             backgroundColor: currentColor,
             isLongPressed: false,
           });
+          setLoading(false)
           crossButton();
         } else {
+          setLoading(false)
           Alert.alert('Error', 'Failed to create new card');
         }
       } else {
+        setLoading(false)
         Alert.alert('Please Select Card!');
       }
     } else {
@@ -141,14 +147,17 @@ const AddCategory = ({
             isLongPressed: false,
           });
           
+          setLoading(false);
           crossButton();
           saveAddCategoryModal();
           
         } catch (error: any) {
           console.error('Error updating document:', error.message);
+          setLoading(false);
           Alert.alert('Error', 'Failed to update category');
         }
       } else {
+        setLoading(false);
         Alert.alert('Please Select Card!');
       }
     }
@@ -226,6 +235,7 @@ const AddCategory = ({
               </View>
               <View style={styles.buttonContainer}>
                 <ButtonComp
+                  isLoading={loading}
                   text={buttonTxt}
                   BtnWidth={responsiveWidth(18)}
                   onPress={onDonePress}

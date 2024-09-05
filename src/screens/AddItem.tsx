@@ -34,6 +34,7 @@ import { useFirebaseAuth } from '../hooks/useFirebaseAuth';
 import { UserDataContext } from '../context/UserDataContext';
 
 
+
 type AddItemProps = NativeStackScreenProps<RootStackParamList, 'AddItem'>;
 
 type RouteParam = {
@@ -65,6 +66,7 @@ const AddItem = ({ crossButton, updatedData, isEditPress,currentDocId }: any) =>
   const [noteText, setNoteText] = useState('');
   const [selectedCardCategory, setSelectedCardCategory] = useState(''); // fix this '' in database by locally store it
   const {getUserId} = useFirebaseAuth();
+  const [loading , setLoading] = useState(false);
   const { userData } = useContext(UserDataContext);
 
   // const selectedCardCategory = route.params?.selectedCardTitle;
@@ -173,6 +175,7 @@ const AddItem = ({ crossButton, updatedData, isEditPress,currentDocId }: any) =>
 
   const onDonePress = async () => {
     if (title !== '' && imageSelect !== null) {
+      setLoading(true)
       try {
         const userId = getUserId();
   
@@ -204,6 +207,7 @@ const AddItem = ({ crossButton, updatedData, isEditPress,currentDocId }: any) =>
             selectedCardCategory: userData?.cardCategoryTitle,
           };
           gotoItemDetailsPage({ updatedData, docId });
+          setLoading(false)
         } else {
           // Create new document (existing logic)
           const newDocRef = firestore().collection('lists').doc();
@@ -239,13 +243,16 @@ const AddItem = ({ crossButton, updatedData, isEditPress,currentDocId }: any) =>
             selectedCardCategory: userData?.cardCategoryTitle,
           };
           gotoItemDetailsPage({ updatedData, docId });
+          setLoading(false)
         }
   
       } catch (error) {
         console.error('Error updating document: ', error);
+        setLoading(false)
         Alert.alert('Error', 'Failed to update item. Please try again.');
       }
     } else {
+      setLoading(false)
       Alert.alert('Please enter a title and select an image');
     }
   };
@@ -413,6 +420,7 @@ const AddItem = ({ crossButton, updatedData, isEditPress,currentDocId }: any) =>
             />
             <View style={styles.buttonContainer}>
               <ButtonComp
+                isLoading={loading}
                 text={isEditPress === true ? 'Update' : 'Done'}
                 BtnWidth={responsiveWidth(18)}
                 onPress={() => onDonePress()}

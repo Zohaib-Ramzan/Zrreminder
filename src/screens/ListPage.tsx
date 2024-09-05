@@ -7,6 +7,7 @@ import {
   Modal,
   FlatList,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import HeaderComp from '../components/HeaderComp';
@@ -47,6 +48,7 @@ const ListPage = ({ navigation, route }: ListPageProps) => {
   const [itemCat, setItemCat] = useState(route.params?.selectedCardTitle || '');
   const [dataArray, setDataArray] = useState<Array<dataArrayType>>([]);
   const { userData, updateCardCategoryTitle } = useContext(UserDataContext);
+  const [loading , setLoading] = useState(true);
 
   const crossButton = () => {
     setModalVisible(false);
@@ -80,6 +82,7 @@ const ListPage = ({ navigation, route }: ListPageProps) => {
       }));
 
       setDataArray(items);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching items:', error);
     }
@@ -131,6 +134,10 @@ const ListPage = ({ navigation, route }: ListPageProps) => {
     }
   };
 
+  const onPressBell = async (docId: string, updatedData: any) => {
+    navigation.navigate('ItemDetails', { docId, updatedData });
+  }
+
   // Handle edit press
   useEffect(() => {
     if (route.params?.isEditPressed) {
@@ -146,13 +153,13 @@ const ListPage = ({ navigation, route }: ListPageProps) => {
   }, [route.params]);
 
   // Debugging: Log fetched data
-  useEffect(() => {
-    if (dataArray.length > 0) {
-      console.log("Firestore data:", dataArray.map(item => item.title));
-    } else {
-      console.log("Firestore data is empty.");
-    }
-  }, [dataArray]);
+  // useEffect(() => {
+  //   if (dataArray.length > 0) {
+  //     console.log("Firestore data:", dataArray.map(item => item.title));
+  //   } else {
+  //     console.log("Firestore data is empty.");
+  //   }
+  // }, [dataArray]);
 
   console.log("UpdatedData currentDocId:", currentDocId);
 
@@ -164,6 +171,7 @@ const ListPage = ({ navigation, route }: ListPageProps) => {
           <Text style={styles.listText}>
             List:{'\n'}
             {itemCat}
+            {'\n'}
           </Text>
         </View>
         <View style={styles.container}>
@@ -175,14 +183,14 @@ const ListPage = ({ navigation, route }: ListPageProps) => {
               updatedData={updatedData}
             />
           </Modal>
-
+        {loading ? (<ActivityIndicator  size={'large'} color={COLORS.white} />) : 
           <FlatList
             data={dataArray}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.flatListContent}
             renderItem={({ item }) => (
               <View style={{ marginBottom: responsiveHeight(5) }}>
-                  <ReminderCard onPressDelete={() => onPressDelete(item.id)} updatedData={item} />
+                  <ReminderCard onPressBell={() => onPressBell(item.id,item)} onPressDelete={() => onPressDelete(item.id)} updatedData={item} />
               </View>
             )}
             ListFooterComponent={
@@ -195,7 +203,7 @@ const ListPage = ({ navigation, route }: ListPageProps) => {
                 />
               </Pressable>
             }
-          />
+          />}
         </View>
       </View>
     </SafeAreaView>

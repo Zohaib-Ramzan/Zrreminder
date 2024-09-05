@@ -109,7 +109,7 @@ const ItemDetails = ({ navigation, route }: any) => {
           <View style={styles.reminderTextView}>
             <FontIcon name="bell" size={responsiveHeight(3)} color={COLORS.bellIconTintColor} />
             <View style={{ marginTop: responsiveHeight(1) }}>
-              <Text style={styles.calenderTxt}>Reminder: {reminderTxt}</Text>
+              <Text style={styles.calenderTxt}>Reminder:{"  " + reminderTxt}</Text>
             </View>
           </View>
 

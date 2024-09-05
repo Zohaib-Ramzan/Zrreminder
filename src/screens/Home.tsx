@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   FlatList,
   BackHandler,
+  ActivityIndicator,
   // BackHandler,
 } from 'react-native';
 import React, { useState, useEffect, useContext } from 'react';
@@ -22,7 +23,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../routes/AppNavigator';
 import { UserDataContext } from '../context';
 import { useFirebaseAuth } from '../hooks';
-import { COLORS } from '../constants';
+import { COLORS } from '../constants/AppTheme';
+
 
 const ImageData = [
   require('../assets/images/logo.png'),
@@ -46,6 +48,7 @@ const Home = ({ navigation }: HomeProps) => {
     null,
   );
   const [longPressModal, setLongPressModal] = useState(false);
+  const [loading , setLoading] = useState(true);
   const [isLongPress, setIsLongPress] = useState<boolean>(false);
   const plusCircleImg = () => {
     return require('../assets/images/plus-circle.png');
@@ -95,6 +98,8 @@ const Home = ({ navigation }: HomeProps) => {
         setFetchedCardData(updatedData);
       } catch (error) {
         console.error('Error fetching cards:', error);
+      } finally {
+        setLoading(false); // Set loading to false regardless of success or failure
       }
     };
 
@@ -235,6 +240,7 @@ const Home = ({ navigation }: HomeProps) => {
       </View>
       {fetchedCardData.length > 0 && (
         <View>
+          {loading ? <ActivityIndicator size={'large'} color={COLORS.white}/> : 
           <FlatList
             style={{ height: responsiveHeight(68), bottom: responsiveHeight(3) }}
             numColumns={2}
@@ -286,6 +292,7 @@ const Home = ({ navigation }: HomeProps) => {
               );
             }}
           />
+        }
         </View>
       )}
     </View>
