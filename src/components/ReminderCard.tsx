@@ -9,7 +9,7 @@ import {
   } from 'react-native-responsive-dimensions';
   import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const ReminderCard = ({updatedData}: any) => {
+const ReminderCard = ({updatedData,onPressDelete}: any) => {
   return (
     <View style={{marginLeft: responsiveWidth(18)}}>
     <Pressable style={styles.reminderCard}>
@@ -37,9 +37,9 @@ const ReminderCard = ({updatedData}: any) => {
         <View style={styles.IconStylesContainer}>
           <Image source={require("../assets/images/bell.png")} style={styles.IconStyles} />
         </View>
-        <View style={[styles.IconStylesContainer,{top: responsiveHeight(13),marginLeft: responsiveWidth(24)}]}>
+        <Pressable onPress={onPressDelete} style={[styles.IconStylesContainer,{top: responsiveHeight(13),marginLeft: responsiveWidth(24)}]}>
           <Image source={require("../assets/images/cancel.png")} style={[styles.IconStyles,{tintColor:undefined}]} />
-        </View>
+        </Pressable>
       </View>
     </View>
   </View>

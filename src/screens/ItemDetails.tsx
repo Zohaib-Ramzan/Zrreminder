@@ -13,6 +13,7 @@ import AddItem from './AddItem';
 import firestore from '@react-native-firebase/firestore';
 import { COLORS } from '../constants';
 
+
 const ItemDetails = ({ navigation, route }: any) => {
   const { updatedData, docId } = route.params;
   const crossButton = () => {
@@ -47,7 +48,6 @@ const ItemDetails = ({ navigation, route }: any) => {
 
   const goBackListPage = () => {
     navigation.navigate('ListPage', {
-      isReminderCardVisible: true,
       newUpdatedData: updatedData,
     });
   };

@@ -6,6 +6,7 @@ import {
   Pressable,
   Modal,
   FlatList,
+  Alert,
 } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import HeaderComp from '../components/HeaderComp';
@@ -22,8 +23,11 @@ import AddItem from './AddItem';
 import ReminderCard from '../components/ReminderCard';
 import { COLORS } from '../constants';
 import { UserDataContext } from '../context/UserDataContext';
+import { getDocs, collection, query, orderBy, limit, where } from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
 
 type dataArrayType = {
+  id: string; // Added ID to distinguish items
   title: string;
   imgUrl: string;
   startDate: string;
@@ -34,65 +38,124 @@ type dataArrayType = {
 };
 
 type ListPageProps = NativeStackScreenProps<RootStackParamList, 'ListPage'>;
+
 const ListPage = ({ navigation, route }: ListPageProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isEditPress, setIsEditPress] = useState(false);
   const [updatedData, setUpdatedData] = useState(null);
-  const [currentDocId , SetCurrentDocId] = useState('');
-  const [itemCat, setItemCat] = useState(route.params?.selectedCardTitle);
+  const [currentDocId, setCurrentDocId] = useState('');
+  const [itemCat, setItemCat] = useState(route.params?.selectedCardTitle || '');
   const [dataArray, setDataArray] = useState<Array<dataArrayType>>([]);
   const { userData, updateCardCategoryTitle } = useContext(UserDataContext);
+
   const crossButton = () => {
     setModalVisible(false);
     setIsEditPress(false);
   };
 
-  const handleCardCategoryPress = (itemCat: string) => {
-    updateCardCategoryTitle(itemCat);
-    // Navigate to AddItem screen or perform any other action
+  const handleCardCategoryPress = (category: string) => {
+    updateCardCategoryTitle(category);
+    // Optionally navigate or perform other actions here
   };
 
   const handlePlusCirclePressed = () => {
-    handleCardCategoryPress(itemCat)
-    setModalVisible(true)
-  }
- 
+    handleCardCategoryPress(itemCat);
+    setModalVisible(true);
+  };
 
+  // Fetch items from Firestore based on selectedCardCategory
+  const fetchItemsFromFirestore = async () => {
+    try {
+      const q = query(
+        collection(firestore(), 'lists'),
+        where('selectedCardCategory', '==', itemCat),
+        orderBy('createdAt', 'desc'),
+        limit(20)
+      );
+
+      const querySnapshot = await getDocs(q);
+      const items = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setDataArray(items);
+    } catch (error) {
+      console.error('Error fetching items:', error);
+    }
+  };
+
+  // Fetch Firestore data on component mount and when itemCat changes
+  useEffect(() => {
+    if (itemCat) { // Ensure itemCat is not empty
+      fetchItemsFromFirestore();
+    }
+  }, [itemCat]);
+
+  // Handle new or updated data from navigation params
   useEffect(() => {
     if (route.params?.newUpdatedData) {
-      setDataArray(prevDataArray => [
-        ...prevDataArray,
-        {
-          title: route.params?.newUpdatedData.title,
-          imgUrl: route.params?.newUpdatedData.imgUrl,
-          startDate: route.params?.newUpdatedData.startDate,
-          endDate: route.params?.newUpdatedData.endDate,
-          reminderTxt: route.params?.newUpdatedData.reminderTxt,
-          noteTxt: route.params?.newUpdatedData.noteTxt,
-          selectedCardCategory:
-            route.params?.newUpdatedData.selectedCardCategory,
-        },
-      ]);
+      const newItem = {
+        id: route.params.newUpdatedData.docId,
+        title: route.params.newUpdatedData.title,
+        imgUrl: route.params.newUpdatedData.imgUrl,
+        startDate: route.params.newUpdatedData.startDate,
+        endDate: route.params.newUpdatedData.endDate,
+        reminderTxt: route.params.newUpdatedData.reminderTxt,
+        noteTxt: route.params.newUpdatedData.noteTxt,
+        selectedCardCategory: route.params.newUpdatedData.selectedCardCategory,
+      };
+      // Option 1: Re-fetch data after adding/updating
+      fetchItemsFromFirestore();
+
+      // Option 2: Manually add if it matches current category
+      /*
+      if (newItem.selectedCardCategory === itemCat) {
+        setDataArray(prevDataArray => [newItem, ...prevDataArray]);
+      }
+      */
     }
   }, [route.params?.newUpdatedData]);
 
+  const onPressDelete = async (docId: string) => {
+    try {
+      await firestore().collection('lists').doc(docId).delete();
+  
+      // Update the local state to remove the deleted item
+      setDataArray(prevDataArray => prevDataArray.filter(item => item.id !== docId));
+  
+      console.log('Document successfully deleted!');
+    } catch (error) {
+      console.error('Error deleting document:', error);
+      Alert.alert('Error', 'Failed to delete item. Please try again.');
+    }
+  };
+
+  // Handle edit press
   useEffect(() => {
     if (route.params?.isEditPressed) {
       setModalVisible(true);
       setIsEditPress(true);
-      SetCurrentDocId(route.params?.docId)
-      setUpdatedData(route.params?.updatedData);
+      setCurrentDocId(route.params?.docId || '');
+      setUpdatedData(route.params?.updatedData || null);
     } else {
-      // Reset the state when not in edit mode
       setModalVisible(false);
       setIsEditPress(false);
       setUpdatedData(null);
     }
   }, [route.params]);
-  // console.log("upd data "+route.params?.newUpdatedData)
-  // console.log("isReminderCardVisible "+route.params?.selectedCardTitle)
 
-  console.log("UpdatedData currentDocId: " + currentDocId)
+  // Debugging: Log fetched data
+  useEffect(() => {
+    if (dataArray.length > 0) {
+      console.log("Firestore data:", dataArray.map(item => item.title));
+    } else {
+      console.log("Firestore data is empty.");
+    }
+  }, [dataArray]);
+
+  console.log("UpdatedData currentDocId:", currentDocId);
+
   return (
     <SafeAreaView style={styles.containerView}>
       <View style={styles.viewContainer}>
@@ -115,23 +178,17 @@ const ListPage = ({ navigation, route }: ListPageProps) => {
 
           <FlatList
             data={dataArray}
-            keyExtractor={(item, index) => index.toString()}
+            keyExtractor={(item) => item.id}
             contentContainerStyle={styles.flatListContent}
-            renderItem={({ item }) => {
-              const selectedCardItm = item.selectedCardCategory;
-              return (
-                <View style={{ marginBottom: responsiveHeight(5) }}>
-                  {route.params?.isReminderCardVisible && (
-                    <ReminderCard updatedData={item} />
-                  )}
-                  {console.log(' item Cat = ' + selectedCardItm)}
-                </View>
-              );
-            }}
+            renderItem={({ item }) => (
+              <View style={{ marginBottom: responsiveHeight(5) }}>
+                  <ReminderCard onPressDelete={() => onPressDelete(item.id)} updatedData={item} />
+              </View>
+            )}
             ListFooterComponent={
               <Pressable
                 style={styles.imgContainer}
-                onPress={() => handlePlusCirclePressed()}>
+                onPress={handlePlusCirclePressed}>
                 <Image
                   source={require('../assets/images/plus-circle.png')}
                   style={styles.imgStyle}
@@ -139,17 +196,6 @@ const ListPage = ({ navigation, route }: ListPageProps) => {
               </Pressable>
             }
           />
-          {/* <Pressable
-            style={styles.imgContainer}
-            onPress={() => setModalVisible(true)}>
-            <Image
-              source={require('../assets/images/plus-circle.png')}
-              style={styles.imgStyle}
-            />
-          </Pressable> */}
-          {/* { route.params?.isReminderCardVisible &&
-         <ReminderCard updatedData={route.params?.newUpdatedData} />
-        } */}
         </View>
       </View>
     </SafeAreaView>
@@ -178,7 +224,6 @@ const styles = StyleSheet.create({
     tintColor: COLORS.addIcontintColor
   },
   imgContainer: {
-    // position: 'absolute',
     marginTop: responsiveHeight(10),
     alignItems: 'center',
     bottom: responsiveHeight(2),
