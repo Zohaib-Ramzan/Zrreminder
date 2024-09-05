@@ -38,6 +38,7 @@ const ListPage = ({ navigation, route }: ListPageProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isEditPress, setIsEditPress] = useState(false);
   const [updatedData, setUpdatedData] = useState(null);
+  const [currentDocId , SetCurrentDocId] = useState('');
   const [itemCat, setItemCat] = useState(route.params?.selectedCardTitle);
   const [dataArray, setDataArray] = useState<Array<dataArrayType>>([]);
   const { userData, updateCardCategoryTitle } = useContext(UserDataContext);
@@ -51,7 +52,6 @@ const ListPage = ({ navigation, route }: ListPageProps) => {
     // Navigate to AddItem screen or perform any other action
   };
 
-  console.log("ListPage cardcat" + userData.cardCategoryTitle)
   const handlePlusCirclePressed = () => {
     handleCardCategoryPress(itemCat)
     setModalVisible(true)
@@ -80,6 +80,7 @@ const ListPage = ({ navigation, route }: ListPageProps) => {
     if (route.params?.isEditPressed) {
       setModalVisible(true);
       setIsEditPress(true);
+      SetCurrentDocId(route.params?.docId)
       setUpdatedData(route.params?.updatedData);
     } else {
       // Reset the state when not in edit mode
@@ -90,6 +91,8 @@ const ListPage = ({ navigation, route }: ListPageProps) => {
   }, [route.params]);
   // console.log("upd data "+route.params?.newUpdatedData)
   // console.log("isReminderCardVisible "+route.params?.selectedCardTitle)
+
+  console.log("UpdatedData currentDocId: " + currentDocId)
   return (
     <SafeAreaView style={styles.containerView}>
       <View style={styles.viewContainer}>
@@ -103,6 +106,7 @@ const ListPage = ({ navigation, route }: ListPageProps) => {
         <View style={styles.container}>
           <Modal visible={modalVisible} transparent>
             <AddItem
+              currentDocId={route.params?.docId}
               crossButton={crossButton}
               isEditPress={isEditPress}
               updatedData={updatedData}
@@ -179,18 +183,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     bottom: responsiveHeight(2),
   },
-  // reminderCard: {
-  //   height: responsiveHeight(30),
-  //   width: responsiveWidth(70),
-  //   backgroundColor: '#8ac185',
-  //   borderRadius: 10,
-  // },
-  // reminderCardTitle: {
-  //   fontSize: responsiveFontSize(2.8),
-  //   fontFamily: 'AlegreyaSans-ExtraBoldItalic',
-  //   color: '#fff',
-  //   textAlign: 'center',
-  // },
   reminderCardTitleContainer: {
     marginTop: responsiveHeight(2),
   },
@@ -205,12 +197,6 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(1.5),
     textAlign: 'center',
   },
-  // productImgContainer: {
-  //   height: responsiveHeight(18),
-  //   width: responsiveWidth(34),
-  //   backgroundColor: '#fff',
-  //   borderRadius: 10,
-  // },
   flatListContent: {
     width: responsiveScreenWidth(100), // Set to 100% of screen width
     paddingHorizontal: responsiveWidth(5), // Optional padding

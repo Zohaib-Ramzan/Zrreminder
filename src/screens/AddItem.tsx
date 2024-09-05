@@ -43,7 +43,7 @@ type RouteParam = {
   };
 };
 
-const AddItem = ({ crossButton, updatedData, isEditPress }: any) => {
+const AddItem = ({ crossButton, updatedData, isEditPress,currentDocId }: any) => {
   const route = useRoute<RouteProp<RouteParam, 'AddItem'>>();
   const navigation = useNavigation<AddItemProps>();
   const [title, setTitle] = useState('');
@@ -79,6 +79,8 @@ const AddItem = ({ crossButton, updatedData, isEditPress }: any) => {
         path: 'image',
       },
     };
+
+    console.log("dds" + currentDocId)
 
     launchImageLibrary(options, response => {
       if (!response.didCancel) {
@@ -164,71 +166,24 @@ const AddItem = ({ crossButton, updatedData, isEditPress }: any) => {
     }
   };
 
-  const gotoItemDetailsPage = (dataToUpdate: any, docId: any) => {
+  const gotoItemDetailsPage = (params: any) => {
     crossButton();
-    navigation.navigate('ItemDetails', {
-      updatedData: dataToUpdate,
-      docId: docId,
-      selectedCardCategory: selectedCardCategory
-    });
+    navigation.navigate('ItemDetails', params);
   };
 
- const onDonePress = () => {
-  if (title !== '' && imageSelect !== null) {
-    console.log(
-      title +
-      ' ' +
-      imageSelect +
-      ' ' +
-      selectedDate +
-      ' ' +
-      expireDate +
-      ' ' +
-      reminderText +
-      ' ' +
-      noteText +
-      ' ' +
-      selectedCardCategory,
-    );
-    setSelectedCardCategory(route.params?.selectedCardTitle)
-    const updatedData = {
-      ...selectedCardData,
-      title: title,
-      imgUrl: imageSelect,
-      startDate: selectedDate,
-      endDate: expireDate,
-      reminderTxt: reminderText,
-      noteTxt: noteText,
-    };
-
-    // Generate unique document ID
-    const newDocRef = firestore().collection('lists').doc();
-
-    // Firestore code
-    const userId = getUserId();
-    
-    firestore()
-    .runTransaction((transaction) => {
-      return transaction.get(newDocRef).then(doc => {
-        if (!doc.exists) {
-          // Document does not exist, so we create a new one
-          transaction.set(newDocRef, {
-            selectedCardCategory: userData.cardCategoryTitle,
-            userId: userId,
-            docId: newDocRef.id,
-            title: title,
-            imgUrl: imageSelect,
-            startDate: selectedDate,
-            endDate: expireDate,
-            reminderTxt: reminderText,
-            noteTxt: noteText,
-            createdAt: new Date(),
-          });
-        } else {
-          // Document exists, update it
-          transaction.update(newDocRef, {
-            userId: userId,
-            docId: newDocRef.id,
+  const onDonePress = async () => {
+    if (title !== '' && imageSelect !== null) {
+      try {
+        const userId = getUserId();
+  
+        if (isEditPress) {
+          // Update existing document
+          const docId = currentDocId // Assuming you pass the docId as a param
+          if (!docId) {
+            throw new Error('Document ID not found');
+          }
+  
+          await firestore().collection('lists').doc(docId).update({
             title: title,
             imgUrl: imageSelect,
             startDate: selectedDate,
@@ -237,22 +192,64 @@ const AddItem = ({ crossButton, updatedData, isEditPress }: any) => {
             noteTxt: noteText,
             updatedAt: new Date(),
           });
+  
+          console.log('Document successfully updated!');
+          const updatedData = {
+            title: title,
+            imgUrl: imageSelect,
+            startDate: selectedDate,
+            endDate: expireDate,
+            reminderTxt: reminderText,
+            noteTxt: noteText,
+            selectedCardCategory: userData?.cardCategoryTitle,
+          };
+          gotoItemDetailsPage({ updatedData, docId });
+        } else {
+          // Create new document (existing logic)
+          const newDocRef = firestore().collection('lists').doc();
+          
+          await firestore()
+           .runTransaction(async (transaction) => {
+              const doc = await transaction.get(newDocRef);
+              if (!doc.exists) {
+                transaction.set(newDocRef, {
+                  selectedCardCategory: userData?.cardCategoryTitle,
+                  userId: userId,
+                  docId: newDocRef.id,
+                  title: title,
+                  imgUrl: imageSelect,
+                  startDate: selectedDate,
+                  endDate: expireDate,
+                  reminderTxt: reminderText,
+                  noteTxt: noteText,
+                  createdAt: new Date(),
+                });
+              }
+            });
+  
+          console.log('Document successfully written!');
+          const docId = newDocRef.id;
+          const updatedData = {
+            title: title,
+            imgUrl: imageSelect,
+            startDate: selectedDate,
+            endDate: expireDate,
+            reminderTxt: reminderText,
+            noteTxt: noteText,
+            selectedCardCategory: userData?.cardCategoryTitle,
+          };
+          gotoItemDetailsPage({ updatedData, docId });
         }
-      });
-    })
-    .then(() => {
-      console.log('Document successfully written or updated!');
-      const docId = newDocRef.id;
-      gotoItemDetailsPage(updatedData, docId);
-    })
-    .catch((error) => {
-      console.error('Error writing document: ', error);
-      Alert.alert('Error', 'Failed to save item. Please try again.');
-    });
-
-  // Remove the else block for now
-}
-};
+  
+      } catch (error) {
+        console.error('Error updating document: ', error);
+        Alert.alert('Error', 'Failed to update item. Please try again.');
+      }
+    } else {
+      Alert.alert('Please enter a title and select an image');
+    }
+  };
+  
 
   const plusCircleStyles = isImageSelected
     ? {

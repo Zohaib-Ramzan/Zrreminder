@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Alert } from 'react-native';
 import React, { useState } from 'react';
 import {
   responsiveFontSize,
@@ -10,6 +10,7 @@ import Card from '../components/Card';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontIcon from 'react-native-vector-icons/FontAwesome';
 import AddItem from './AddItem';
+import firestore from '@react-native-firebase/firestore';
 import { COLORS } from '../constants';
 
 const ItemDetails = ({ navigation, route }: any) => {
@@ -23,11 +24,19 @@ const ItemDetails = ({ navigation, route }: any) => {
     navigation.navigate('ListPage', {
       isEditPressed: true,
       updatedData: updatedData,
+      docId: docId
     });
   };
 
-  const onPressDelete = () => {
-    navigation.navigate('ListPage');
+  const onPressDelete = async () => {
+    try {
+      await firestore().collection('lists').doc(docId).delete();
+      console.log('Document successfully deleted!');
+      navigation.navigate('ListPage');
+    } catch (error) {
+      console.error('Error deleting document:', error);
+      Alert.alert('Error', 'Failed to delete item. Please try again.');
+    }
   };
 
   // const setReminderCardVisible = () => {
